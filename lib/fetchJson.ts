@@ -8,7 +8,7 @@ export default async function fetchJson<JSON = unknown>(
     const token = Cookies.get("token");
     init = init || {};
 
-    let headers : any = { 'Accept': 'application/json' };
+    let headers : any = { 'Accept': 'application/json', "Accept-Language": "it" };
     if( token ){
       headers["Authorization"] = "Bearer " + token;
     }
@@ -23,11 +23,11 @@ export default async function fetchJson<JSON = unknown>(
     // response.ok is true when res.status is 2xx
     // https://developer.mozilla.org/en-US/docs/Web/API/Response/ok
     if (response.ok) {
-      return data.data
+      return data;
     }
 
     throw new FetchError({
-      message: response.statusText,
+      message: data.message,
       response,
       data,
     })

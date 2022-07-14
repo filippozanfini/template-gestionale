@@ -6,24 +6,21 @@ import fetchJson from './fetchJson'
 
 export const mpApi = {
   user: {
-    me: '/user/me',
+    me: '/users/me',
     login: async (username: string, password: string) =>{
-      let data:any = await fetchJson('/login', {
+      let data:any = await fetchJson('/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          username: username,
+          email: username,
           password: password,
         }),
       });
-
-      if( data?.access_token ){
-        Cookies.set("token", data?.access_token);
+      if( data?.token ){
+        Cookies.set("token", data?.token);
       }
       return {
-          ...data.user,
-          abilities: data.abilities,
-          roles: data.roles
+          ...data
       };
     },
   },

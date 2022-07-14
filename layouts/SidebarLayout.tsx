@@ -31,7 +31,7 @@ import NavigationMenu, { MenuItem } from '../components/NavigationMenu'
 
 function SidebarLayout({ children }: any) {
   const [sidebar, setSidebar] = useState(true)
-  const { user } = useUser({ redirectTo: '/login' })
+  const { user } = useUser({})
   const [ current, setCurrent ] = useState(-1);
   const [ sezioni, setSezioni ] = useState<MenuItem[]>([]);
 

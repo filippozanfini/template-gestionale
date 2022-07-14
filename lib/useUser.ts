@@ -12,16 +12,7 @@ export default function useUser({
   redirectIfFound = false,
 } = {}) {
 
-  const { data: userData, mutate: mutateUser } = useSWR<any>(mpApi.user.me,fetchJson, {
-    onErrorRetry: (error) => {
-      // Never retry on 404.
-      if (error.data.status.code === 404) return
-
-      if (error.data.status.code === 403){
-        Router.push( "/login");
-      }
-    }
-  })
+  const { data: userData, mutate: mutateUser } = useSWR<any>(mpApi.user.me);
   const [ user, setUser] = useState<User>();
 
   useEffect(() => {
@@ -33,9 +24,9 @@ export default function useUser({
     if (!redirectTo || !userData) return
     if (
       // If redirectTo is set, redirect if the user was not found.
-      (redirectTo && !redirectIfFound && userData?.active !== 1 ) ||
+      (redirectTo && !redirectIfFound && userData?.id > 0 ) ||
       // If redirectIfFound is also set, redirect if the user was found
-      (redirectIfFound && userData?.active === 1)
+      (redirectIfFound && userData?.id > 0)
     ) {
       Router.push(redirectTo)
     }

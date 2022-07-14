@@ -24,6 +24,11 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
       onError: (err) => {
         if( err.data.code === 403 ){
           Router.push("/login");
+          return;
+        }
+        if (err.data.code === 401){
+          Router.push( "/login");
+          return;
         }
       },
     }}
