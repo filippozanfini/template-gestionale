@@ -3,19 +3,16 @@ import { NextPageWithLayout } from './_app';
 import { ReactElement } from 'react';
 
 const Home: NextPageWithLayout = () => {
-
-
-
   return (
         <pre className="w-full h-full">
-
+              Ciao ciao
         </pre>
   )
 }
 
 Home.getLayout = function getLayout(page: ReactElement) {
   return (
-    <SidebarLayout>
+    <SidebarLayout title="questo pagina è l'indice">
       {page}
     </SidebarLayout>
   )
