@@ -53,7 +53,7 @@ const EditServizi: NextPageWithLayout = () => {
         </div>
 
         <div className="sm:col-span-3">
-            <ComboBox elements={elements} name="combo" aria="combo" label='Numeri' />
+
         </div>
 
         <div className="sm:col-span-6">
