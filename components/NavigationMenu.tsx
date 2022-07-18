@@ -11,12 +11,21 @@ import { Disclosure, Transition, Popover } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/outline'
 import { usePopper } from 'react-popper'
 import { createPortal } from 'react-dom'
+import { Router, useRouter } from 'next/router'
 
 export interface MenuItem {
-  slug: string
+  id: string
+  path?: string
   label: string
   icon?: ReactElement | null,
   children?: MenuItem[]
+}
+
+
+interface InternalMenuItem extends MenuItem{
+  isOpened: boolean;
+  isActive: boolean;
+  children?: InternalMenuItem[]
 }
 
 export interface NavigationMenuProps {
@@ -25,6 +34,7 @@ export interface NavigationMenuProps {
   className?:string;
   bgColor?:string;
   textColor?:string;
+  selected?:string;
   onClick? : (item:MenuItem) => void;
 }
 
@@ -33,26 +43,63 @@ const NavigationMenu: FC<NavigationMenuProps> = ({
   collapsed = false,
   onClick,
   className,
+  selected = "",
   ...otherProps
 }) : any => {
 
   const [current, setCurrent] = useState("")
-  const [sezioni, setSezioni] = useState<MenuItem[]>([])
+  const [sezioni, setSezioni] = useState<InternalMenuItem[]>([])
+
+  const aChildIsActive = (menuItems: MenuItem[], selectedItem: string = "") => {
+        for(let item of menuItems ){
+          if( item.id === selectedItem){
+             return true;
+          }
+          if( aChildIsActive( item.children || []) ){
+             return true;
+          }
+        }
+        return false;
+  }
+
+  const processMenu = (menuItems: MenuItem[] | InternalMenuItem[] , selectedItem: string = "") : InternalMenuItem[] => {
+    let internalMenu: InternalMenuItem[] = [];
+      for(let item of menuItems ){
+        internalMenu.push({
+          ...item,
+          isOpened: item.id === selectedItem || aChildIsActive(item.children || [], selectedItem),
+          isActive: item.id === selectedItem,
+          children: processMenu( item.children || [], selectedItem )
+        });
+      }
+    return internalMenu ;
+  }
 
   useEffect(() => {
-    setSezioni([...menu])
-    setCurrent("")
-  }, [menu])
+    setSezioni( processMenu(menu, selected ) );
+    setCurrent(selected)
+  }, [menu,selected])
 
-  const clicked = (item: MenuItem) => {
-    setCurrent(current === item.slug ? "" : item.slug)
-    onClick && onClick( item );
+  const clicked = (item: InternalMenuItem) => {
+
+    if( item.id === current && item.isOpened ){
+       //toggled
+       setSezioni( processMenu(menu, "" ) );
+       setCurrent( "" )
+    }else{
+      setSezioni( processMenu(menu,  item.id ) );
+      setCurrent( item.id );
+
+      if( !item.children || item.children?.length === 0){
+        onClick && onClick( item );
+      }
+    }
   }
 
   const collpsedStyle= collapsed ? "hidden " : "inline-block ";
 
 
-  const CollapsedMenuItem = ( props: { menuItem: MenuItem, level:number } ) =>{
+  const CollapsibleMenuItem = ( props: { menuItem: InternalMenuItem, level:number } ) =>{
     let [referenceElement, setReferenceElement] = useState()
     let [popperElement, setPopperElement] = useState()
     let { styles, attributes } = usePopper(referenceElement, popperElement, { placement: "right-start", modifiers: [
@@ -81,7 +128,7 @@ const NavigationMenu: FC<NavigationMenuProps> = ({
             {...attributes.popper}
         >
          <div className={["flex flex-col", otherProps.bgColor || "bg-indigo-800", otherProps.textColor || "text-white" ].join(" ")} >
-             <div className='py-2 px-4 hover:bg-white/10'>{props.menuItem.label}</div>
+             <div className='py-4 px-4 hover:bg-white/10'>{props.menuItem.label}</div>
              <div>{ children }</div>
          </div>
       </Popover.Panel>, document.body)
@@ -89,35 +136,49 @@ const NavigationMenu: FC<NavigationMenuProps> = ({
     </Popover>)
   }
 
-  const expandedMenuItem = (menuItem: MenuItem, level:number) =>{
+  const expandedMenuItem = (menuItem: InternalMenuItem, level:number) =>{
     const icon = menuItem.icon ? (<div className="w-5 h-5 inline-block mr-2"> {menuItem.icon} </div>) : null
+    const isOpenedClass = menuItem.isOpened ? 'max-h-[500px] opacity-100 py-4' : 'max-h-0 opacity-0';
+
+    let itemClass = "";
+    if( level === 0 ){
+       itemClass += 'px-4 ';
+       itemClass += 'hover:bg-white/10 ';
+    }else{
+
+       if( menuItem.isActive ){
+         itemClass += 'bg-white/10 rounded-md pl-6 mx-2 pr-2 ';
+       }else{
+        itemClass += 'hover:bg-white/10 pr-2 pl-8 ';
+       }
+
+       itemClass += 'my-1'
+
+    }
+
     const children = menuItem && menuItem.children && menuItem?.children?.length > 0 ? (<div
-        className={`${
-            menuItem.slug === current
-            ? 'max-h-[500px] opacity-100 py-2'
-            : 'max-h-0 opacity-0'
-        } overflow-hidden duration-1000 transition-all ease-in-out bg-black/20`}
+        className={`${isOpenedClass} overflow-hidden duration-1000 transition-all ease-in-out bg-black/20`}
       > { recursiveMenuItemRender( menuItem.children, level + 1 ) }
       </div>) : null;
 
     return (<><div
-    className={`${ level === 0 ? 'pl-4' : 'pl-8'  } pr-4 py-2 flex align-content-center w-full cursor-pointer hover:bg-white/10`}
+    className={`${itemClass} py-4 flex align-content-center cursor-pointer`}
     onClick={() => clicked(menuItem) }
   >
   {icon}
   <div >{menuItem.label}</div>
   {  menuItem && menuItem.children && menuItem.children.length > 0 ?
     <div className={collpsedStyle + " ml-auto w-5 h-5"} >
-        <ChevronDownIcon className={`${menuItem.slug === current ? 'transform rotate-180' : ''} duration-500 transition ease-in-out`} />
+        <ChevronDownIcon className={`${menuItem.id === current ? 'transform rotate-180' : ''} duration-500 transition ease-in-out`} />
     </div> : null }
   </div>
   {children}</>);
 }
 
 
-  const recursiveMenuItemRender = ( menu: MenuItem[], level:number = 0 ) => {
-    const elements =  menu.map( (item:any) => {
-       return (<li key={item.slug}>{ (collapsed && level==0) ? (<CollapsedMenuItem menuItem={item} level={level} /> ) : expandedMenuItem (item,level) }</li>);
+  const recursiveMenuItemRender = ( menuItem: InternalMenuItem[], level:number = 0 ) => {
+    const elements =  menuItem.map( (item:any) => {
+       return (<li key={item.id}>{ (collapsed && level==0) ? (<CollapsibleMenuItem menuItem={item} level={level} /> ) : expandedMenuItem (item,level) }</li>);
     });
     return (<ul>{elements}</ul>);
   }

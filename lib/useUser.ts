@@ -12,7 +12,7 @@ export default function useUser({
   redirectIfFound = false,
 } = {}) {
 
-  const { data: userData, mutate: mutateUser } = useSWR<any>(mpApi.user.me);
+  const { data: userData, mutate: mutateUser } = useSWR<any>(mpApi.user.routes.me);
   const [ user, setUser] = useState<User>();
 
   useEffect(() => {
