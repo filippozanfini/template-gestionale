@@ -4,7 +4,6 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     aria: string;
     name: string;
     label: string;
-    ref: string;
 }
 
 const Password: ForwardRefRenderFunction<HTMLInputElement, InputProps> = ({ name, label, aria, ...otherProps }, ref) => {
@@ -14,7 +13,7 @@ const Password: ForwardRefRenderFunction<HTMLInputElement, InputProps> = ({ name
         <div className={otherProps.className || "mt-6 w-full"}>
         <label htmlFor={id} className="block text-sm font-medium text-gray-700">{label}</label>
         <div className="relative flex items-center justify-center mt-1">
-            <input id={id} {...otherProps} aria-label={aria} role="input" name={name} ref={ref} type={ reveal ? "text" : "password"} className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md bg-white" />
+            <input id={id} {...otherProps} aria-label={aria} role="input" name={name} ref={ref} type={ reveal ? "text" : "password"} className="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md bg-white" />
             <button type="button" className="absolute right-0 mt-0 mr-3 cursor-pointer" onClick={ () => setReveal( (value:boolean) => !value ) }>
                 <svg width={16} height={16} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path

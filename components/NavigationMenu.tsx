@@ -127,7 +127,7 @@ const NavigationMenu: FC<NavigationMenuProps> = ({
             style={styles.popper}
             {...attributes.popper}
         >
-         <div className={["flex flex-col", otherProps.bgColor || "bg-indigo-800", otherProps.textColor || "text-white" ].join(" ")} >
+         <div className={["flex flex-col", otherProps.bgColor || "bg-primary-800", otherProps.textColor || "text-white" ].join(" ")} >
              <div className='py-4 px-4 hover:bg-white/10'>{props.menuItem.label}</div>
              <div>{ children }</div>
          </div>
@@ -183,6 +183,6 @@ const NavigationMenu: FC<NavigationMenuProps> = ({
     return (<ul>{elements}</ul>);
   }
 
-  return <div className={[className, otherProps.bgColor || "bg-indigo-800", otherProps.textColor || "white" ].join(" ")}>{recursiveMenuItemRender( sezioni )}</div>
+  return <div className={[className, otherProps.bgColor || "bg-primary-800", otherProps.textColor || "white" ].join(" ")}>{recursiveMenuItemRender( sezioni )}</div>
 }
 export default NavigationMenu

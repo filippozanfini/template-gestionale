@@ -19,7 +19,7 @@ const ActionList:  React.FC<ActionListProps> = ({ items,onEditAction, onDeleteAc
   {items && items.map((item:any) => (
     <li
       key={item.id}
-      className="group relative bg-white py-5 px-4 hover:bg-gray-50 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600"
+      className="group relative bg-white py-5 px-4 hover:bg-gray-50 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600"
     >
       <div className="flex justify-between space-x-3">
         <div className="min-w-0 flex-1">

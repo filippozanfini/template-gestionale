@@ -10,7 +10,6 @@ interface ComboBoxProps extends InputHTMLAttributes<HTMLSelectElement> {
     name: string;
     label: string;
     elements: ComboBoxElement[];
-    ref: string;
 }
 
 const ComboBoxInputElement: ForwardRefRenderFunction<HTMLSelectElement, ComboBoxProps> = ({ name, label, aria, elements, ...otherProps }, ref) => {
@@ -20,10 +19,10 @@ const ComboBoxInputElement: ForwardRefRenderFunction<HTMLSelectElement, ComboBox
                 <label htmlFor={id} className="block text-sm font-medium text-gray-700">
                     {label}
                 </label>
-                <div className="mt-1">
+                <div className="mt-1 relative">
                     <select
                     id={id} {...otherProps} aria-label={aria} role="input" name={name} ref={ref}
-                    className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
                     >
                     {elements && elements.map( (item:ComboBoxElement) => (<option key={ name + "-" + item.value} value={item.value} selected={otherProps.value=== item.value}> {item.label} </option>) ) }
                     </select>

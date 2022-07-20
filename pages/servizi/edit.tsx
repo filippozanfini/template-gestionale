@@ -1,149 +1,167 @@
-import SidebarLayout from '../../layouts/SidebarLayout';
-import { NextPageWithLayout } from '../_app';
-import { ReactElement, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { mpApi } from '../../lib/mpApi';
-import useSWR from 'swr';
-import FormInput from '../../components/FormInput';
-import Debugger from '../../components/Debugger';
-import ComboBox from '../../components/ComboBox';
+import SidebarLayout from '../../layouts/SidebarLayout'
+import { NextPageWithLayout } from '../_app'
+import { ReactElement, useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import { mpApi } from '../../lib/mpApi'
+import CheckboxInput from '../../components/Checkbox'
+import { useForm, SubmitHandler } from 'react-hook-form'
+import Textarea from '../../components/TextArea'
+import PriceInput from '../../components/PriceInput'
+import FormInput from '../../components/FormInput'
+import renderError from '../../lib/errorMessages'
+import FourOFour from '../../components/FourOFour'
+
+type Servizio = {
+  id: number
+  nome: string
+  descrizione: string
+  costo: number
+  novita: boolean
+}
+
+const defaultValues: Servizio = {
+  id: 0,
+  nome: '',
+  descrizione: '',
+  costo: 0,
+  novita: false,
+}
 
 const EditServizi: NextPageWithLayout = () => {
-  const route = useRouter();
-  const { data, error } = useSWR(mpApi.services.routes.item( Number(route.query.id) || "new") );
+  const { push,  query } = useRouter()
+  const [item, setItem] = useState<Servizio | null>(defaultValues)
 
-  const [servizio, setServizio] = useState({});
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    formState: { errors },
+  } = useForm<Servizio>()
 
-  useEffect( () => {
-    setServizio({...data });
-  }, [data]);
 
-  return (<form className="space-y-8 divide-y divide-gray-200">
-  <div className="space-y-8 divide-y divide-gray-200">
-    <div>
-      <div>
-        <h3 className="text-lg leading-6 font-medium text-gray-900">Personal Information</h3>
-        <p className="mt-1 text-sm text-gray-500">
+  const loadItem= async ( ItemId: number) => {
+    if (ItemId === 0) {
+      reset(defaultValues)
+      return null;
+    } else {
+      return mpApi.services.actions
+        .item(ItemId)
+        .then((data: any) => {
+          setItem(data)
+          reset(data)
+        })
+        .catch((data: any) => {
+          setItem(null)
+          reset(defaultValues)
+        })
+    }
+  }
 
-<Debugger data={data} />
+  const onSubmit: SubmitHandler<Servizio> = async (formdata: any) => {
+    mpApi.services.actions
+      .save(formdata)
+      .then((response: any) => {
+        alert(response.message)
+        push("/servizi/edit?id=" + response.data.id);
+      })
+      .catch((reason: any) => {
+        Object.keys(reason.data.errors).forEach((field: string) => {
+          setError(field, {
+            type: 'custom',
+            message: reason.data.errors[field],
+          })
+        })
+      })
+  }
 
-        </p>
+  useEffect(() => {
+    if (query.id) {
+      const ItemId: number = Number(query.id);
+      loadItem(ItemId);
+    }
+  }, [query])
+
+  return item ? (
+    <form
+      className="space-y-8 divide-y divide-gray-200"
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <div className="space-y-8 divide-y divide-gray-200">
+        <div>
+          <div>
+            <h3 className="text-lg leading-6 font-medium text-gray-900">
+              {item?.id > 0 ? 'CODICE: ' + item.id : 'Nuovo Servizio'}
+            </h3>
+            <div className="mt-1 text-sm text-gray-500"></div>
+          </div>
+          <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+            <input type="hidden" value={item?.id} {...register('id')} />
+            <FormInput
+              className="sm:col-span-3"
+              {...register('nome', { required: true })}
+              errorMessage={ renderError(errors['nome']) }
+              autoComplete="nome"
+              aria="Inserisci il Nome"
+              label="Nome"
+              defaultValue={item?.nome ?? ''}
+            />
+            <PriceInput
+              className="sm:col-span-3"
+              {...register('costo', {
+                required: true,
+                min: { value: 0.1, message: 'Il valore minimo è 0.1€' },
+              })}
+              errorMessage={renderError(errors['costo'])}
+              autoComplete="costo"
+              aria="costo"
+              label="costo"
+              defaultValue={item?.costo ?? ''}
+            />
+            <Textarea
+              className="sm:col-span-6"
+              {...register('descrizione', { required: true })}
+              errorMessage={renderError(errors['descrizione'])}
+              autoComplete="descrizione"
+              aria="Descrizione"
+              label="Descrizione"
+              defaultValue={item?.descrizione ?? ''}
+            />
+            <CheckboxInput
+              className="sm:col-span-4"
+              {...register('novita')}
+              aria="Inserisci novita"
+              label="Novità"
+              defaultChecked={item?.novita || false}
+            />
+          </div>
+        </div>
       </div>
-      <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-
-        <FormInput className="sm:col-span-3" autoComplete='first-name' name="first-name" aria="Inserisci il nome" label='Nome' value={servizio?.nome} />
-
-        <div className="sm:col-span-3">
-          <FormInput name="password" aria="password" label='password' />
-        </div>
-
-        <div className="sm:col-span-4">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-            Email address
-          </label>
-          <div className="mt-1">
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-            />
-          </div>
-        </div>
-
-        <div className="sm:col-span-3">
-
-        </div>
-
-        <div className="sm:col-span-6">
-          <label htmlFor="street-address" className="block text-sm font-medium text-gray-700">
-            Street address
-          </label>
-          <div className="mt-1">
-            <input
-              type="text"
-              name="street-address"
-              id="street-address"
-              autoComplete="street-address"
-              className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-            />
-          </div>
-        </div>
-
-        <div className="sm:col-span-2">
-          <label htmlFor="city" className="block text-sm font-medium text-gray-700">
-            City
-          </label>
-          <div className="mt-1">
-            <input
-              type="text"
-              name="city"
-              id="city"
-              autoComplete="address-level2"
-              className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-            />
-          </div>
-        </div>
-
-        <div className="sm:col-span-2">
-          <label htmlFor="region" className="block text-sm font-medium text-gray-700">
-            State / Province
-          </label>
-          <div className="mt-1">
-            <input
-              type="text"
-              name="region"
-              id="region"
-              autoComplete="address-level1"
-              className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-            />
-          </div>
-        </div>
-
-        <div className="sm:col-span-2">
-          <label htmlFor="postal-code" className="block text-sm font-medium text-gray-700">
-            ZIP / Postal code
-          </label>
-          <div className="mt-1">
-            <input
-              type="text"
-              name="postal-code"
-              id="postal-code"
-              autoComplete="postal-code"
-              className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-            />
-          </div>
+      <div className="pt-5">
+        <div className="flex justify-end">
+          <button
+            type="button"
+            className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            onClick={() => reset()}
+          >
+            Annulla modifiche
+          </button>
+          <button
+            type="submit"
+            className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+          >
+            Salva
+          </button>
         </div>
       </div>
-    </div>
-  </div>
-
-  <div className="pt-5">
-    <div className="flex justify-end">
-      <button
-        type="button"
-        className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-      >
-        Cancel
-      </button>
-      <button
-        type="submit"
-        className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-      >
-        Save
-      </button>
-    </div>
-  </div>
-</form>)
+    </form>
+  ) : (
+    <FourOFour title='Risorsa non trovata' description='Il contenuto che hai richiesto è stato rimosso oppure non esiste.' />
+  )
 }
 
 EditServizi.getLayout = function getLayout(page: ReactElement) {
-  return (
-    <SidebarLayout title="Servizi">
-      {page}
-    </SidebarLayout>
-  )
+  return <SidebarLayout title="Servizi">{page}</SidebarLayout>
 }
 
 export default EditServizi

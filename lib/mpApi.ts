@@ -30,7 +30,7 @@ export const mpApi = {
   },
   services: {
     routes: {
-      item: (id: number | 'new') => (id === 'new' ? `` : `/servizi/${id}`),
+      item: (id: number) => (id < 1 ? `` : `/servizi/${id}`),
       list: (pageIndex: number = 1, limit: number = 10) =>
         `/servizi?page=${pageIndex}&limit=${limit}`,
     },
@@ -46,6 +46,20 @@ export const mpApi = {
             }
           }),
         ),
+
+      item: async (id: number) => {
+        if(id < 1 ) {
+          return null;
+        }
+        return fetchJson(`/servizi/${id}`)
+      },
+      save: async (item: any) => {
+            return fetchJson(`/servizi/${item.id > 0 ? item.id : ''}`, {
+              method: item.id > 0 ? 'PUT': 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(item)
+            })
+        },
       delete: async (id: number) => {
         if (
           confirm(

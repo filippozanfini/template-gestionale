@@ -6,6 +6,9 @@ import fetchJson from '../lib/fetchJson'
 import '../styles/globals.css'
 import "../assets/fonts/inter/inter.css"
 import Router from 'next/router'
+import { store } from '../redux/store'
+import { Provider } from 'react-redux'
+
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode
@@ -32,5 +35,5 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
         }
       },
     }}
-  >{ getLayout(<Component {...pageProps} />)}</SWRConfig>)
+  ><Provider store={store}>{ getLayout(<Component {...pageProps} />)}</Provider></SWRConfig>)
 }

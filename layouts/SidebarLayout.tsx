@@ -107,7 +107,7 @@ function SidebarLayout({ title, children }: any) {
             id: item.id + '-add',
             label: 'Nuovo',
             icon: <DocumentAddIcon />,
-            path: '/' + item.id + '/edit',
+            path: '/' + item.id + '/new',
           })
         }
         if (item.category) {
@@ -161,7 +161,7 @@ function SidebarLayout({ title, children }: any) {
         {/* Sidebar starts */}
         <div
           className={
-            'fixed t-0 l-0 text-white bg-indigo-800 shadow h-screen flex flex-col justify-start transition-all ease-in-out duration-500'
+            'fixed t-0 l-0 text-white bg-primary-800 shadow h-screen flex flex-col justify-start transition-all ease-in-out duration-500'
           }
           style={{
             width: sidebar ? '240px' : '70px',
@@ -179,7 +179,7 @@ function SidebarLayout({ title, children }: any) {
           <div className="overflow-y-scroll grow">
             <NavigationMenu
               collapsed={!sidebar}
-              className="text-white bg-indigo-800"
+              className="text-white bg-primary-800"
               menu={sezioni}
               selected={current}
               onClick={(item: MenuItem) => {
@@ -210,12 +210,12 @@ function SidebarLayout({ title, children }: any) {
           <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white shadow">
             <div className="flex-1 px-4 flex items-center justify-between">
                 <div >
-                    <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
+                    <h1 className="text-2xl font-semibold text-gray-900"> <button onClick={() => { router.back()} }> {"<" } </button> {title}</h1>
                 </div>
               <div className="ml-4 flex items-center md:ml-6">
                 <button
                   type="button"
-                  className="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                 >
                   <span className="sr-only">View notifications</span>
                   <BellIcon className="h-6 w-6" aria-hidden="true" />
@@ -224,7 +224,7 @@ function SidebarLayout({ title, children }: any) {
                 {/* Profile dropdown */}
                 <Menu as="div" className="ml-3 relative">
                   <div>
-                    <Menu.Button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <Menu.Button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full"
