@@ -67,7 +67,7 @@ const EditServizi: NextPageWithLayout = () => {
       })
       .catch((reason: any) => {
         Object.keys(reason.data.errors).forEach((field: string) => {
-          setError(field, {
+          setError(field as ("id" | "nome" | "descrizione" | "costo" | "novita"), {
             type: 'custom',
             message: reason.data.errors[field],
           })
