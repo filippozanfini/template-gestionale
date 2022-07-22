@@ -10,6 +10,9 @@ import PriceInput from '../../components/PriceInput'
 import FormInput from '../../components/FormInput'
 import renderError from '../../lib/errorMessages'
 import FourOFour from '../../components/FourOFour'
+import { useAppDispatch } from '../../redux/hooks'
+import { push as pushAction, pop } from '../../redux/notificationsReducer'
+
 
 type Servizio = {
   id: number
@@ -30,6 +33,8 @@ const defaultValues: Servizio = {
 const EditServizi: NextPageWithLayout = () => {
   const { push,  query } = useRouter()
   const [item, setItem] = useState<Servizio | null>(defaultValues)
+
+  const dispatch = useAppDispatch()
 
   const {
     register,
@@ -62,7 +67,8 @@ const EditServizi: NextPageWithLayout = () => {
     mpApi.services.actions
       .save(formdata)
       .then((response: any) => {
-        alert(response.message)
+
+        dispatch(pushAction({ id: (new Date()).toISOString(), type: "success", title:"Salvataggio Risorsa", message: response.message, read:false, isAlert: true }))
         push("/servizi/edit?id=" + response.data.id);
       })
       .catch((reason: any) => {

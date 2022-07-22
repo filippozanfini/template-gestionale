@@ -37,14 +37,14 @@ export const mpApi = {
     actions: {
       listFetcher: (input: RequestInfo, init?: RequestInit) =>
         fetchJson(input, init).then((data: any) =>
-          data.map((item: any) => {
+          (data && data.content) ? data.content.map((item: any) => {
             return {
               title: item.nome,
               description: item.descrizione,
               id: item.id,
               category: item.costo + '€',
             }
-          }),
+          }) : [],
         ),
 
       item: async (id: number) => {
