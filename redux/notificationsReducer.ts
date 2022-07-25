@@ -1,11 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
+
+export type NotificationType = "info" | "warning" | "error" | "success";
 export interface NotificationItem {
     id: string,
-    type: "info" | "warning" | "error",
+    type: NotificationType,
     title: string,
     message: string,
+    isAlert: boolean,
     read: boolean,
   }
 
@@ -42,6 +45,6 @@ export const notificationsSlice = createSlice({
   },
 })
 
-export const { push, pop, remove } = notificationsSlice.actions
+export const { push, pop, remove, removeRead, markAsRead } = notificationsSlice.actions
 
 export default notificationsSlice.reducer

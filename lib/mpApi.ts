@@ -4,6 +4,7 @@ import Cookies from "./cookies";
 import fetchJson from "./fetchJson";
 
 export const mpApi = {
+<<<<<<< HEAD
 	user: {
 		routes: {
 			me: "/users/me",
@@ -112,6 +113,49 @@ export const useService = (id: number) => {
 	);
 	return { service, error };
 };
+=======
+  user: {
+    routes: {
+      me: '/users/me',
+    },
+    actions: {
+      login: async (username: string, password: string) => {
+        let data: any = await fetchJson('/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: username,
+            password: password,
+          }),
+        })
+        if (data?.token) {
+          Cookies.set('token', data?.token)
+        }
+        return {
+          ...data,
+        }
+      },
+    },
+  },
+  services: {
+    routes: {
+      item: (id: number) => (id < 1 ? `` : `/servizi/${id}`),
+      list: (pageIndex: number = 1, limit: number = 10) =>
+        `/servizi?page=${pageIndex}&limit=${limit}`,
+    },
+    actions: {
+      listFetcher: (input: RequestInfo, init?: RequestInit) =>
+        fetchJson(input, init).then((data: any) =>
+          (data && data.content) ? data.content.map((item: any) => {
+            return {
+              title: item.nome,
+              description: item.descrizione,
+              id: item.id,
+              category: item.costo + '€',
+            }
+          }) : [],
+        ),
+>>>>>>> dev
 
 export const useCustomers = (pageIndex: number) => {
 	const { data: customers, error } = useSWR(
