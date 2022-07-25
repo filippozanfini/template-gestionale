@@ -10,8 +10,8 @@ import PriceInput from '../../components/PriceInput'
 import FormInput from '../../components/FormInput'
 import renderError from '../../lib/errorMessages'
 import FourOFour from '../../components/FourOFour'
-import { push as pushAction, pop } from '../../redux/notificationsReducer'
-import { useAppDispatch } from '../../redux/store'
+import { alert } from '../../components/notifications/NotificationContainer'
+import { useNotify } from '../../components/notifications/NotificationsCenter'
 
 
 type Servizio = {
@@ -33,8 +33,8 @@ const defaultValues: Servizio = {
 const EditServizi: NextPageWithLayout = () => {
   const { push,  query } = useRouter()
   const [item, setItem] = useState<Servizio | null>(defaultValues)
+  const notify = useNotify();
 
-  const dispatch = useAppDispatch()
 
   const {
     register,
@@ -64,14 +64,15 @@ const EditServizi: NextPageWithLayout = () => {
   }
 
   const onSubmit: SubmitHandler<Servizio> = async (formdata: any) => {
+    notify({ id: (new Date()).toISOString(), type: "success", title:"Salvataggio Risorsa", message: "Prova", read:false, isAlert: false })
     mpApi.services.actions
       .save(formdata)
       .then((response: any) => {
-
-        dispatch(pushAction({ id: (new Date()).toISOString(), type: "success", title:"Salvataggio Risorsa", message: response.message, read:false, isAlert: true }))
+        alert({ id: (new Date()).toISOString(), type: "success", title:"Salvataggio Risorsa", message: response.message, read:false, isAlert: true })
         push("/servizi/edit?id=" + response.data.id);
       })
       .catch((reason: any) => {
+        alert({ id: (new Date()).toISOString(), type: "error", title:"Salvataggio Risorsa", message: reason.message, read:false, isAlert: true })
         Object.keys(reason.data.errors).forEach((field: string) => {
           setError(field as ("id" | "nome" | "descrizione" | "costo" | "novita"), {
             type: 'custom',

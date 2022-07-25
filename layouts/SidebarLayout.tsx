@@ -38,7 +38,7 @@ import {
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import NavigationMenu, { MenuItem } from "../components/NavigationMenu";
 import { useRouter } from "next/router";
-import Notifications from "../components/Notifications";
+import Notifications from "../components/notifications/NotificationsCenter";
 import { ArrowLeftIcon } from "@heroicons/react/solid";
 
 function SidebarLayout({ title, children }: any) {
