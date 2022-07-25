@@ -112,9 +112,3 @@ const NotificationsCenter = () => {
 }
 export default NotificationsCenter
 
-export function useNotify() {
-  const dispatch = useAppDispatch()
-  return (item:NotificationItem) => {
-        dispatch(addNotify(item));
-  }
-}

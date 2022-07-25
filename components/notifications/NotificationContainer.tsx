@@ -1,11 +1,7 @@
-import { ToastContainer, toast, ToastContent, ToastClassName } from 'react-toastify'
-import React, { Fragment, useEffect } from 'react'
+import { ToastContainer, toast} from 'react-toastify'
+import React from 'react'
 import 'react-toastify/dist/ReactToastify.css'
-import { useNotificationCenter } from 'react-toastify/addons/use-notification-center'
-import { BellIcon } from '@heroicons/react/outline'
-import { Menu, Transition } from '@headlessui/react'
-import { CheckCircleIcon, ColorSwatchIcon, XIcon } from '@heroicons/react/solid'
-import { RootState, useAppSelector } from '../../redux/store'
+import { CheckCircleIcon, XIcon } from '@heroicons/react/solid'
 import { NotificationItem } from '../../redux/notificationsReducer'
 
 const contextClass:any = {

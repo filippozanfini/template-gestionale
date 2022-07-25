@@ -10,8 +10,7 @@ import PriceInput from '../../components/PriceInput'
 import FormInput from '../../components/FormInput'
 import renderError from '../../lib/errorMessages'
 import FourOFour from '../../components/FourOFour'
-import { alert } from '../../components/notifications/NotificationContainer'
-import { useNotify } from '../../components/notifications/NotificationsCenter'
+import { useNotify, useAlert } from '../../components/notifications'
 
 
 type Servizio = {
@@ -34,6 +33,7 @@ const EditServizi: NextPageWithLayout = () => {
   const { push,  query } = useRouter()
   const [item, setItem] = useState<Servizio | null>(defaultValues)
   const notify = useNotify();
+  const alert = useAlert();
 
 
   const {
