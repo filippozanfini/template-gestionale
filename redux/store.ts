@@ -1,5 +1,5 @@
 import { configureStore} from '@reduxjs/toolkit'
-import notificationsReducer, {NotificationItem, push, pop, remove, removeRead, markAsRead } from './notificationsReducer'
+import notificationsReducer from '../components/notifications/redux/notificationsReducer'
 import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore } from 'redux-persist';
 import thunk from 'redux-thunk';

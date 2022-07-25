@@ -4,7 +4,7 @@ import { NotificationCenterItem, useNotificationCenter } from 'react-toastify/ad
 import { BellIcon } from '@heroicons/react/outline'
 import { Menu, Transition } from '@headlessui/react'
 import { RootState, useAppDispatch, useAppSelector } from '../../redux/store'
-import { NotificationItem, add as addNotify, remove as RemoveItem } from '../../redux/notificationsReducer'
+import { NotificationItem, add as addNotify, remove as RemoveItem } from './redux/notificationsReducer'
 import { InboxIcon } from '@heroicons/react/outline'
 import { XIcon } from '@heroicons/react/solid'
 

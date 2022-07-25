@@ -1,7 +1,7 @@
 import NotificationsCenter from "./NotificationsCenter"
 import NotificationsContainer, { alert } from "./NotificationContainer"
 import { useAppDispatch } from '../../redux/store'
-import { NotificationItem, add as addNotify} from '../../redux/notificationsReducer'
+import { NotificationItem, add as addNotify} from './redux/notificationsReducer'
 
 const Center = NotificationsCenter;
 const Container = NotificationsContainer;

@@ -2,7 +2,7 @@ import { ToastContainer, toast} from 'react-toastify'
 import React from 'react'
 import 'react-toastify/dist/ReactToastify.css'
 import { CheckCircleIcon, XIcon } from '@heroicons/react/solid'
-import { NotificationItem } from '../../redux/notificationsReducer'
+import { NotificationItem } from './redux/notificationsReducer'
 
 const contextClass:any = {
     success: {
