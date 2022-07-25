@@ -1,26 +1,24 @@
-import { addListener } from '@reduxjs/toolkit'
-import { ToastContainer, toast } from 'react-toastify'
+import { ToastContainer, toast, ToastContent } from 'react-toastify'
 import React, { Fragment, useEffect } from 'react'
-import { useAppDispatch } from '../redux/hooks'
-import { NotificationItem, push, remove as removeNotification } from '../redux/notificationsReducer'
 import 'react-toastify/dist/ReactToastify.css'
 import { useNotificationCenter } from 'react-toastify/addons/use-notification-center'
 import { BellIcon } from '@heroicons/react/outline'
 import { Menu, Transition } from '@headlessui/react'
 import { CheckCircleIcon, ColorSwatchIcon, XIcon } from '@heroicons/react/solid'
+import { startAppListening } from '../redux/store'
+import {push as PushAction, remove as removeNotification } from '../redux/notificationsReducer'
 
-const Notifications: React.FC = () => {
-  const { notifications, add, remove, unreadCount } = useNotificationCenter<
-    NotificationItem
-  >({
+
+const Notifications = () => {
+  const { notifications, add, remove, unreadCount } = useNotificationCenter({
     data: [],
     sort: (l, r) => l.createdAt - r.createdAt,
     filter: (item) => item.data?.isAlert === false,
   })
 
-  const dispatch = useAppDispatch()
 
-  const contextClass:any = {
+
+  const contextClass = {
     success: {
         sfondo: "bg-green-50",
         h1: "text-green-900",
@@ -58,7 +56,7 @@ const Notifications: React.FC = () => {
     }
   };
 
-  const Alert = ({ closeToast, toastProps }: { closeToast:any, toastProps:any }) =>{
+  const Alert = ({ closeToast, toastProps }) => {
 
     const colors = contextClass[toastProps.type] ?? contextClass["default"];
 
@@ -87,44 +85,57 @@ const Notifications: React.FC = () => {
     </div>
   }
 
+
+
+const onNewNotification = async ({ payload }) => {
+
+    if (payload.isAlert) {
+
+        const message = {
+            position: toast.POSITION.TOP_RIGHT,
+            data: payload,
+            hideProgressBar: true,
+            closeButton:false,
+            icon: false
+        } ;
+
+        switch( payload.type ){
+            case "info":
+                return toast.info(Alert, message);
+            case "warning" :
+                return toast.warning(Alert ,message);
+            case "error" :
+                return toast.error(Alert,message);
+            case  "success":
+                return toast.success(Alert,message);
+        }
+
+      } else {
+        add({
+          id: payload.id,
+          content: payload.message,
+          data: payload,
+        })
+      }
+
+
+  }
+
+
+
   useEffect(() => {
-    const unsubscribe = dispatch(
-      addListener({
-        actionCreator: push,
-        effect: async (action, listenerApi) => {
-          if (action.payload.isAlert) {
 
-            const message = {
-                position: toast.POSITION.TOP_RIGHT,
-                data: action.payload,
-                hideProgressBar: true,
-                closeButton:false,
-                icon: false
-            };
 
-            switch( action.payload.type ){
-                case "info":
-                    return toast.info(Alert,message);
-                case "warning" :
-                    return toast.warning(Alert,message);
-                case "error" :
-                    return toast.error(Alert,message);
-                case  "success":
-                    return toast.success(Alert,message);
-            }
 
-          } else {
-            add({
-              id: action.payload.id,
-              content: action.payload.message,
-              data: action.payload,
-            })
-          }
-        },
-      }),
-    )
+    const unsubscribe =
+        startAppListening({
+          actionCreator: PushAction,
+          effect: onNewNotification,
+        });
 
-    const unsubscribeToast = toast.onChange((payload: any) => {
+
+
+    const unsubscribeToast = toast.onChange((payload) => {
         switch (payload.status) {
           case "added":
             // new toast added
@@ -140,11 +151,11 @@ const Notifications: React.FC = () => {
 
 
     return () => { unsubscribe(); unsubscribeToast(); }
-  }, [dispatch])
+  }, [])
 
   return (
     <>
-      <ToastContainer  toastClassName={ ({ type }: any):string => contextClass[type as string || "default"].sfondo +
+      <ToastContainer  toastClassName={ ({ type }) => contextClass[type || "default"].sfondo +
         " rounded-md p-4 my-2"
       }
       bodyClassName={() => ""}

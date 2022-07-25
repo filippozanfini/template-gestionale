@@ -33,11 +33,13 @@ import {
   InboxIcon,
   MenuAlt2Icon,
   XIcon,
+  ChevronLeftIcon,
 } from "@heroicons/react/outline";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import NavigationMenu, { MenuItem } from "../components/NavigationMenu";
 import { useRouter } from "next/router";
 import Notifications from "../components/Notifications";
+import { ArrowLeftIcon } from "@heroicons/react/solid";
 
 function SidebarLayout({ title, children }: any) {
   const [sidebar, setSidebar] = useState(true);
@@ -232,7 +234,7 @@ function SidebarLayout({ title, children }: any) {
           <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white shadow">
             <div className="flex-1 px-4 flex items-center justify-between">
                 <div >
-                    <h1 className="text-2xl font-semibold text-gray-900"> <button onClick={() => { router.back()} }> {"<" } </button> {title}</h1>
+                    <h1 className="text-2xl font-semibold text-gray-900"> <button onClick={() => { router.back()} }> <ChevronLeftIcon className="w-5 h-5"/> </button> {title}</h1>
                 </div>
               <div className="ml-4 flex items-center md:ml-6">
               <Notifications />

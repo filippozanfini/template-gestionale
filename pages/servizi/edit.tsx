@@ -10,8 +10,8 @@ import PriceInput from '../../components/PriceInput'
 import FormInput from '../../components/FormInput'
 import renderError from '../../lib/errorMessages'
 import FourOFour from '../../components/FourOFour'
-import { useAppDispatch } from '../../redux/hooks'
 import { push as pushAction, pop } from '../../redux/notificationsReducer'
+import { useAppDispatch } from '../../redux/store'
 
 
 type Servizio = {
