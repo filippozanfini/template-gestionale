@@ -1,6 +1,8 @@
 import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from "@heroicons/react/solid";
-import React from "react";
+import React, { useEffect } from "react";
 import { ICustomer } from "../types/Customer";
+import DialogER from "./shared/DialogER/DialogER";
+import Pagination from "./shared/Pagination/Pagination";
 import { Table } from "./shared/Table/Table";
 import { HeadCell } from "./shared/Table/utils/interfaces/interface";
 
@@ -13,25 +15,26 @@ interface TableListProps {
 
 const TableList = ({ items, itemsHead: itemsHeader, onDeleteAction, onEditAction }: TableListProps) => {
   const [listItems, setListItems] = React.useState(items);
+  const [showDialog, setShowDialog] = React.useState(false);
+  const [currentItem, setCurrentItem] = React.useState<ICustomer>();
+
+  const handleModalTrashItem = (item: ICustomer) => {};
 
   const orderList = () => {
     const list = [...listItems.sort((a, b) => a.id - b.id)];
     setListItems(list);
   };
 
+  useEffect(() => {
+    setListItems(items);
+  }, [items]);
+
   return (
-    <div className="space-y-8 px-4 sm:px-6 lg:px-8">
+    <div className="space-y-8 ">
       <div className="sm:flex sm:items-center">
         <div className="flex-auto">
           <h1 className="text-xl font-semibold text-gray-900">Clienti</h1>
         </div>
-
-        <button
-          type="button"
-          className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
-        >
-          Aggiungi
-        </button>
       </div>
 
       <Table>
@@ -89,7 +92,7 @@ const TableList = ({ items, itemsHead: itemsHeader, onDeleteAction, onEditAction
                   <button
                     type="button"
                     className="text-sm font-medium text-red-400"
-                    onClick={() => onDeleteAction && onDeleteAction(item)}
+                    onClick={() => handleModalTrashItem(item)}
                   >
                     <TrashIcon className="h-9 w-9 transform p-2 text-gray-400/80 transition-all hover:scale-110 hover:text-red-400" />
                   </button>
@@ -99,6 +102,12 @@ const TableList = ({ items, itemsHead: itemsHeader, onDeleteAction, onEditAction
           ))}
         </Table.Body>
       </Table>
+
+      <DialogER title="Conferma eliminazione?" isOpen={showDialog} onClose={() => setShowDialog(false)}>
+        {/* <button onClick={() => onDeleteAction && onDeleteAction(item)}>
+          Conferma
+        </button> */}
+      </DialogER>
     </div>
   );
 };
