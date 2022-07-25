@@ -196,7 +196,7 @@ function SidebarLayout({ title, children }: any) {
               alt="Logo"
             />
           </div>
-          <div className="grow overflow-y-scroll">
+          <div className="grow overflow-y-auto">
             <NavigationMenu
               collapsed={!sidebar}
               className="bg-primary-800 text-white"
