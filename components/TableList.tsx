@@ -38,7 +38,8 @@ const TableList = ({ items, itemsHead: itemsHeader, onDeleteAction, onEditAction
         <Table.Header>
           <Table.Row>
             {itemsHeader.map((item, index) => (
-              <Table.Cell key={index} align={item.align} onClick={() => item.onClick && item.onClick()}>
+              // <Table.Cell key={index} align={item.align} onClick={() => item.onClick && item.onClick()}>
+              <Table.Cell key={index} align={item.align} onClick={() => orderList()}>
                 {item.title}
               </Table.Cell>
             ))}
