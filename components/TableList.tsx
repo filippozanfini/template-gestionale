@@ -1,7 +1,8 @@
 import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from "@heroicons/react/solid";
 import React, { useEffect } from "react";
 import { ICustomer } from "../types/Customer";
-import DialogER from "./shared/DialogER/DialogER";
+import Button from "./Button";
+import Dialog from "./shared/Dialog/Dialog";
 import Pagination from "./shared/Pagination/Pagination";
 import { Table } from "./shared/Table/Table";
 import { HeadCell } from "./shared/Table/utils/interfaces/interface";
@@ -16,14 +17,29 @@ interface TableListProps {
 const TableList = ({ items, itemsHead: itemsHeader, onDeleteAction, onEditAction }: TableListProps) => {
   const [listItems, setListItems] = React.useState(items);
   const [showDialog, setShowDialog] = React.useState(false);
-  const [currentItem, setCurrentItem] = React.useState<ICustomer>();
+  const [currentItem, setCurrentItem] = React.useState<ICustomer | null>();
 
-  const handleModalTrashItem = (item: ICustomer) => {};
-
-  const orderList = () => {
-    const list = [...listItems.sort((a, b) => a.id - b.id)];
-    setListItems(list);
+  const openModalTrashItem = (item: ICustomer) => {
+    setCurrentItem(item);
+    setShowDialog(true);
   };
+
+  const closeModalTrashItem = () => {
+    setShowDialog(false);
+    setTimeout(() => setCurrentItem(null), 200);
+  };
+
+  const confirmDeleteItem = () => {
+    if (onDeleteAction) {
+      onDeleteAction(currentItem);
+    }
+    closeModalTrashItem();
+  };
+
+  // const orderList = () => {
+  //   const list = [...listItems.sort((a, b) => a.id - b.id)];
+  //   setListItems(list);
+  // };
 
   useEffect(() => {
     setListItems(items);
@@ -31,18 +47,18 @@ const TableList = ({ items, itemsHead: itemsHeader, onDeleteAction, onEditAction
 
   return (
     <div className="space-y-8 ">
-      <div className="sm:flex sm:items-center">
-        <div className="flex-auto">
-          <h1 className="text-xl font-semibold text-gray-900">Clienti</h1>
-        </div>
-      </div>
-
       <Table>
         <Table.Header>
           <Table.Row>
             {itemsHeader.map((item, index) => (
               // <Table.Cell key={index} align={item.align} onClick={() => item.onClick && item.onClick()}>
-              <Table.Cell key={index} align={item.align} onClick={() => orderList()}>
+              <Table.Cell
+                key={index}
+                align={item.align}
+                onClick={() => {
+                  /* orderList() */
+                }}
+              >
                 {item.title}
               </Table.Cell>
             ))}
@@ -92,7 +108,7 @@ const TableList = ({ items, itemsHead: itemsHeader, onDeleteAction, onEditAction
                   <button
                     type="button"
                     className="text-sm font-medium text-red-400"
-                    onClick={() => handleModalTrashItem(item)}
+                    onClick={() => openModalTrashItem(item)}
                   >
                     <TrashIcon className="h-9 w-9 transform p-2 text-gray-400/80 transition-all hover:scale-110 hover:text-red-400" />
                   </button>
@@ -103,11 +119,27 @@ const TableList = ({ items, itemsHead: itemsHeader, onDeleteAction, onEditAction
         </Table.Body>
       </Table>
 
-      <DialogER title="Conferma eliminazione?" isOpen={showDialog} onClose={() => setShowDialog(false)}>
-        {/* <button onClick={() => onDeleteAction && onDeleteAction(item)}>
-          Conferma
-        </button> */}
-      </DialogER>
+      <Dialog
+        title={`Conferma eliminazione di ${currentItem?.nome} ${currentItem?.cognome}?`}
+        isOpen={showDialog}
+        onClose={() => closeModalTrashItem()}
+      >
+        <p className="mt-2 text-sm">L'azione non sarà reversibile.</p>
+        <div className="mt-6 flex gap-3">
+          <Button
+            title="Conferma"
+            aria=""
+            className="w-full bg-red-500 px-5 py-2 outline-none hover:bg-red-600"
+            onClick={() => confirmDeleteItem()}
+          />
+          <Button
+            title="Annulla"
+            aria=""
+            className="w-full bg-primary-500 px-5 py-2"
+            onClick={() => closeModalTrashItem()}
+          />
+        </div>
+      </Dialog>
     </div>
   );
 };

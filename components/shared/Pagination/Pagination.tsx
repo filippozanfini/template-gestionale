@@ -1,7 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
-import React from "react";
+import React, { useMemo } from "react";
 import ReactPaginate from "react-paginate";
-import ListBox from "../ListBoxER/ListBoxER";
+import ListBox from "../ListBox/ListBox";
 
 interface PaginationProps {
   totalPage: number;
@@ -32,12 +32,12 @@ const Pagination = ({
             <div className="mt-1 flex gap-4">
               <div className="flex items-center">
                 <span className="text-sm">
-                  Page {currentPage} of {totalPage}
+                  Pagina {currentPage} di {totalPage}
                 </span>
               </div>
 
               <div className="flex items-center">
-                <span className="text-sm">Total results {totalItems}</span>
+                <span className="text-sm">Risultati totali {totalItems}</span>
               </div>
             </div>
           ) : null}
@@ -47,7 +47,7 @@ const Pagination = ({
               listItems={numberOfItemsPerPageList}
               onChange={onNumberOfItemsChange}
               selected={numberOfItems}
-              selectedName={`Show ${String(numberOfItems)}`}
+              selectedName={`Mostra ${String(numberOfItems)}`}
             />
           ) : null}
         </div>

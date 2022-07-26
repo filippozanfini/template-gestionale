@@ -74,7 +74,8 @@ export const mpApi = {
 
   customers: {
     routes: {
-      list: (pageIndex: number = 1, limit: number) => `/users?page=${pageIndex}&limit=${limit}`,
+      list: (pageIndex: number = 1, limit: number, query: string) =>
+        `/users?page=${pageIndex}&limit=${limit}&query=${query}`,
     },
     actions: {
       listFetcher: (input: RequestInfo, init?: RequestInit) =>
@@ -86,16 +87,23 @@ export const mpApi = {
             }),
             totalItems: data.totalElements,
             totalPages: data.totalPages,
+            currentPage: data.number + 1,
           };
         }),
 
+      customer: async (id: string) => {
+        return fetchJson(`/users/${id}`);
+      },
+
       delete: async (id: number) => {
-        if (confirm("Si conferma la rimozione del servizio? L'azione non può essere annullata.")) {
-          let data: any = await fetchJson(`/users/${id}`, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-          });
-        }
+        await fetchJson(`/users/${id}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        });
+      },
+
+      autocomplete: async (query: string) => {
+        return fetchJson(`/users/autocomplete?query=${query}`);
       },
     },
   },
@@ -116,7 +124,10 @@ export const useService = (id: number) => {
   return { service, error };
 };
 
-export const useCustomers = (pageIndex: number, limit: number) => {
-  const { data, error } = useSWR(mpApi.customers.routes.list(pageIndex, limit), mpApi.customers.actions.listFetcher);
+export const useCustomers = (pageIndex: number, limit: number, query: string) => {
+  const { data, error } = useSWR(
+    mpApi.customers.routes.list(pageIndex, limit, query),
+    mpApi.customers.actions.listFetcher
+  );
   return { data, error };
 };

@@ -1,28 +1,28 @@
-import { Listbox, Transition } from "@headlessui/react";
+import { Listbox as ListBoxUI, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/outline";
 import React, { Fragment } from "react";
 
-interface ListBoxCustomProps {
+interface ListBoxProps {
   selected: any;
   onChange: (value: any) => void;
   selectedName: string;
   listItems: any[];
 }
 
-const ListBox = ({ listItems, onChange, selected, selectedName }: ListBoxCustomProps) => {
+const ListBox = ({ listItems, onChange, selected, selectedName }: ListBoxProps) => {
   return (
-    <Listbox value={selected} onChange={onChange}>
+    <ListBoxUI value={selected} onChange={onChange}>
       <div className="relative mt-1">
-        <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-300 sm:text-sm">
+        <ListBoxUI.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-300 sm:text-sm">
           <span className="block truncate">{selectedName}</span>
           <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
             <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
           </span>
-        </Listbox.Button>
+        </ListBoxUI.Button>
         <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
-          <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+          <ListBoxUI.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
             {listItems.map((item, index) => (
-              <Listbox.Option
+              <ListBoxUI.Option
                 key={item.id ?? index}
                 className={({ active }) =>
                   `relative cursor-default select-none py-2 pl-10 pr-4 ${
@@ -41,12 +41,12 @@ const ListBox = ({ listItems, onChange, selected, selectedName }: ListBoxCustomP
                     ) : null}
                   </>
                 )}
-              </Listbox.Option>
+              </ListBoxUI.Option>
             ))}
-          </Listbox.Options>
+          </ListBoxUI.Options>
         </Transition>
       </div>
-    </Listbox>
+    </ListBoxUI>
   );
 };
 
