@@ -26,7 +26,7 @@ const defaultValues: Customer = {
   ruoli: [],
 };
 
-const EditUsers: NextPageWithLayout = () => {
+const EditPreventivi: NextPageWithLayout = () => {
   const { push, query } = useRouter();
   const [item, setItem] = useState<Customer | null>(defaultValues);
   const notify = useNotify();
@@ -191,6 +191,16 @@ const EditUsers: NextPageWithLayout = () => {
 
             <FormInput
               className="sm:col-span-3"
+              {...register("indirizzo", { required: true })}
+              errorMessage={renderError(errors["indirizzo"])}
+              autoComplete="indirizzo"
+              aria="Modifica l'indirizzo"
+              label="Indirizzo"
+              defaultValue={item?.indirizzo ?? ""}
+            />
+
+            <FormInput
+              className="sm:col-span-3"
               {...register("lat", { required: true })}
               errorMessage={renderError(errors["lat"])}
               autoComplete="lat"
@@ -209,22 +219,12 @@ const EditUsers: NextPageWithLayout = () => {
               defaultValue={item?.lon ?? ""}
             />
 
-            <FormInput
-              className="sm:col-span-3"
-              {...register("indirizzo", { required: true })}
-              errorMessage={renderError(errors["indirizzo"])}
-              autoComplete="indirizzo"
-              aria="Modifica l'indirizzo"
-              label="Indirizzo"
-              defaultValue={item?.indirizzo ?? ""}
-            />
-
             <CheckboxInput
               className="sm:col-span-4"
               {...register("privacyAccettata")}
               aria="Inserisci novita"
               label="Privacy"
-              defaultChecked={Boolean(item?.privacyAccettata) || false}
+              defaultChecked={item?.privacyAccettata || false}
             />
           </div>
         </div>
@@ -252,7 +252,7 @@ const EditUsers: NextPageWithLayout = () => {
     <FourOFour title="Risorsa non trovata" description="Il contenuto che hai richiesto è stato rimosso oppure non esiste." />
   );
 };
-EditUsers.getLayout = function getLayout(page: ReactElement) {
-  return <SidebarLayout title="Clienti">{page}</SidebarLayout>;
+EditPreventivi.getLayout = function getLayout(page: ReactElement) {
+  return <SidebarLayout title="Preventivi">{page}</SidebarLayout>;
 };
-export default EditUsers;
+export default EditPreventivi;

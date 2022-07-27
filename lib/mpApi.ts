@@ -1,5 +1,6 @@
 import useSWR from "swr";
 import { Customer } from "../types/Customer";
+import { Preventivo } from "../types/Preventivo";
 import { User } from "../types/User";
 import Cookies from "./cookies";
 import fetchJson from "./fetchJson";
@@ -128,21 +129,28 @@ export const mpApi = {
 
   customers: {
     routes: {
-      list: (pageIndex: number = 1, limit: number, query: string) =>
-        `/users?page=${pageIndex}&limit=${limit}&query=${query}`,
+      list: (pageIndex: number = 1, limit: number, query: string) => `/users?page=${pageIndex}&limit=${limit}&query=${query}`,
     },
     actions: {
       listFetcher: (input: RequestInfo, init?: RequestInit) =>
         fetchJson(input, init).then((data: any) => {
-          console.log("data", data);
-          return {
-            customers: data.content.map((item: Customer) => {
-              return new Customer(item);
-            }),
-            totalItems: data.totalElements,
-            totalPages: data.totalPages,
-            currentPage: data.number + 1,
-          };
+          if (data && data.content) {
+            return {
+              content: data.content.map((item: Customer) => {
+                return new Customer(item);
+              }),
+              totalItems: data.totalElements,
+              totalPages: data.totalPages,
+              currentPage: data.number + 1,
+            };
+          } else {
+            return {
+              content: [],
+              totalItems: 0,
+              totalPages: 0,
+              currentPage: 0,
+            };
+          }
         }),
 
       customer: async (id: string) => {
@@ -165,6 +173,52 @@ export const mpApi = {
       },
     },
   },
+
+  preventivi: {
+    routes: {
+      list: (pageIndex: number = 1, limit: number) => `/preventivi?page=${pageIndex}&limit=${limit}`,
+      item: (id: number) => (id < 1 ? `` : `/preventivi/${id}`),
+    },
+    actions: {
+      listFetcher: (input: RequestInfo, init?: RequestInit) =>
+        fetchJson(input, init).then((data: any) => {
+          console.log("mpApi.preventivi.actions.listFetcher", data);
+          if (data && data.content) {
+            return {
+              content: data.content.map((item: Preventivo) => {
+                return new Preventivo(item);
+              }),
+              totalItems: data.totalElements,
+              totalPages: data.totalPages,
+              currentPage: data.number + 1,
+            };
+          } else {
+            return {
+              content: [],
+              totalItems: 0,
+              totalPages: 0,
+              currentPage: 0,
+            };
+          }
+        }),
+
+      item: async (id: number) => {
+        if (id < 1) {
+          return null;
+        }
+        return fetchJson(`/preventivi/${id}`);
+      },
+
+      delete: async (id: number) => {
+        if (confirm("Si conferma la rimozione del preventivo? L'azione non può essere annullata.")) {
+          let data: any = await fetchJson(`/preventivi/${id}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+      },
+    },
+  },
 };
 
 export const useUser = () => {
@@ -183,9 +237,16 @@ export const useService = (id: number) => {
 };
 
 export const useCustomers = (pageIndex: number, limit: number, query: string) => {
-  const { data, error } = useSWR(
-    mpApi.customers.routes.list(pageIndex, limit, query),
-    mpApi.customers.actions.listFetcher
-  );
+  const { data, error } = useSWR(mpApi.customers.routes.list(pageIndex, limit, query), mpApi.customers.actions.listFetcher);
+  return { data, error };
+};
+
+export const usePreventivi = (pageIndex: number, limit: number, query: string) => {
+  const { data, error } = useSWR(mpApi.preventivi.routes.list(pageIndex, limit), mpApi.preventivi.actions.listFetcher);
+  return { data, error };
+};
+
+export const usePackages = () => {
+  const { data, error } = useSWR(mpApi.packages.routes.list, mpApi.packages.actions.listFetcher);
   return { data, error };
 };
