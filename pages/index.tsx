@@ -5,14 +5,14 @@ import { ReactElement } from 'react';
 const Home: NextPageWithLayout = () => {
   return (
         <pre className="w-full h-full">
-              Ciao ciao
+              <h2>Dashboard</h2>
         </pre>
   )
 }
 
 Home.getLayout = function getLayout(page: ReactElement) {
   return (
-    <SidebarLayout title="questo pagina è l'indice">
+    <SidebarLayout title="Dashboard">
       {page}
     </SidebarLayout>
   )

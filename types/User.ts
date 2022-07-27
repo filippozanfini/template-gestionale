@@ -25,23 +25,27 @@ export class User {
   canCreate ( type: string ) {
     return this.roleIS(ADMIN_ROLE) || (this.data && this.abilities.has( type + "-create") );
   }
+
   canDelete ( type: string ) {
     return this.roleIS(ADMIN_ROLE) || (this.data && this.abilities.has( type + "-delete"));
   }
+
   canEdit ( type: string ) {
     return this.roleIS(ADMIN_ROLE) || (this.data && this.abilities.has( type + "-edit"));
   }
+
   canPublish( type: string ) {
     return this.roleIS(ADMIN_ROLE) || (this.data && this.abilities.has( type + "-publish"));
   }
+
   canWrite( type: string ) {
     return this.roleIS(ADMIN_ROLE) || (this.canCreate(type)  &&
     this.canDelete(type) &&
     this.canEdit(type) &&
     this.canPublish(type));
   }
+
   canRead( type: string ) {
     return this.roleIS(ADMIN_ROLE); // || (this.data && this.abilities.has( type + "-view"));
   }
-
 }
