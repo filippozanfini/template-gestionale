@@ -4,48 +4,48 @@ export class User {
   roles: Set<string>;
   abilities: Set<string>;
 
-  constructor( data: any ){
+  constructor(data: any) {
     this.data = data;
-    this.roles = new Set( data?.ruoli.map( (ruolo:any) => ruolo.nomeRuolo ) );
+    this.roles = new Set(data?.ruoli.map((ruolo: any) => ruolo.nomeRuolo));
     this.abilities = new Set();
   }
 
-  fullname () {
+  fullname() {
     return this.data?.nome + " " + this.data?.cognome;
   }
 
-  roleIS( role: string ){
+  roleIS(role: string) {
     return this.data && this.roles && this.roles.has(role);
   }
 
-  isLoggedIn () {
+  isLoggedIn() {
     return this.data && this.data?.id > 0;
   }
 
-  canCreate ( type: string ) {
-    return this.roleIS(ADMIN_ROLE) || (this.data && this.abilities.has( type + "-create") );
+  canCreate(type: string) {
+    return this.roleIS(ADMIN_ROLE) || (this.data && this.abilities.has(type + "-create"));
   }
 
-  canDelete ( type: string ) {
-    return this.roleIS(ADMIN_ROLE) || (this.data && this.abilities.has( type + "-delete"));
+  canDelete(type: string) {
+    return this.roleIS(ADMIN_ROLE) || (this.data && this.abilities.has(type + "-delete"));
   }
 
-  canEdit ( type: string ) {
-    return this.roleIS(ADMIN_ROLE) || (this.data && this.abilities.has( type + "-edit"));
+  canEdit(type: string) {
+    return this.roleIS(ADMIN_ROLE) || (this.data && this.abilities.has(type + "-edit"));
   }
 
-  canPublish( type: string ) {
-    return this.roleIS(ADMIN_ROLE) || (this.data && this.abilities.has( type + "-publish"));
+  canPublish(type: string) {
+    return this.roleIS(ADMIN_ROLE) || (this.data && this.abilities.has(type + "-publish"));
   }
 
-  canWrite( type: string ) {
-    return this.roleIS(ADMIN_ROLE) || (this.canCreate(type)  &&
-    this.canDelete(type) &&
-    this.canEdit(type) &&
-    this.canPublish(type));
+  canWrite(type: string) {
+    return (
+      this.roleIS(ADMIN_ROLE) ||
+      (this.canCreate(type) && this.canDelete(type) && this.canEdit(type) && this.canPublish(type))
+    );
   }
 
-  canRead( type: string ) {
+  canRead(type: string) {
     return this.roleIS(ADMIN_ROLE); // || (this.data && this.abilities.has( type + "-view"));
   }
 }
