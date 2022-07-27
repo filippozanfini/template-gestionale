@@ -156,8 +156,12 @@ export const mpApi = {
         });
       },
 
-      autocomplete: async (query: string) => {
-        return fetchJson(`/users/autocomplete?query=${query}`);
+      save: async (item: any) => {
+        return fetchJson(`/users/${item.id > 0 ? item.id : ""}`, {
+          method: item.id > 0 ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(item),
+        });
       },
     },
   },

@@ -90,7 +90,7 @@ function SidebarLayout({ title, children }: any) {
           open: false,
         },
         {
-          id: "user",
+          id: "users",
           label: "Clienti",
           icon: <UsersIcon />,
           open: false,

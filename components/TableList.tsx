@@ -1,15 +1,14 @@
 import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from "@heroicons/react/solid";
 import React, { useEffect } from "react";
-import { ICustomer } from "../types/Customer";
+import { Customer, ICustomer } from "../types/Customer";
 import Button from "./Button";
 import Dialog from "./shared/Dialog/Dialog";
-import Pagination from "./shared/Pagination/Pagination";
 import { Table } from "./shared/Table/Table";
 import { HeadCell } from "./shared/Table/utils/interfaces/interface";
 
 interface TableListProps {
   itemsHead: HeadCell[];
-  items: ICustomer[];
+  items: Customer[];
   onEditAction?: (item: any) => void;
   onDeleteAction?: (item: any) => void;
 }
@@ -17,9 +16,9 @@ interface TableListProps {
 const TableList = ({ items, itemsHead: itemsHeader, onDeleteAction, onEditAction }: TableListProps) => {
   const [listItems, setListItems] = React.useState(items);
   const [showDialog, setShowDialog] = React.useState(false);
-  const [currentItem, setCurrentItem] = React.useState<ICustomer | null>();
+  const [currentItem, setCurrentItem] = React.useState<Customer | null>();
 
-  const openModalTrashItem = (item: ICustomer) => {
+  const openModalTrashItem = (item: Customer) => {
     setCurrentItem(item);
     setShowDialog(true);
   };
@@ -70,7 +69,7 @@ const TableList = ({ items, itemsHead: itemsHeader, onDeleteAction, onEditAction
         </Table.Header>
 
         <Table.Body className="divide-y bg-white">
-          {listItems.map((item: ICustomer, index: number) => (
+          {listItems.map((item: Customer, index: number) => (
             <Table.Row key={item.id} className="hover:bg-slate-50">
               <Table.Cell title="ID">
                 <p className="text-sm font-semibold text-gray-900">{item.id}</p>

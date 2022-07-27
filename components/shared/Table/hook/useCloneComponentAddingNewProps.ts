@@ -16,6 +16,6 @@ export const useCloneComponentAddingNewProps = ({ component, ...props }: Compone
         }
         return child;
       }),
-    [component]
+    [component, props]
   );
 };

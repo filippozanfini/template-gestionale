@@ -1,7 +1,3 @@
-import React from "react";
+import NewUser from "./edit";
 
-const NewUsers = () => {
-  return <div>NewUsers</div>;
-};
-
-export default NewUsers;
+export default NewUser;
