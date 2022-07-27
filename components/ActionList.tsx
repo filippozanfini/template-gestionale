@@ -19,13 +19,13 @@ const ActionList = ({ items, onEditAction, onDeleteAction, ...otherProps }: Acti
       {items?.map((item: any) => (
         <li
           key={item.id}
-          className="group relative bg-white py-5 px-4 hover:bg-gray-50 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600"
+          className="group relative bg-white py-5 px-4 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-600 hover:bg-gray-50"
         >
           <div className="flex justify-between space-x-3">
             <div className="min-w-0 flex-1">
               <div className="block focus:outline-none">
-                <p className="text-sm font-medium text-gray-900 truncate">{item.title}</p>
-                <div className="text-sm opacity-0 duration-300 transition-all ease-in-out    group-hover:opacity-100">
+                <p className="truncate text-sm font-medium text-gray-900">{item.title}</p>
+                <div className="text-sm opacity-0 transition-all duration-300 ease-in-out    group-hover:opacity-100">
                   <button className="text-gray-400" type="button" onClick={() => onEditAction && onEditAction(item)}>
                     modifica
                   </button>

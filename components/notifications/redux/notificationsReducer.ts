@@ -25,26 +25,15 @@ export const notificationsSlice = createSlice({
   name: 'notifications',
   initialState,
   reducers: {
-    push: (state:Notification, action: PayloadAction<NotificationItem>) => {
+    add: (state:Notification, action: PayloadAction<NotificationItem>) => {
       state.items.push(action.payload)
     },
-    pop: (state:Notification) => {
-      state.items.pop();
-    },
     remove: (state:Notification, action: PayloadAction<NotificationItem>) => {
-       state.items = state.items.filter( ({id}) => id !== action.payload.id );
-    },
-    removeRead: (state:Notification) => {
-        state.items = state.items.filter( ({read}) => read===false );
-     },
-    markAsRead: (state:Notification, action: PayloadAction<NotificationItem>) => {
-        state.items = state.items.map( (item) => {
-             return {...item, read: item.id === action.payload.id }
-        } )
-     }
+       state.items = [...state.items].filter( ({id}) => id !== action.payload.id );
+    }
   },
 })
 
-export const { push, pop, remove, removeRead, markAsRead } = notificationsSlice.actions
+export const { add, remove} = notificationsSlice.actions
 
 export default notificationsSlice.reducer

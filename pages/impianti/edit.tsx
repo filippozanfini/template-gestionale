@@ -29,7 +29,7 @@ const defaultValues: Servizio = {
   novita: false,
 }
 
-const EditServizi: NextPageWithLayout = () => {
+const EditManutenzione: NextPageWithLayout = () => {
   const { push,  query } = useRouter()
   const [item, setItem] = useState<Servizio | null>(defaultValues)
   const notify = useNotify();
@@ -98,7 +98,7 @@ const EditServizi: NextPageWithLayout = () => {
         <div>
           <div>
             <h3 className="text-lg leading-6 font-medium text-gray-900">
-              {item?.id > 0 ? 'CODICE: ' + item.id : 'Nuovo Servizio'}
+              {item?.id > 0 ? 'CODICE: ' + item.id : 'Nuovo pacchetto manutenzione'}
             </h3>
             <div className="mt-1 text-sm text-gray-500"></div>
           </div>
@@ -167,8 +167,8 @@ const EditServizi: NextPageWithLayout = () => {
   )
 }
 
-EditServizi.getLayout = function getLayout(page: ReactElement) {
+EditManutenzione.getLayout = function getLayout(page: ReactElement) {
   return <SidebarLayout title="Servizi">{page}</SidebarLayout>
 }
 
-export default EditServizi
+export default EditManutenzione

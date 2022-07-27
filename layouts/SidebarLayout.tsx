@@ -33,11 +33,13 @@ import {
   InboxIcon,
   MenuAlt2Icon,
   XIcon,
+  ChevronLeftIcon,
 } from "@heroicons/react/outline";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import NavigationMenu, { MenuItem } from "../components/NavigationMenu";
 import { useRouter } from "next/router";
-import Notifications from "../components/Notifications";
+import Notifications from "../components/notifications/NotificationsCenter";
+import { ArrowLeftIcon } from "@heroicons/react/solid";
 
 function SidebarLayout({ title, children }: any) {
   const [sidebar, setSidebar] = useState(true);
@@ -63,8 +65,8 @@ function SidebarLayout({ title, children }: any) {
           open: false,
         },
         {
-          id: "manutenzione",
-          label: "Manutenzione",
+          id: "impianti",
+          label: "Impianti",
           icon: <TicketIcon />,
           children: [],
           category: 10,
@@ -87,7 +89,12 @@ function SidebarLayout({ title, children }: any) {
           icon: <StarIcon />,
           open: false,
         },
-        { id: "users", label: "Clienti", icon: <UsersIcon />, open: false },
+        {
+          id: "user",
+          label: "Clienti",
+          icon: <UsersIcon />,
+          open: false,
+        },
         {
           id: "preventivi",
           label: "Preventivi",
@@ -141,7 +148,7 @@ function SidebarLayout({ title, children }: any) {
     }
 
     setUserNavigation([
-      { name: "Profilo", href: "#" },
+      { name: "Profilo", href: "profile" },
       { name: "Impostazioni", href: "#" },
       { name: "Esci", href: "#" },
     ]);
@@ -196,7 +203,7 @@ function SidebarLayout({ title, children }: any) {
               alt="Logo"
             />
           </div>
-          <div className="grow overflow-y-auto">
+          <div className="grow overflow-y-scroll">
             <NavigationMenu
               collapsed={!sidebar}
               className="bg-primary-800 text-white"
@@ -233,7 +240,7 @@ function SidebarLayout({ title, children }: any) {
                     }}
                   >
                     {" "}
-                    {"<"}{" "}
+                    <ChevronLeftIcon className="h-5 w-5" />{" "}
                   </button>{" "}
                   {title}
                 </h1>

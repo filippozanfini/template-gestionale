@@ -9,6 +9,8 @@ import Router from "next/router";
 import { Provider } from "react-redux";
 import { persistor, store } from "../redux/store";
 import { PersistGate } from "redux-persist/integration/react";
+import NotificationsCenter from "../components/notifications/NotificationsCenter";
+import NotificationsContainer from "../components/notifications/NotificationContainer";
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -39,6 +41,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     >
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
+          <NotificationsContainer />
           {getLayout(<Component {...pageProps} />)}
         </PersistGate>
       </Provider>
