@@ -52,12 +52,6 @@ const IndiceUsers: NextPageWithLayout = () => {
 
   /* FILTER BY NAME */
   const [filterName, setFilterName] = useState("");
-  const [customerSelected, setCustomerSelected] = useState<{ id: string; nome: string; cognome: string }>();
-  const [listCustomersName, setListCustomersName] = useState<string[]>([]);
-
-  /* UTILS */
-  const [loadingListAutocomplete, setLoadingListAutocomplete] = useState(false);
-  const [loadingTableList, setLoadingTableList] = useState(false);
 
   const router = useRouter();
   const { mutate } = useSWRConfig();
@@ -76,25 +70,11 @@ const IndiceUsers: NextPageWithLayout = () => {
     }
   }, [data]);
 
-  useEffect(() => {
-    console.log("filterName", filterName);
-  }, [filterName]);
-
   return (
     <div className="space-y-8 px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
         <h1 className="text-xl font-semibold text-gray-900">Clienti</h1>
       </div>
-
-      {/* <Combobox
-        listItems={listCustomersName}
-        onSelectedChange={(customer: any) => setCustomerSelected(customer)}
-        onFilterChange={(customer: string) => setFilterName(customer)}
-        selectedName={customerSelected ? customerSelected?.nome + " " + customerSelected?.cognome : ""}
-        loading={loadingListAutocomplete}
-        selected={customerSelected?.nome}
-        placeholder="Cerca un cliente"
-      /> */}
 
       <div className="relative flex w-80 items-center justify-between gap-2 rounded-md bg-white  text-sm peer-focus:border-primary-600">
         <input

@@ -43,6 +43,10 @@ const TableList = ({ items, itemsHead: itemsHeader, onDeleteAction, onEditAction
 
   useEffect(() => {
     setListItems(items);
+
+    return () => {
+      setListItems([]);
+    };
   }, [items]);
 
   return (
@@ -124,19 +128,19 @@ const TableList = ({ items, itemsHead: itemsHeader, onDeleteAction, onEditAction
         isOpen={showDialog}
         onClose={() => closeModalTrashItem()}
       >
-        <p className="mt-2 text-sm">L'azione non sarà reversibile.</p>
+        <p className="mt-2 text-sm">L'azione sarà irreversibile.</p>
         <div className="mt-6 flex gap-3">
-          <Button
-            title="Conferma"
-            aria=""
-            className="w-full bg-red-500 px-5 py-2 outline-none hover:bg-red-600"
-            onClick={() => confirmDeleteItem()}
-          />
           <Button
             title="Annulla"
             aria=""
             className="w-full bg-primary-500 px-5 py-2"
             onClick={() => closeModalTrashItem()}
+          />
+          <Button
+            title="Conferma"
+            aria=""
+            className="w-full bg-red-500 px-5 py-2 outline-hidden outline-red-500 hover:bg-red-600"
+            onClick={() => confirmDeleteItem()}
           />
         </div>
       </Dialog>
