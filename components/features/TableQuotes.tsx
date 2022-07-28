@@ -56,7 +56,8 @@ const TableQuotes = ({ items, onDeleteAction, onEditAction }: TableListProps) =>
               <p className="text-xs text-gray-900 ">{item.costo}</p>
             </Table.Cell>
 
-            <Table.Cell align="center">{Object.keys(eQuoteStatus).indexOf(item.statoPreventivo)}</Table.Cell>
+            <Table.Cell align="center">{item.statoPreventivo}</Table.Cell>
+
             <Table.Cell align="center">
               <p className="text-xs text-gray-900 ">{item.dataScadenza.toString()}</p>
             </Table.Cell>

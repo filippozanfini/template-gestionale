@@ -1,5 +1,6 @@
 import React from "react";
 import { Package } from "../../models/Package";
+import IconBadge from "../core/IconBadge";
 import ActionEditDelete from "../shared/ActionEditDelete";
 import { Table } from "../shared/Table/Table";
 import { HeadCell } from "../shared/Table/utils/interfaces/interface";
@@ -55,7 +56,9 @@ const TablePackages = ({ items, onDeleteAction, onEditAction }: TableListProps) 
               <p className="text-xs text-gray-900 ">{item.costo}</p>
             </Table.Cell>
 
-            <Table.Cell align="center">{item.novita ? "true" : "false"}</Table.Cell>
+            <Table.Cell align="center">
+              <IconBadge checked={item.novita ?? false} />
+            </Table.Cell>
             <Table.Cell align="left">
               <p className="max-w-[120px] truncate text-xs text-gray-900">{item.descrizione}</p>
             </Table.Cell>

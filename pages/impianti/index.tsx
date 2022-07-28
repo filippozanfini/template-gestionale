@@ -2,26 +2,20 @@ import SidebarLayout from "../../layouts/SidebarLayout";
 import { NextPageWithLayout } from "../_app";
 import { ReactElement } from "react";
 import useSWR, { useSWRConfig } from "swr";
-import { mpApi } from "../../lib/mpApi";
+import { mpApi, useInstallations } from "../../lib/mpApi";
 import ActionList from "../../components/ActionList";
 import { useRouter } from "next/router";
+import IndexTableTemplate from "../../components/features/IndexTableTemplate/IndexTableTemplate";
+import TableInstallations from "../../components/features/TableInstallations";
 
 const IndiceImpianti: NextPageWithLayout = () => {
-  const router = useRouter();
-  const { mutate } = useSWRConfig();
-  const { data, error } = useSWR(
-    mpApi.installations.routes.list(),
-    mpApi.installations.actions.listFetcher
-  );
   return (
-    <ActionList
-      items={data}
-      onEditAction={(item) => router.push(`/impianti/edit?id=${item.id}`)}
-      onDeleteAction={(item) =>
-        mpApi.installations.actions
-          .delete(Number(item.id))
-          .finally(() => mutate(mpApi.packages.routes.list()))
-      }
+    <IndexTableTemplate
+      title="Impianti"
+      useFetch={useInstallations}
+      slugName="impianti"
+      mpApiAction={mpApi.installations}
+      Table={TableInstallations}
     />
   );
 };

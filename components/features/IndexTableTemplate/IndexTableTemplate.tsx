@@ -2,19 +2,21 @@ import { SearchIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useSWRConfig } from "swr";
+import { SlugName } from "../../../models/types/SlugName";
 import Pagination from "../../shared/Pagination/Pagination";
 
 interface IndexTableTemplateProps {
   Table: React.ComponentType<any>;
   useFetch: any;
   title: string;
-  slugName: string;
+  slugName: SlugName;
   mpApiAction: any;
+  isFilterable?: boolean;
 }
 
 const numberOfItemsPerPageList = [10, 20, 30, 40, 50];
 
-const IndexTableTemplate = ({ title, mpApiAction, Table, slugName, useFetch }: IndexTableTemplateProps) => {
+const IndexTableTemplate = ({ title, isFilterable = false, mpApiAction, Table, slugName, useFetch }: IndexTableTemplateProps) => {
   /* TABLE RECORDS */
   const [items, setItems] = useState<any>([]);
 
@@ -32,7 +34,7 @@ const IndexTableTemplate = ({ title, mpApiAction, Table, slugName, useFetch }: I
 
   const { data, error } = useFetch(pageIndex, itemsPerPage, filterName);
 
-  // console.log(`Data from mpApi ${slugName}`, data);
+  console.log(`Data from mpApi ${slugName}`, data);
 
   const handlePageChanged = (page: number) => {
     setPageIndex(page + 1);
@@ -52,15 +54,17 @@ const IndexTableTemplate = ({ title, mpApiAction, Table, slugName, useFetch }: I
         <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
       </div>
 
-      <div className="relative flex w-80 items-center justify-between gap-2 rounded-md bg-white  text-sm peer-focus:border-primary-600">
-        <input
-          className="peer w-full rounded-md border border-gray-300 bg-transparent py-1.5 pl-3 pr-9 outline-none focus:border-primary-600"
-          placeholder="Cerca un cliente"
-          value={filterName}
-          onChange={(e: any) => setFilterName(e.target.value)}
-        />
-        <SearchIcon className="absolute right-3 h-4 w-4 text-gray-500 peer-focus:text-primary-600" />
-      </div>
+      {isFilterable ? (
+        <div className="relative flex w-80 items-center justify-between gap-2 rounded-md bg-white  text-sm peer-focus:border-primary-600">
+          <input
+            className="peer w-full rounded-md border border-gray-300 bg-transparent py-1.5 pl-3 pr-9 outline-none focus:border-primary-600"
+            placeholder="Cerca un cliente"
+            value={filterName}
+            onChange={(e: any) => setFilterName(e.target.value)}
+          />
+          <SearchIcon className="absolute right-3 h-4 w-4 text-gray-500 peer-focus:text-primary-600" />
+        </div>
+      ) : null}
 
       {!items.length ? (
         <div className="h-60 w-full">

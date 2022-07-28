@@ -20,7 +20,7 @@ const defaultValues: Customer = {
   ruoli: [],
 };
 
-const EditClienti: NextPageWithLayout = () => {
+const EditUsers: NextPageWithLayout = () => {
   return (
     <EditPage<Customer> defaultValues={defaultValues} mpApiAction={mpApi.customers} slugName="clienti">
       {(item, register, renderError, errors) => {
@@ -131,7 +131,7 @@ const EditClienti: NextPageWithLayout = () => {
     </EditPage>
   );
 };
-EditClienti.getLayout = function getLayout(page: ReactElement) {
+EditUsers.getLayout = function getLayout(page: ReactElement) {
   return <SidebarLayout title="Clienti">{page}</SidebarLayout>;
 };
-export default EditClienti;
+export default EditUsers;

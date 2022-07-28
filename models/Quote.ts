@@ -1,11 +1,11 @@
 import { Customer, ICustomer } from "./Customer";
 
 export enum eQuoteStatus {
-  "inCorso" = "IN CORSO",
-  "accettato" = "ACCETTATO",
-  "nonAccettato" = "NON ACCETTATO",
-  "scaduto" = "SCADUTO",
-  "none" = "NONE",
+  inCorso = "IN CORSO",
+  accettato = "ACCETTATO",
+  nonAccettato = "NON ACCETTATO",
+  scaduto = "SCADUTO",
+  none = "NONE",
 }
 
 export interface IQuote {
@@ -17,12 +17,14 @@ export interface IQuote {
   statoPreventivo?: eQuoteStatus;
 }
 export class Quote implements IQuote {
+  [x: string]: any;
   id: number;
   dataScadenza: Date;
   utente: ICustomer;
   costo: number;
   descrizione: string;
   statoPreventivo: eQuoteStatus;
+  item: any;
 
   constructor(data: IQuote) {
     this.id = data.id ?? 0;

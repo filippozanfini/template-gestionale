@@ -1,3 +1,3 @@
-import NewUser from "./edit";
+import NewClienti from "./edit";
 
-export default NewUser;
+export default NewClienti;

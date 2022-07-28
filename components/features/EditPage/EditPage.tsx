@@ -3,6 +3,7 @@ import { useState, useEffect, ReactElement, FC } from "react";
 import { useForm, SubmitHandler, Path, UseFormRegister, FieldErrorsImpl, DeepRequired } from "react-hook-form";
 import renderError from "../../../lib/errorMessages";
 import { mpApi } from "../../../lib/mpApi";
+import { SlugName } from "../../../models/types/SlugName";
 import FourOFour from "../../FourOFour";
 import { useNotify, useAlert } from "../../notifications";
 
@@ -14,7 +15,7 @@ interface EditPageProps<T> {
     errors: FieldErrorsImpl<DeepRequired<any>>
   ) => JSX.Element | React.ReactNode;
   defaultValues: T;
-  slugName: string;
+  slugName: SlugName;
   mpApiAction: any;
 }
 
@@ -51,6 +52,8 @@ const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children }
   };
 
   const onSubmit: SubmitHandler<T> = async (formdata: T) => {
+    console.log("formdata", formdata);
+
     notify({
       id: new Date().toISOString(),
       type: "success",
@@ -59,9 +62,11 @@ const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children }
       read: false,
       isAlert: false,
     });
-    mpApi.customers.actions
+
+    mpApiAction.actions
       .save(formdata)
       .then((response: any) => {
+        console.log("response", response);
         alert({
           id: new Date().toISOString(),
           type: "success",
@@ -70,7 +75,8 @@ const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children }
           read: false,
           isAlert: true,
         });
-        push(`/${slugName}/edit/?id=` + response.id);
+        const tempItem = item as any;
+        push(`/${slugName}/edit/?id=` + (response.id | tempItem.id | 0));
       })
       .catch((reason: any) => {
         alert({

@@ -2,27 +2,15 @@ import SidebarLayout from "../../layouts/SidebarLayout";
 import { NextPageWithLayout } from "../_app";
 import { ReactElement } from "react";
 import useSWR, { useSWRConfig } from "swr";
-import { mpApi } from "../../lib/mpApi";
+import { mpApi, useService, useServices } from "../../lib/mpApi";
 import ActionList from "../../components/ActionList";
 import { useRouter } from "next/router";
+import TableServices from "../../components/features/TableServices";
+import IndexTableTemplate from "../../components/features/IndexTableTemplate/IndexTableTemplate";
 
 const IndiceServizi: NextPageWithLayout = () => {
-  const router = useRouter();
-  const { mutate } = useSWRConfig();
-  const { data, error } = useSWR(
-    mpApi.services.routes.list(),
-    mpApi.services.actions.listFetcher
-  );
   return (
-    <ActionList
-      items={data}
-      onEditAction={(item) => router.push(`/servizi/edit?id=${item.id}`)}
-      onDeleteAction={(item) =>
-        mpApi.services.actions
-          .delete(Number(item.id))
-          .finally(() => mutate(mpApi.services.routes.list()))
-      }
-    />
+    <IndexTableTemplate title="Servizi" useFetch={useServices} slugName="servizi" mpApiAction={mpApi.services} Table={TableServices} />
   );
 };
 

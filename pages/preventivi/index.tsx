@@ -7,7 +7,14 @@ import { NextPageWithLayout } from "../_app";
 
 const IndicePreventivi: NextPageWithLayout = () => {
   return (
-    <IndexTableTemplate title="Preventivi" useFetch={useQuotes} slugName="preventivi" mpApiAction={mpApi.quotes} Table={TableQuotes} />
+    <IndexTableTemplate
+      title="Preventivi"
+      useFetch={useQuotes}
+      slugName="preventivi"
+      mpApiAction={mpApi.quotes}
+      Table={TableQuotes}
+      isFilterable
+    />
   );
 };
 

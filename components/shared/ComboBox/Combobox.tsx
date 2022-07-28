@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { FC, Fragment, useState } from "react";
 import { Combobox as ComboboxUI, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/outline";
 
@@ -8,24 +8,26 @@ interface ComboboxProps {
   listItems: any[];
   loading?: boolean;
   placeholder?: string;
+  children?: (item: any, selected: boolean, active: boolean) => React.ReactNode;
   onFilterChange: (filter: string) => void;
   onSelectedChange: (value: any) => void;
 }
 
-const Combobox = ({
+const Combobox: FC<ComboboxProps> = ({
   listItems,
   loading,
   selected,
   placeholder,
   selectedName,
+  children,
   onSelectedChange,
   onFilterChange,
-}: ComboboxProps) => {
+}) => {
   return (
-    <div className="w-72">
+    <div className="z-50 w-full">
       <ComboboxUI value={selected} onChange={onSelectedChange}>
         <div className="relative mt-1">
-          <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-300 sm:text-sm">
+          <div className="relative block w-full overflow-hidden rounded-md border border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
             <ComboboxUI.Input
               className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
               displayValue={() => selectedName}
@@ -44,32 +46,34 @@ const Combobox = ({
                   <div className="text-gray-500">Loading...</div>
                 </div>
               ) : listItems.length === 0 ? (
-                <div className="relative cursor-default select-none py-2 px-4 text-gray-700">Nothing found.</div>
+                <div className="relative cursor-default select-none py-2 px-4 text-gray-700">Nessun risultato.</div>
               ) : (
                 listItems.map((item) => (
                   <ComboboxUI.Option
                     key={item.id}
                     className={({ active }) =>
-                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                        active ? "bg-primary-600 text-white" : "text-gray-900"
-                      }`
+                      `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? "bg-primary-600/40 text-white" : "text-gray-900"}`
                     }
                     value={item}
                   >
                     {({ selected, active }) => (
                       <>
-                        <span className={`block truncate ${selected ? "font-medium" : "font-normal"}`}>
-                          {item.nome + " " + item.cognome}
-                        </span>
-                        {selected ? (
-                          <span
-                            className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                              active ? "text-white" : "text-primary-600"
-                            }`}
-                          >
-                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                          </span>
-                        ) : null}
+                        {children ? (
+                          children(item, selected, active)
+                        ) : (
+                          <>
+                            <span className={`block truncate ${selected ? "font-medium" : "font-normal"}`}>
+                              {item.nome + " " + item.cognome}
+                            </span>
+                            {selected ? (
+                              <span
+                                className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? "text-white" : "text-primary-600"}`}
+                              >
+                                <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                              </span>
+                            ) : null}
+                          </>
+                        )}
                       </>
                     )}
                   </ComboboxUI.Option>
