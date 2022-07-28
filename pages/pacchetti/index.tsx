@@ -3,17 +3,11 @@ import { NextPageWithLayout } from "../_app";
 import { ReactElement } from "react";
 import { mpApi, usePackages } from "../../lib/mpApi";
 import IndexTableTemplate from "../../components/features/IndexTableTemplate/IndexTableTemplate";
-import TablePreventivi from "../../components/features/TablePreventivi";
+import TablePackages from "../../components/features/TablePackages";
 
 const IndicePacchetti: NextPageWithLayout = () => {
   return (
-    <IndexTableTemplate
-      title="Pacchetti"
-      useFetch={usePackages}
-      slugName="pacchetti"
-      mpApiAction={mpApi.preventivi}
-      Table={TablePreventivi}
-    />
+    <IndexTableTemplate title="Pacchetti" useFetch={usePackages} slugName="pacchetti" mpApiAction={mpApi.packages} Table={TablePackages} />
   );
 };
 

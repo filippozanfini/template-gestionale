@@ -1,7 +1,8 @@
 import useSWR from "swr";
-import { Customer } from "../types/Customer";
-import { Preventivo } from "../types/Preventivo";
-import { User } from "../types/User";
+import { Customer } from "../models/Customer";
+import { Package } from "../models/Package";
+import { Quote } from "../models/Quote";
+import { User } from "../models/User";
 import Cookies from "./cookies";
 import fetchJson from "./fetchJson";
 
@@ -73,6 +74,7 @@ export const mpApi = {
       },
     },
   },
+
   packages: {
     routes: {
       item: (id: number) => (id < 1 ? `` : `/pacchetti/${id}`),
@@ -81,18 +83,25 @@ export const mpApi = {
     itemFV: (id: number) => (id < 1 ? `` : `/pacchetti/fotovoltaico/${id}`),
     actions: {
       listFetcher: (input: RequestInfo, init?: RequestInit) =>
-        fetchJson(input, init).then((data: any) =>
-          data && data.content
-            ? data.content.map((item: any) => {
-                return {
-                  title: item.nome,
-                  description: item.descrizione,
-                  id: item.id,
-                  category: item.costo + "€",
-                };
-              })
-            : []
-        ),
+        fetchJson(input, init).then((data: any) => {
+          if (data && data.content) {
+            return {
+              content: data.content.map((item: Package) => {
+                return new Package(item);
+              }),
+              totalItems: data.totalElements,
+              totalPages: data.totalPages,
+              currentPage: data.number + 1,
+            };
+          } else {
+            return {
+              content: [],
+              totalItems: 0,
+              totalPages: 0,
+              currentPage: 0,
+            };
+          }
+        }),
 
       item: async (id: number) => {
         if (id < 1) {
@@ -117,12 +126,10 @@ export const mpApi = {
       },
 
       delete: async (id: number) => {
-        if (confirm("Si conferma la rimozione del pacchetto? L'azione non può essere annullata.")) {
-          let data: any = await fetchJson(`/pacchetti/${id}`, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-          });
-        }
+        let data: any = await fetchJson(`/pacchetti/${id}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        });
       },
     },
   },
@@ -153,7 +160,7 @@ export const mpApi = {
           }
         }),
 
-      customer: async (id: string) => {
+      item: async (id: string) => {
         return fetchJson(`/users/${id}`);
       },
 
@@ -174,7 +181,7 @@ export const mpApi = {
     },
   },
 
-  preventivi: {
+  quotes: {
     routes: {
       list: (pageIndex: number = 1, limit: number) => `/preventivi?page=${pageIndex}&limit=${limit}`,
       item: (id: number) => (id < 1 ? `` : `/preventivi/${id}`),
@@ -182,11 +189,10 @@ export const mpApi = {
     actions: {
       listFetcher: (input: RequestInfo, init?: RequestInit) =>
         fetchJson(input, init).then((data: any) => {
-          console.log("mpApi.preventivi.actions.listFetcher", data);
           if (data && data.content) {
             return {
-              content: data.content.map((item: Preventivo) => {
-                return new Preventivo(item);
+              content: data.content.map((item: Quote) => {
+                return new Quote(item);
               }),
               totalItems: data.totalElements,
               totalPages: data.totalPages,
@@ -241,8 +247,8 @@ export const useCustomers = (pageIndex: number, limit: number, query: string) =>
   return { data, error };
 };
 
-export const usePreventivi = (pageIndex: number, limit: number, query: string) => {
-  const { data, error } = useSWR(mpApi.preventivi.routes.list(pageIndex, limit), mpApi.preventivi.actions.listFetcher);
+export const useQuotes = (pageIndex: number, limit: number, query: string) => {
+  const { data, error } = useSWR(mpApi.quotes.routes.list(pageIndex, limit), mpApi.quotes.actions.listFetcher);
   return { data, error };
 };
 

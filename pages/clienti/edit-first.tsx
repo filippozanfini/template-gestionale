@@ -3,15 +3,13 @@ import { NextPageWithLayout } from "../_app";
 import { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { mpApi } from "../../lib/mpApi";
-import CheckboxInput from "../../components/Checkbox";
 import { useForm, SubmitHandler } from "react-hook-form";
-import Textarea from "../../components/TextArea";
-import PriceInput from "../../components/PriceInput";
 import FormInput from "../../components/FormInput";
 import renderError from "../../lib/errorMessages";
 import FourOFour from "../../components/FourOFour";
 import { useNotify, useAlert } from "../../components/notifications";
-import { Customer, ICustomer } from "../../types/Customer";
+import { Customer, ICustomer } from "../../models/Customer";
+import CheckboxInput from "../../components/core/Checkbox";
 
 const defaultValues: Customer = {
   id: 0,
@@ -46,7 +44,7 @@ const EditUsers: NextPageWithLayout = () => {
       return null;
     } else {
       return mpApi.customers.actions
-        .customer(String(ItemId))
+        .item(String(ItemId))
         .then((data: any) => {
           setItem(data);
           reset(data);
@@ -126,6 +124,10 @@ const EditUsers: NextPageWithLayout = () => {
       loadItem(ItemId);
     }
   }, [query]);
+
+  useEffect(() => {
+    console.log("item from EDIT", item);
+  }, [item]);
 
   return item ? (
     <form className="space-y-8 divide-y divide-gray-200" onSubmit={handleSubmit(onSubmit)}>

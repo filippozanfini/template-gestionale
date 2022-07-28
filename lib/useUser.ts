@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Router from "next/router";
-import { User } from "../types/User";
+import { User } from "../models/User";
 import useSWR, { mutate } from "swr";
 import { mpApi } from "./mpApi";
 import Cookies from "./cookies";
@@ -11,7 +11,6 @@ export default function useUser({ redirectTo = "", redirectIfFound = false } = {
   const [user, setUser] = useState<User>();
 
   useEffect(() => {
-    
     setUser(new User(userData));
 
     // if no redirect needed, just return (example: already on /dashboard)

@@ -1,6 +1,6 @@
 import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from "@heroicons/react/solid";
 import React, { FC, ReactNode, useEffect } from "react";
-import Button from "./Button";
+import Button from "./core/Button";
 import Dialog from "./shared/Dialog/Dialog";
 import Pagination from "./shared/Pagination/Pagination";
 import { useCloneComponentAddingNewProps } from "./shared/Table/hook/useCloneComponentAddingNewProps";
@@ -16,9 +16,10 @@ export interface TableListProps {
 }
 
 /**
+ * Component for body of table (cell) rendering
  *
  * @param children function - children of table body with
- * @returns
+ * @returns (listItems: any, openModalTrashItem: (item: any) => void) => JSX.Element | React.ReactNode
  */
 const TableList: FC<TableListProps> = ({ items, itemsHead, children, onDeleteAction }) => {
   const [listItems, setListItems] = React.useState(items);

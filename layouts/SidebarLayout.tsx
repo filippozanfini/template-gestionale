@@ -1,5 +1,5 @@
 import React, { useEffect, Fragment, useState } from "react";
-import Button from "../components/Button";
+import Button from "../components/core/Button";
 import Head from "next/head";
 import useUser from "../lib/useUser";
 import logo from "../app/logo-negativo.png";
@@ -195,13 +195,7 @@ function SidebarLayout({ title, children }: any) {
           }}
         >
           <div className="w-full bg-black/40 px-2 py-4 text-center drop-shadow-md">
-            <Image
-              className="block-inline mx-auto w-full"
-              src={logo}
-              layout="responsive"
-              objectFit="contain"
-              alt="Logo"
-            />
+            <Image className="block-inline mx-auto w-full" src={logo} layout="responsive" objectFit="contain" alt="Logo" />
           </div>
           <div className="grow overflow-y-auto">
             <NavigationMenu
@@ -218,9 +212,7 @@ function SidebarLayout({ title, children }: any) {
           </div>
           <div className="bottom-0 right-0 left-0 h-8 w-full grow-0 bg-black/40 py-2 text-center">
             <button className="mx-auto h-5 w-5" onClick={() => setSidebar(!sidebar)}>
-              <ChevronDoubleLeftIcon
-                className={`${!sidebar ? "rotate-180 transform" : ""} transition duration-500 ease-in-out`}
-              />
+              <ChevronDoubleLeftIcon className={`${!sidebar ? "rotate-180 transform" : ""} transition duration-500 ease-in-out`} />
             </button>
           </div>
         </div>
@@ -274,9 +266,7 @@ function SidebarLayout({ title, children }: any) {
                           {({ active }: { active: boolean }) => (
                             <a
                               href={item.href}
-                              className={[active ? "bg-gray-100" : "", "block px-4 py-2 text-sm text-gray-700"].join(
-                                " "
-                              )}
+                              className={[active ? "bg-gray-100" : "", "block px-4 py-2 text-sm text-gray-700"].join(" ")}
                             >
                               {item.name}
                             </a>

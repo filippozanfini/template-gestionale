@@ -1,8 +1,6 @@
-import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from "@heroicons/react/solid";
-import React, { useEffect } from "react";
-import { Preventivo, eStatoPreventivo, IPreventivo } from "../../types/Preventivo";
-import Button from "../Button";
-import Dialog from "../shared/Dialog/Dialog";
+import { PencilIcon, TrashIcon } from "@heroicons/react/solid";
+import React from "react";
+import { Quote, eQuoteStatus } from "../../models/Quote";
 import { Table } from "../shared/Table/Table";
 import { HeadCell } from "../shared/Table/utils/interfaces/interface";
 import TableList, { TableListProps } from "../TableList";
@@ -37,11 +35,11 @@ const itemsHeadTable: HeadCell[] = [
   },
 ];
 
-const TablePreventivi = ({ items, onDeleteAction, onEditAction }: TableListProps) => {
+const TableQuotes = ({ items, onDeleteAction, onEditAction }: TableListProps) => {
   return (
     <TableList items={items} itemsHead={itemsHeadTable} onDeleteAction={onDeleteAction}>
       {(listItems, openModalTrashItem) => {
-        return listItems?.map((item: Preventivo, index: number) => (
+        return listItems?.map((item: Quote, index: number) => (
           <Table.Row key={item.id} className="hover:bg-slate-50">
             <Table.Cell title="ID">
               <p className="text-sm font-semibold text-gray-900">{item.id}</p>
@@ -58,7 +56,7 @@ const TablePreventivi = ({ items, onDeleteAction, onEditAction }: TableListProps
               <p className="text-xs text-gray-900 ">{item.costo}</p>
             </Table.Cell>
 
-            <Table.Cell align="center">{Object.keys(eStatoPreventivo).indexOf(item.statoPreventivo)}</Table.Cell>
+            <Table.Cell align="center">{Object.keys(eQuoteStatus).indexOf(item.statoPreventivo)}</Table.Cell>
             <Table.Cell align="center">
               <p className="text-xs text-gray-900 ">{item.dataScadenza.toString()}</p>
             </Table.Cell>
@@ -83,4 +81,4 @@ const TablePreventivi = ({ items, onDeleteAction, onEditAction }: TableListProps
   );
 };
 
-export default TablePreventivi;
+export default TableQuotes;

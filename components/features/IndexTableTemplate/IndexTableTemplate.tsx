@@ -14,7 +14,7 @@ interface IndexTableTemplateProps {
 
 const numberOfItemsPerPageList = [10, 20, 30, 40, 50];
 
-const IndexTableTemplate = ({ title, mpApiAction, Table, slugName: slugNameForEdit, useFetch }: IndexTableTemplateProps) => {
+const IndexTableTemplate = ({ title, mpApiAction, Table, slugName, useFetch }: IndexTableTemplateProps) => {
   /* TABLE RECORDS */
   const [items, setItems] = useState<any>([]);
 
@@ -32,7 +32,7 @@ const IndexTableTemplate = ({ title, mpApiAction, Table, slugName: slugNameForEd
 
   const { data, error } = useFetch(pageIndex, itemsPerPage, filterName);
 
-  console.log("preventivo", data);
+  // console.log(`Data from mpApi ${slugName}`, data);
 
   const handlePageChanged = (page: number) => {
     setPageIndex(page + 1);
@@ -70,7 +70,7 @@ const IndexTableTemplate = ({ title, mpApiAction, Table, slugName: slugNameForEd
         <>
           <Table
             items={items}
-            onEditAction={(item: any) => router.push(`/${slugNameForEdit}/edit?id=${item.id}`)}
+            onEditAction={(item: any) => router.push(`/${slugName}/edit?id=${item.id}`)}
             onDeleteAction={(item: any) =>
               mpApiAction.actions
                 .delete(Number(item.id))
