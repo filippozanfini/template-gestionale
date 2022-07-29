@@ -1,8 +1,10 @@
 import { SearchIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import { Input } from "postcss";
+import React, { FC, useEffect, useState } from "react";
 import { useSWRConfig } from "swr";
 import { SlugName } from "../../../models/types/SlugName";
+import InputFilterSearch from "../../core/InputFilterSearch";
 import Pagination from "../../shared/Pagination/Pagination";
 
 interface IndexTableTemplateProps {
@@ -11,17 +13,28 @@ interface IndexTableTemplateProps {
   title: string;
   slugName: SlugName;
   mpApiAction: any;
-  isFilterable?: boolean;
+  isFilterableByUser?: boolean;
+  queryParams?: any;
+  children?: React.ReactNode;
 }
 
 const numberOfItemsPerPageList = [10, 20, 30, 40, 50];
 
-const IndexTableTemplate = ({ title, isFilterable = false, mpApiAction, Table, slugName, useFetch }: IndexTableTemplateProps) => {
+const IndexTableTemplate: FC<IndexTableTemplateProps> = ({
+  title,
+  isFilterableByUser = false,
+  mpApiAction,
+  Table,
+  slugName,
+  useFetch,
+  queryParams,
+  children,
+}) => {
   /* TABLE RECORDS */
   const [items, setItems] = useState<any>([]);
 
   /* PAGINATE */
-  const [pageIndex, setPageIndex] = useState(1);
+  const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(numberOfItemsPerPageList[0]);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -32,12 +45,12 @@ const IndexTableTemplate = ({ title, isFilterable = false, mpApiAction, Table, s
   const router = useRouter();
   const { mutate } = useSWRConfig();
 
-  const { data, error } = useFetch(pageIndex, itemsPerPage, filter);
+  const { data, error } = useFetch({ page, limit: itemsPerPage, query: filter, ...queryParams });
 
   // console.log(`Data from mpApi ${slugName}`, data);
 
   const handlePageChanged = (page: number) => {
-    setPageIndex(page + 1);
+    setPage(page + 1);
   };
 
   useEffect(() => {
@@ -54,17 +67,12 @@ const IndexTableTemplate = ({ title, isFilterable = false, mpApiAction, Table, s
         <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
       </div>
 
-      {isFilterable ? (
-        <div className="relative flex w-80 items-center justify-between gap-2 rounded-md bg-white  text-sm peer-focus:border-primary-600">
-          <input
-            className="peer w-full rounded-md border border-gray-300 bg-transparent py-1.5 pl-3 pr-9 outline-none focus:border-primary-600"
-            placeholder="Cerca un cliente"
-            value={filter}
-            onChange={(e: any) => setFilter(e.target.value)}
-          />
-          <SearchIcon className="absolute right-3 h-4 w-4 text-gray-500 peer-focus:text-primary-600" />
-        </div>
+      {isFilterableByUser ? (
+        <InputFilterSearch onChange={(e: any) => setFilter(e.target.value)} value={filter} placeholder="Filtra per Nome e Cognome" />
       ) : null}
+
+      {/* FOR OTHER FILTERS */}
+      {children}
 
       {!items.length ? (
         <div className="h-60 w-full">
@@ -76,12 +84,12 @@ const IndexTableTemplate = ({ title, isFilterable = false, mpApiAction, Table, s
             items={items}
             onEditAction={(item: any) => router.push(`/${slugName}/edit?id=${item.id}`)}
             onDeleteAction={(item: any) =>
-              mpApiAction.actions.delete(Number(item.id)).finally(() => mutate(mpApiAction.routes.list(pageIndex, itemsPerPage, filter)))
+              mpApiAction.actions.delete(Number(item.id)).finally(() => mutate(mpApiAction.routes.list(page, itemsPerPage, filter)))
             }
           />
 
           <Pagination
-            currentPage={pageIndex}
+            currentPage={page}
             numberOfItems={itemsPerPage}
             totalItems={totalItems}
             totalPage={totalPages}

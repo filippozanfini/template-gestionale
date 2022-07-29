@@ -13,7 +13,7 @@ const IndiceUsers: NextPageWithLayout = () => {
       slugName="collaboratori"
       mpApiAction={mpApi.collaborators}
       Table={TableCustomers}
-      isFilterable
+      isFilterableByUser
     />
   );
 };

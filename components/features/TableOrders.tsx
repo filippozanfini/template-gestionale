@@ -1,9 +1,8 @@
-import { useState } from "react";
-import { Customer, ICustomer } from "../../models/Customer";
-import { IInstallation } from "../../models/Installation";
+import { XCircleIcon } from "@heroicons/react/outline";
+import { useEffect, useState } from "react";
 import { eOrderStatus, IOrder, Order } from "../../models/Order";
 import ActionEdit from "../core/ActionEdit";
-import ActionEditDelete from "../shared/ActionEditDelete";
+import IconBadge from "../core/IconBadge";
 import ListBox from "../shared/ListBox/ListBox";
 import { Table } from "../shared/Table/Table";
 import { HeadCell } from "../shared/Table/utils/interfaces/interface";
@@ -26,7 +25,7 @@ const itemsHeadTable: HeadCell[] = [
     align: "left",
   },
   {
-    title: "Import",
+    title: "Importo",
     align: "left",
   },
   {
@@ -43,12 +42,10 @@ const listOrderStatus = Object.values(eOrderStatus);
 
 const TableOrders = ({ items, onDeleteAction, onEditAction }: TableListProps) => {
   const [order, setOrder] = useState<IOrder>({});
-  const [isEditing, setIsEditing] = useState<boolean>(false);
   const [orserStatus, setOrderStatus] = useState<eOrderStatus>(eOrderStatus.none);
 
   const handleActionEdit = (item: IOrder) => {
-    isEditing ? setOrder(item) : setOrder({});
-    setIsEditing(!isEditing);
+    Object.keys(order).length > 0 ? setOrder({}) : setOrder(item);
   };
 
   return (
@@ -84,7 +81,11 @@ const TableOrders = ({ items, onDeleteAction, onEditAction }: TableListProps) =>
             </Table.Cell>
 
             <Table.Cell align="right">
-              <ActionEdit onAction={() => handleActionEdit(item)} />
+              {Object.keys(order).length > 0 && item.id == order.id ? (
+                <XCircleIcon className="h-8 w-8 cursor-pointer p-1 pr-2 text-red-500" onClick={() => handleActionEdit(item)} />
+              ) : (
+                <ActionEdit onAction={() => handleActionEdit(item)} />
+              )}
             </Table.Cell>
           </Table.Row>
         ));

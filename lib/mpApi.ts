@@ -8,6 +8,7 @@ import { Service } from "../models/Service";
 import { User } from "../models/User";
 import Cookies from "./cookies";
 import fetchJson from "./fetchJson";
+import { PageLimitQuery, PageLimitQueryStatusOrder } from "./interfaces/Queries";
 
 export const mpApi = {
   user: {
@@ -37,7 +38,7 @@ export const mpApi = {
   services: {
     routes: {
       item: (id: number) => (id < 1 ? `` : `/servizi/${id}`),
-      list: (pageIndex: number = 1, limit: number = 10) => `/servizi?page=${pageIndex}&limit=${limit}`,
+      list: (page: number = 1, limit: number = 10) => `/servizi?page=${page}&limit=${limit}`,
     },
     actions: {
       listFetcher: (input: RequestInfo, init?: RequestInit) =>
@@ -86,7 +87,7 @@ export const mpApi = {
   packages: {
     routes: {
       item: (id: number) => (id < 1 ? `` : `/pacchetti/${id}`),
-      list: (pageIndex: number = 1, limit: number = 10) => `/pacchetti?page=${pageIndex}&limit=${limit}`,
+      list: (page: number = 1, limit: number = 10) => `/pacchetti?page=${page}&limit=${limit}`,
     },
     itemFV: (id: number) => (id < 1 ? `` : `/pacchetti/fotovoltaico/${id}`),
     actions: {
@@ -144,7 +145,7 @@ export const mpApi = {
 
   customers: {
     routes: {
-      list: (pageIndex: number = 1, limit: number, query: string) => `/users?page=${pageIndex}&limit=${limit}&query=${query}`,
+      list: (page: number = 1, limit: number, query: string) => `/users?page=${page}&limit=${limit}&query=${query}`,
     },
     actions: {
       listFetcher: (input: RequestInfo, init?: RequestInit) =>
@@ -191,15 +192,15 @@ export const mpApi = {
         });
       },
 
-      autocomplete: async (pageIndex: number = 1, limit: number, query: string) => {
-        return fetchJson(`/users?page=${pageIndex}&limit=${limit}&query=${query}`);
+      autocomplete: async (page: number = 1, limit: number, query: string) => {
+        return fetchJson(`/users?page=${page}&limit=${limit}&query=${query}`);
       },
     },
   },
 
   quotes: {
     routes: {
-      list: (pageIndex: number = 1, limit: number, query: string) => `/preventivi?page=${pageIndex}&limit=${limit}&query=${query}`,
+      list: (page: number = 1, limit: number, query: string) => `/preventivi?page=${page}&limit=${limit}&query=${query}`,
       item: (id: number) => (id < 1 ? `` : `/preventivi/${id}`),
     },
     actions: {
@@ -252,7 +253,7 @@ export const mpApi = {
 
   installations: {
     routes: {
-      list: (pageIndex: number = 1, limit: number, query: string) => `/impianti?page=${pageIndex}&limit=${limit}&query=${query}`,
+      list: (page: number = 1, limit: number, query: string) => `/impianti?page=${page}&limit=${limit}&query=${query}`,
       item: (id: number) => (id < 1 ? `` : `/impianti/${id}`),
     },
     actions: {
@@ -301,7 +302,7 @@ export const mpApi = {
 
   collaborators: {
     routes: {
-      list: (pageIndex: number = 1, limit: number, query: string) => `/users/ruoli/2?page=${pageIndex}&limit=${limit}&query=${query}`,
+      list: (page: number = 1, limit: number, query: string) => `/users/ruoli/2?page=${page}&limit=${limit}&query=${query}`,
       item: (id: number) => (id < 1 ? `` : `/users/${id}`),
     },
     actions: {
@@ -349,7 +350,8 @@ export const mpApi = {
 
   orders: {
     routes: {
-      list: (pageIndex: number = 1, limit: number, query: string) => `/ordini?page=${pageIndex}&limit=${limit}&orderBy=${query}`,
+      list: (page: number = 1, limit: number, query: string, status: string, orderBy: string) =>
+        `/ordini?page=${page}&limit=${limit}&query=${query}&orderBy=${orderBy}&stato=${status}`,
       item: (id: number) => (id < 1 ? `` : `/ordini/${id}`),
     },
     actions: {
@@ -411,32 +413,32 @@ export const useService = (id: number) => {
   return { data, error };
 };
 
-export const useCustomers = (pageIndex: number, limit: number, query: string) => {
-  const { data, error } = useSWR(mpApi.customers.routes.list(pageIndex, limit, query), mpApi.customers.actions.listFetcher);
+export const useCustomers = ({ page, limit, query }: PageLimitQuery) => {
+  const { data, error } = useSWR(mpApi.customers.routes.list(page, limit, query), mpApi.customers.actions.listFetcher);
   return { data, error };
 };
 
-export const useQuotes = (pageIndex: number, limit: number, query: string) => {
-  const { data, error } = useSWR(mpApi.quotes.routes.list(pageIndex, limit, query), mpApi.quotes.actions.listFetcher);
+export const useQuotes = ({ page, limit, query }: PageLimitQuery) => {
+  const { data, error } = useSWR(mpApi.quotes.routes.list(page, limit, query), mpApi.quotes.actions.listFetcher);
   return { data, error };
 };
 
-export const usePackages = () => {
-  const { data, error } = useSWR(mpApi.packages.routes.list, mpApi.packages.actions.listFetcher);
+export const usePackages = ({ page, limit }: PageLimitQuery) => {
+  const { data, error } = useSWR(mpApi.packages.routes.list(page, limit), mpApi.packages.actions.listFetcher);
   return { data, error };
 };
 
-export const useInstallations = (pageIndex: number, limit: number, query: string) => {
-  const { data, error } = useSWR(mpApi.installations.routes.list(pageIndex, limit, query), mpApi.installations.actions.listFetcher);
+export const useInstallations = ({ page, limit, query }: PageLimitQuery) => {
+  const { data, error } = useSWR(mpApi.installations.routes.list(page, limit, query), mpApi.installations.actions.listFetcher);
   return { data, error };
 };
 
-export const useCollaborators = (pageIndex: number, limit: number, query: string) => {
-  const { data, error } = useSWR(mpApi.collaborators.routes.list(pageIndex, limit, query), mpApi.collaborators.actions.listFetcher);
+export const useCollaborators = ({ page, limit, query }: PageLimitQuery) => {
+  const { data, error } = useSWR(mpApi.collaborators.routes.list(page, limit, query), mpApi.collaborators.actions.listFetcher);
   return { data, error };
 };
 
-export const useOrders = (pageIndex: number, limit: number, query: string) => {
-  const { data, error } = useSWR(mpApi.orders.routes.list(pageIndex, limit, query), mpApi.orders.actions.listFetcher);
+export const useOrders = ({ page, limit, query, status, orderBy }: PageLimitQueryStatusOrder) => {
+  const { data, error } = useSWR(mpApi.orders.routes.list(page, limit, query, status, orderBy), mpApi.orders.actions.listFetcher);
   return { data, error };
 };

@@ -13,7 +13,7 @@ const IndicePreventivi: NextPageWithLayout = () => {
       slugName="preventivi"
       mpApiAction={mpApi.quotes}
       Table={TableQuotes}
-      isFilterable
+      isFilterableByUser
     />
   );
 };

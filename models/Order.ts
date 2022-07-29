@@ -81,7 +81,25 @@ export class Order implements IOrder {
     if (typeof date === "string") {
       return date;
     }
-
     return date.toLocaleDateString("it-IT");
+  }
+
+  // return object with eorderstatus as key and value as string
+  static getOrderStatus() {
+    return {
+      vuoto: "Vuoto",
+      inCorso: "IN CORSO",
+      pagato: "PAGATO",
+      concluso: "CONCLUSO",
+      annullato: "ANNULLATO",
+    };
+  }
+
+  static getOrderBy() {
+    return {
+      vuoto: "Vuoto",
+      importo: "IMPORTO",
+      dataDiAcquisto: "DATA DI ACQUISTO",
+    };
   }
 }
