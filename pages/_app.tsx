@@ -28,6 +28,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
       value={{
         fetcher: fetchJson,
         onError: (err) => {
+          console.log("error", err);
           if (err.data.code === 403) {
             Router.push("/login");
             return;

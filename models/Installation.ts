@@ -7,14 +7,14 @@ export interface IInstallation {
   utente?: Customer;
   categoriaImpianto?: ICategory;
   dataInstallazione?: string;
-  pacchetti: Package[];
-  dirittoFissoDiChiamata: number;
-  tipologiaCircolazione: string;
-  marca: string;
-  tipoENumeroCollettori: string;
-  tipoELitriBollitore: string;
-  latitudine: string;
-  longitudine: string;
+  pacchetti?: Package[];
+  dirittoFissoDiChiamata?: number;
+  tipologiaCircolazione?: string;
+  marca?: string;
+  tipoENumeroCollettori?: string;
+  tipoELitriBollitore?: string;
+  latitudine?: string;
+  longitudine?: string;
 }
 
 export class Installation implements Installation {

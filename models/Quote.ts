@@ -9,7 +9,7 @@ export enum eQuoteStatus {
 }
 
 export interface IQuote {
-  id: number;
+  id?: number;
   dataScadenza?: Date;
   utente?: ICustomer;
   costo?: number;
@@ -43,6 +43,15 @@ export class Quote implements IQuote {
       costo: data.costo,
       descrizione: data.descrizione,
       statoPreventivo: data.statoPreventivo,
+    };
+  }
+
+  static factoryResponse(data: any): any {
+    const idUtente = data.id > 0 ? data?.utente?.id : data.idUtente;
+    return {
+      costo: data.costo,
+      idUtente: idUtente,
+      descrizione: data.descrizione,
     };
   }
 }

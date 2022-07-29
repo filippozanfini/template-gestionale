@@ -1,6 +1,7 @@
 import { PencilIcon, TrashIcon } from "@heroicons/react/solid";
 import React from "react";
 import { Quote, eQuoteStatus } from "../../models/Quote";
+import ActionEditDelete from "../shared/ActionEditDelete";
 import { Table } from "../shared/Table/Table";
 import { HeadCell } from "../shared/Table/utils/interfaces/interface";
 import TableList, { TableListProps } from "../TableList";
@@ -63,17 +64,7 @@ const TableQuotes = ({ items, onDeleteAction, onEditAction }: TableListProps) =>
             </Table.Cell>
 
             <Table.Cell align="right">
-              <div className="flex h-full gap-2">
-                <button type="button" className="text-sm font-medium text-gray-500" onClick={() => onEditAction && onEditAction(item)}>
-                  <PencilIcon className="h-9 w-9 transform p-2 text-gray-400/80 transition-all hover:scale-110 hover:text-yellow-400" />
-                </button>
-
-                <span className="my-auto h-6 w-[1px] bg-gray-400/80" />
-
-                <button type="button" className="text-sm font-medium text-red-400" onClick={() => openModalTrashItem(item)}>
-                  <TrashIcon className="h-9 w-9 transform p-2 text-gray-400/80 transition-all hover:scale-110 hover:text-red-400" />
-                </button>
-              </div>
+              <ActionEditDelete onDeleteAction={() => openModalTrashItem(item)} onEditAction={() => onEditAction && onEditAction(item)} />
             </Table.Cell>
           </Table.Row>
         ));

@@ -52,30 +52,11 @@ const Combobox: FC<ComboboxProps> = ({
                   <ComboboxUI.Option
                     key={item.id}
                     className={({ active }) =>
-                      `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? "bg-primary-600/40 text-white" : "text-gray-900"}`
+                      `relative cursor-pointer select-none py-2 pl-10 pr-4 ${active ? "bg-primary-400/80 text-white" : "text-gray-900"}`
                     }
                     value={item}
                   >
-                    {({ selected, active }) => (
-                      <>
-                        {children ? (
-                          children(item, selected, active)
-                        ) : (
-                          <>
-                            <span className={`block truncate ${selected ? "font-medium" : "font-normal"}`}>
-                              {item.nome + " " + item.cognome}
-                            </span>
-                            {selected ? (
-                              <span
-                                className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? "text-white" : "text-primary-600"}`}
-                              >
-                                <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                              </span>
-                            ) : null}
-                          </>
-                        )}
-                      </>
-                    )}
+                    {({ selected, active }) => <>{children && children(item, selected, active)}</>}
                   </ComboboxUI.Option>
                 ))
               )}

@@ -10,28 +10,26 @@ import { Customer } from "../../models/Customer";
 import Textarea from "../../components/TextArea";
 import Combobox from "../../components/shared/ComboBox/Combobox";
 import { CheckIcon } from "@heroicons/react/solid";
+import { eOrderStatus, IOrder } from "../../models/Order";
+import { Installation } from "../../models/Installation";
+import { Package } from "../../models/Package";
 
-const defaultValues: IQuote = {
+const defaultValues: IOrder = {
   id: 0,
-  costo: 0,
-  dataScadenza: new Date(),
-  descrizione: "",
-  statoPreventivo: eQuoteStatus.none,
-  utente: {
-    id: 0,
-    nome: "",
-    cognome: "",
-    email: "",
-    tel: "",
-    indirizzo: "",
-    lat: 0,
-    lon: 0,
-    privacyAccettata: false,
-    ruoli: [],
+  dataAcquisto: "",
+  idImpianto: 0,
+  importo: 0,
+  intervento: {
+    descrizione: "",
   },
+  pacchetto: new Package({}),
+  preventivo: new Quote({}),
+  stato: eOrderStatus.none,
+  utente: new Customer({}),
+  servizio: new Installation({}),
 };
 
-const EditPreventivi: NextPageWithLayout = () => {
+const EditOrdini: NextPageWithLayout = () => {
   /* ITEM */
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [listCustomers, setListCustomers] = useState<Customer[]>([]);
@@ -146,7 +144,7 @@ const EditPreventivi: NextPageWithLayout = () => {
     </EditPage>
   );
 };
-EditPreventivi.getLayout = function getLayout(page: ReactElement) {
+EditOrdini.getLayout = function getLayout(page: ReactElement) {
   return <SidebarLayout title="Preventivi">{page}</SidebarLayout>;
 };
-export default EditPreventivi;
+export default EditOrdini;

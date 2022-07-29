@@ -26,15 +26,15 @@ const IndexTableTemplate = ({ title, isFilterable = false, mpApiAction, Table, s
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  /* FILTER BY NAME */
-  const [filterName, setFilterName] = useState("");
+  /* FILTER */
+  const [filter, setFilter] = useState("");
 
   const router = useRouter();
   const { mutate } = useSWRConfig();
 
-  const { data, error } = useFetch(pageIndex, itemsPerPage, filterName);
+  const { data, error } = useFetch(pageIndex, itemsPerPage, filter);
 
-  console.log(`Data from mpApi ${slugName}`, data);
+  // console.log(`Data from mpApi ${slugName}`, data);
 
   const handlePageChanged = (page: number) => {
     setPageIndex(page + 1);
@@ -59,8 +59,8 @@ const IndexTableTemplate = ({ title, isFilterable = false, mpApiAction, Table, s
           <input
             className="peer w-full rounded-md border border-gray-300 bg-transparent py-1.5 pl-3 pr-9 outline-none focus:border-primary-600"
             placeholder="Cerca un cliente"
-            value={filterName}
-            onChange={(e: any) => setFilterName(e.target.value)}
+            value={filter}
+            onChange={(e: any) => setFilter(e.target.value)}
           />
           <SearchIcon className="absolute right-3 h-4 w-4 text-gray-500 peer-focus:text-primary-600" />
         </div>
@@ -76,9 +76,7 @@ const IndexTableTemplate = ({ title, isFilterable = false, mpApiAction, Table, s
             items={items}
             onEditAction={(item: any) => router.push(`/${slugName}/edit?id=${item.id}`)}
             onDeleteAction={(item: any) =>
-              mpApiAction.actions
-                .delete(Number(item.id))
-                .finally(() => mutate(mpApiAction.routes.list(pageIndex, itemsPerPage, filterName)))
+              mpApiAction.actions.delete(Number(item.id)).finally(() => mutate(mpApiAction.routes.list(pageIndex, itemsPerPage, filter)))
             }
           />
 

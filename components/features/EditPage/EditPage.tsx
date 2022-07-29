@@ -67,6 +67,7 @@ const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children }
       .save(formdata)
       .then((response: any) => {
         console.log("response", response);
+
         alert({
           id: new Date().toISOString(),
           type: "success",
@@ -76,7 +77,7 @@ const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children }
           isAlert: true,
         });
         const tempItem = item as any;
-        push(`/${slugName}/edit/?id=` + (response.id | tempItem.id | 0));
+        push(`/${slugName}/edit/?id=` + (response.id | response.data?.id | tempItem.id | 0));
       })
       .catch((reason: any) => {
         alert({

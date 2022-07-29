@@ -1,5 +1,6 @@
 export interface ICustomer {
   id?: number;
+  codiceFiscale?: string;
   nome?: string;
   cognome?: string;
   email?: string;
@@ -14,6 +15,7 @@ export interface ICustomer {
 
 export class Customer implements ICustomer {
   id: number;
+  codiceFiscale: string;
   nome: string;
   cognome: string;
   email: string;
@@ -26,6 +28,7 @@ export class Customer implements ICustomer {
 
   constructor(data: ICustomer) {
     this.id = data.id ?? 0;
+    this.codiceFiscale = data.codiceFiscale ?? "";
     this.nome = data.nome ?? "";
     this.cognome = data.cognome ?? "";
     this.email = data.email ?? "";
@@ -40,6 +43,7 @@ export class Customer implements ICustomer {
   static factory(data: Customer): ICustomer {
     return {
       id: data.id,
+      codiceFiscale: data.codiceFiscale,
       nome: data.nome,
       cognome: data.cognome,
       email: data.email,
@@ -50,5 +54,21 @@ export class Customer implements ICustomer {
       ruoli: data.ruoli,
       privacyAccettata: data.privacyAccettata,
     };
+  }
+
+  static factoryResponse(data: any): ICustomer {
+    const tempCustomer: any = {
+      id: data.id,
+      codiceFiscale: data.codiceFiscale,
+      nome: data.nome,
+    };
+
+    Object.keys(tempCustomer).forEach((key) => {
+      if (tempCustomer[key] == null || tempCustomer[key] == undefined) {
+        delete tempCustomer[key];
+      }
+    });
+
+    return tempCustomer;
   }
 }

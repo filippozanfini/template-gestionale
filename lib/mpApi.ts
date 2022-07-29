@@ -1,6 +1,7 @@
 import useSWR from "swr";
 import { Customer } from "../models/Customer";
 import { Installation } from "../models/Installation";
+import { Order } from "../models/Order";
 import { Package } from "../models/Package";
 import { Quote } from "../models/Quote";
 import { Service } from "../models/Service";
@@ -231,11 +232,7 @@ export const mpApi = {
       },
 
       save: async (item: any) => {
-        const itemMap = {
-          costo: item.costo,
-          idUtente: item.utente.id,
-          descrizione: item.descrizione,
-        };
+        const itemMap = Quote.factoryResponse(item);
 
         return fetchJson(`/preventivi/${item.id > 0 ? item.id : ""}`, {
           method: item.id > 0 ? "PUT" : "POST",
@@ -349,6 +346,54 @@ export const mpApi = {
       },
     },
   },
+
+  orders: {
+    routes: {
+      list: (pageIndex: number = 1, limit: number, query: string) => `/ordini?page=${pageIndex}&limit=${limit}&orderBy=${query}`,
+      item: (id: number) => (id < 1 ? `` : `/ordini/${id}`),
+    },
+    actions: {
+      listFetcher: (input: RequestInfo, init?: RequestInit) =>
+        fetchJson(input, init).then((data: any) => {
+          if (data && data.content) {
+            return {
+              content: data.content.map((item: Order) => {
+                return new Order(item);
+              }),
+              totalItems: data.totalElements,
+              totalPages: data.totalPages,
+              currentPage: data.number + 1,
+            };
+          }
+          return {
+            content: [],
+            totalItems: 0,
+            totalPages: 0,
+            currentPage: 0,
+          };
+        }),
+
+      item: async (id: number) => {
+        if (id < 1) {
+          return null;
+        }
+        return fetchJson(`/ordini/${id}`);
+      },
+      save: async (item: any) => {
+        return fetchJson(`/ordini/${item.id > 0 ? item.id : ""}`, {
+          method: item.id > 0 ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(item),
+        });
+      },
+      delete: async (id: number) => {
+        let data: any = await fetchJson(`/ordini/${id}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        });
+      },
+    },
+  },
 };
 
 export const useUser = () => {
@@ -388,5 +433,10 @@ export const useInstallations = (pageIndex: number, limit: number, query: string
 
 export const useCollaborators = (pageIndex: number, limit: number, query: string) => {
   const { data, error } = useSWR(mpApi.collaborators.routes.list(pageIndex, limit, query), mpApi.collaborators.actions.listFetcher);
+  return { data, error };
+};
+
+export const useOrders = (pageIndex: number, limit: number, query: string) => {
+  const { data, error } = useSWR(mpApi.orders.routes.list(pageIndex, limit, query), mpApi.orders.actions.listFetcher);
   return { data, error };
 };

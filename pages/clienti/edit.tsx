@@ -6,9 +6,11 @@ import EditPage from "../../components/features/EditPage/EditPage";
 import FormInput from "../../components/FormInput";
 import CheckboxInput from "../../components/core/Checkbox";
 import { mpApi } from "../../lib/mpApi";
+import FormPasswordInput from "../../components/Password";
 
 const defaultValues: Customer = {
   id: 0,
+  codiceFiscale: "",
   nome: "",
   cognome: "",
   email: "",
@@ -23,7 +25,7 @@ const defaultValues: Customer = {
 const EditClienti: NextPageWithLayout = () => {
   return (
     <EditPage<Customer> defaultValues={defaultValues} mpApiAction={mpApi.customers} slugName="clienti">
-      {(item, register, renderError, errors) => {
+      {(item: Customer, register, renderError, errors) => {
         console.log("item", item);
         return item ? (
           <div>
@@ -70,9 +72,31 @@ const EditClienti: NextPageWithLayout = () => {
                 autoComplete="email"
                 aria="Modifica l'Email"
                 label="Email"
-                defaultValue={item?.email ?? ""}
+                defaultValue={item?.codiceFiscale ?? ""}
                 type="email"
               />
+
+              <FormInput
+                className="sm:col-span-3"
+                {...register("codiceFiscale", { required: true })}
+                errorMessage={renderError(errors["codiceFiscale"])}
+                autoComplete="codiceFiscale"
+                aria="Modifica il Codice Fiscale"
+                label="Codice Fiscale"
+                defaultValue={item?.cognome ?? ""}
+              />
+
+              {item.id === 0 && (
+                <FormPasswordInput
+                  className="sm:col-span-3"
+                  {...register("password", { required: true })}
+                  autoComplete="password"
+                  aria="Modifica la password"
+                  label="Password"
+                  defaultValue={item?.email ?? ""}
+                  type="password"
+                />
+              )}
 
               <FormInput
                 className="sm:col-span-3"
