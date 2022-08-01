@@ -28,6 +28,6 @@ code:
 deploying:
   stage: deploy
   script:
-    - "sudo -u www-data pm2 restart energie-be --update-env"
+    - "sudo -u www-data pm2 restart --no-daemon energie-be --update-env"
   tags:
     - local_runner
