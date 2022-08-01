@@ -21,6 +21,7 @@ const defaultValues: Customer = {
   lat: 0,
   lon: 0,
   privacyAccettata: false,
+  codiceFiscale: "",
   ruoli: [],
 };
 

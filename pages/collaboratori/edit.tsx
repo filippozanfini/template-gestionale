@@ -14,6 +14,7 @@ const defaultValues: Customer = {
   email: "",
   tel: "",
   indirizzo: "",
+  codiceFiscale: "",
   lat: 0,
   lon: 0,
   privacyAccettata: false,

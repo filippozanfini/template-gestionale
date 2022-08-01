@@ -29,11 +29,11 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
         fetcher: fetchJson,
         onError: (err) => {
           console.log("error", err);
-          if (err.data.code === 403) {
+          if (err.data.code == 403) {
             Router.push("/login");
             return;
           }
-          if (err.data.code === 401) {
+          if (err.data.code == 401) {
             Router.push("/login");
             return;
           }

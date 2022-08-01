@@ -17,7 +17,7 @@ export interface IInstallation {
   longitudine?: string;
 }
 
-export class Installation implements Installation {
+export class Installation implements IInstallation {
   id: number;
   utente: Customer;
   categoriaImpianto: ICategory;

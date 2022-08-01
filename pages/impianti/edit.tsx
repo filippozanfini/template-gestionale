@@ -13,16 +13,11 @@ import FourOFour from "../../components/FourOFour";
 import { useNotify, useAlert } from "../../components/notifications";
 import { Installation } from "../../models/Installation";
 
-const defaultValues: Installation = {
-  id: 0,
-  nome: "",
-  descrizione: "",
-  costo: 0,
-  novita: false,
-};
+const defaultValues: Installation = new Installation({});
 
 const EditManutenzione: NextPageWithLayout = () => {
-  return item ? (
+  return <></>;
+  /*return item ? (
     <form className="space-y-8 divide-y divide-gray-200" onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-8 divide-y divide-gray-200">
         <div>
@@ -94,7 +89,7 @@ const EditManutenzione: NextPageWithLayout = () => {
     </form>
   ) : (
     <FourOFour title="Risorsa non trovata" description="Il contenuto che hai richiesto è stato rimosso oppure non esiste." />
-  );
+  ); */
 };
 
 EditManutenzione.getLayout = function getLayout(page: ReactElement) {

@@ -3,7 +3,7 @@ import { NextPageWithLayout } from "../_app";
 import { ReactElement } from "react";
 import useSWR, { useSWRConfig } from "swr";
 import { mpApi } from "../../lib/mpApi";
-import ActionList from "../../components/ActionList";
+import ActionList, { ActionListItem } from "../../components/ActionList";
 import { useRouter } from "next/router";
 
 const IndiceCategorieManutenzione: NextPageWithLayout = () => {
@@ -15,7 +15,7 @@ const IndiceCategorieManutenzione: NextPageWithLayout = () => {
   );
   return (
     <ActionList
-      items={data}
+      items={ data?.content as ActionListItem[] }
     />
   );
 };

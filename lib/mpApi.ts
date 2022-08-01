@@ -84,6 +84,55 @@ export const mpApi = {
     },
   },
 
+  manutenzione: {
+    routes: {
+      item: (id: number) => (id < 1 ? `` : `/pacchetti/${id}`),
+      list: (page: number = 1, limit: number = 10) => `/pacchetti?page=${page}&limit=${limit}`,
+    },
+    actions: {
+      listFetcher: (input: RequestInfo, init?: RequestInit) =>
+        fetchJson(input, init).then((data: any) => {
+          if (data && data.content) {
+            return {
+              content: data.content.map((item: Customer) => {
+                return new Service(item);
+              }),
+              totalItems: data.totalElements,
+              totalPages: data.totalPages,
+              currentPage: data.number + 1,
+            };
+          } else {
+            return {
+              content: [],
+              totalItems: 0,
+              totalPages: 0,
+              currentPage: 0,
+            };
+          }
+        }),
+
+      item: async (id: number) => {
+        if (id < 1) {
+          return null;
+        }
+        return fetchJson(`/pacchetti/${id}`);
+      },
+      save: async (item: any) => {
+        return fetchJson(`/pacchetti/${item.id > 0 ? item.id : ""}`, {
+          method: item.id > 0 ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(item),
+        });
+      },
+      delete: async (id: number) => {
+        let data: any = await fetchJson(`/pacchetti/${id}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        });
+      },
+    },
+  },
+
   packages: {
     routes: {
       item: (id: number) => (id < 1 ? `` : `/pacchetti/${id}`),
