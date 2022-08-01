@@ -10,6 +10,7 @@ import { Customer } from "../../models/Customer";
 import Textarea from "../../components/TextArea";
 import Combobox from "../../components/shared/ComboBox/Combobox";
 import { CheckIcon } from "@heroicons/react/solid";
+import moment from "moment";
 
 const defaultValues: IQuote = {
   id: 0,
@@ -63,6 +64,8 @@ const EditPreventivi: NextPageWithLayout = () => {
   return (
     <EditPage<IQuote> defaultValues={defaultValues} mpApiAction={mpApi.quotes} slugName="preventivi">
       {(item: Quote, register, renderError, errors) => {
+        console.log("ITEM", item);
+
         return item ? (
           <div>
             <div>
@@ -82,6 +85,41 @@ const EditPreventivi: NextPageWithLayout = () => {
                 )}
               </h3>
               <div className="mt-1 text-sm text-gray-500"></div>
+            </div>
+
+            <div className="mt-10 flex justify-between">
+              <FormInput
+                className="sm:col-span-6"
+                {...register("costo", { required: true })}
+                errorMessage={renderError(errors["costo"])}
+                autoComplete="costo"
+                aria="Modifica il Costo"
+                label="Costo"
+                defaultValue={item?.costo ?? ""}
+                type="number"
+              />
+              {item.id !== 0 && (
+                <FormInput
+                  className="sm:col-span-6"
+                  aria="Modifica il Costo"
+                  label="Stato Preventivo"
+                  value={item.statoPreventivo}
+                  type="text"
+                  name="stato"
+                  disabled
+                />
+              )}
+              {item.id !== 0 && (
+                <FormInput
+                  className="sm:col-span-6"
+                  aria="Modifica Data di Scadenza"
+                  label="Data di Scadenza"
+                  value={item.dataScadenza.toString()}
+                  type="text"
+                  name="data-di-scadenza"
+                  disabled
+                />
+              )}
             </div>
 
             <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
@@ -118,17 +156,6 @@ const EditPreventivi: NextPageWithLayout = () => {
               ) : null}
 
               {customer?.id && <input type="hidden" value={customer?.id} {...register("idUtente")} />}
-
-              <FormInput
-                className="sm:col-span-1"
-                {...register("costo", { required: true })}
-                errorMessage={renderError(errors["costo"])}
-                autoComplete="costo"
-                aria="Modifica il Costo"
-                label="Costo"
-                defaultValue={item?.costo ?? ""}
-                type="number"
-              />
 
               <Textarea
                 className="sm:col-span-6"

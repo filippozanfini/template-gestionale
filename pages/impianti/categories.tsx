@@ -9,15 +9,11 @@ import { useRouter } from "next/router";
 const IndiceCategorieManutenzione: NextPageWithLayout = () => {
   const router = useRouter();
   const { mutate } = useSWRConfig();
-  const { data, error } = useSWR(
-    mpApi.manutenzione.routes.list(),
-    mpApi.manutenzione.actions.listFetcher
-  );
-  return (
-    <ActionList
-      items={ data?.content as ActionListItem[] }
-    />
-  );
+  const { data, error } = useSWR(mpApi.manutenzione.routes.list(), mpApi.manutenzione.actions.listFetcher);
+
+  console.log("DATA", data);
+
+  return <ActionList items={data?.content as ActionListItem[]} />;
 };
 
 IndiceCategorieManutenzione.getLayout = function getLayout(page: ReactElement) {

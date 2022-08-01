@@ -24,7 +24,7 @@ const ActionList = ({ items, onEditAction, onDeleteAction, ...otherProps }: Acti
           <div className="flex justify-between space-x-3">
             <div className="min-w-0 flex-1">
               <div className="block focus:outline-none">
-                <p className="truncate text-sm font-medium text-gray-900">{item.title}</p>
+                <p className="truncate text-sm font-medium text-gray-900">{item.nome}</p>
                 <div className="text-sm opacity-0 transition-all duration-300 ease-in-out    group-hover:opacity-100">
                   <button className="text-gray-400" type="button" onClick={() => onEditAction && onEditAction(item)}>
                     modifica
@@ -39,7 +39,7 @@ const ActionList = ({ items, onEditAction, onDeleteAction, ...otherProps }: Acti
             <span className="flex-shrink-0 whitespace-nowrap text-sm text-gray-500">{item.category}</span>
           </div>
           <div className="mt-1">
-            <p className="line-clamp-2 text-sm text-gray-600">{item.description}</p>
+            <p className="line-clamp-2 text-sm text-gray-600">{item.descrizione}</p>
           </div>
         </li>
       ))}

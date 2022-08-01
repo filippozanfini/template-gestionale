@@ -76,6 +76,7 @@ function SidebarLayout({ title, children }: any) {
           label: "Pacchetti",
           icon: <OfficeBuildingIcon />,
           open: false,
+          category: 10,
         },
         {
           id: "ordini",

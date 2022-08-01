@@ -12,6 +12,7 @@ import FourOFour from "../../components/FourOFour";
 import { useNotify, useAlert } from "../../components/notifications";
 import CheckboxInput from "../../components/core/Checkbox";
 import { Package } from "../../models/Package";
+import ComboBox, { ComboBoxElement } from "../../components/ComboBox";
 
 const defaultValues: Package = {
   id: 0,
@@ -101,6 +102,14 @@ const EditPacchetti: NextPageWithLayout = () => {
     }
   }, [query]);
 
+  const categories: ComboBoxElement[] = [
+    { label: "1", value: 1 },
+    { label: "2", value: 2 },
+    { label: "3", value: 3 },
+  ];
+
+  console.log("ITEM", item);
+
   return item ? (
     <form className="space-y-8 divide-y divide-gray-200" onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-8 divide-y divide-gray-200">
@@ -114,7 +123,7 @@ const EditPacchetti: NextPageWithLayout = () => {
           <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
             <input type="hidden" value={item?.id} {...register("id")} />
             <FormInput
-              className="sm:col-span-3"
+              className="sm:col-span-2"
               {...register("nome", { required: true })}
               errorMessage={renderError(errors["nome"])}
               autoComplete="nome"
@@ -123,7 +132,7 @@ const EditPacchetti: NextPageWithLayout = () => {
               defaultValue={item?.nome ?? ""}
             />
             <PriceInput
-              className="sm:col-span-3"
+              className="sm:col-span-2"
               {...register("costo", {
                 required: true,
                 min: { value: 0.1, message: "Il valore minimo è 0.1€" },
@@ -134,6 +143,7 @@ const EditPacchetti: NextPageWithLayout = () => {
               label="Costo"
               defaultValue={item?.costo ?? ""}
             />
+            <ComboBox className="sm:col-span-2" aria="categoria" label="Categoria" elements={categories} name="categoria" />
             <Textarea
               className="sm:col-span-6"
               {...register("descrizione", { required: true })}
