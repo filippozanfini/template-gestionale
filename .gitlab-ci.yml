@@ -9,7 +9,6 @@ workflow:
 
 stages:
   - build
-  - deploy
 
 code:
   stage: build
@@ -18,15 +17,9 @@ code:
   script:
     - echo "Compiling the code..."
     - "cd /var/www/backend"
+    - "sudo -u www-data git fetch --all"
     - "sudo -u www-data git reset --hard 'origin/dev'"
-    - "sudo -u www-data yarn"
+    - "sudo -u www-data yarn install"
     - "sudo -u www-data yarn build"
-  tags:
-    - local_runner
-
-deploying:
-  stage: deploy
-  script:
-    - echo "sudo -u www-data pm2 restart energie-be --update-env"
   tags:
     - local_runner
