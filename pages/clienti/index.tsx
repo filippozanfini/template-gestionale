@@ -19,7 +19,7 @@ const IndiceClienti: NextPageWithLayout = () => {
 };
 
 IndiceClienti.getLayout = function getLayout(page: ReactElement) {
-  return <SidebarLayout title="Clienti">{page}</SidebarLayout>;
+  return <SidebarLayout title="Utenti">{page}</SidebarLayout>;
 };
 
 export default IndiceClienti;
