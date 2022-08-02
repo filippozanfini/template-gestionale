@@ -20,6 +20,8 @@ type ImpiantoSolareTermico = {
   dirittoFissoChiamata: string;
   tipoENumeroCollettori: string;
   tipoELitriBollitore: string;
+  longitudine: string;
+  latitudine: string;
 };
 
 const defaultValues: ImpiantoSolareTermico = {
@@ -29,6 +31,8 @@ const defaultValues: ImpiantoSolareTermico = {
   tipoENumeroCollettori: "",
   tipoELitriBollitore: "",
   dirittoFissoChiamata: "0",
+  longitudine: "",
+  latitudine: "",
 };
 
 const EditImpiantiSolareTermico: NextPageWithLayout = () => {
@@ -119,7 +123,15 @@ const EditImpiantiSolareTermico: NextPageWithLayout = () => {
         });
         Object.keys(reason.data.errors).forEach((field: string) => {
           setError(
-            field as "id" | "marca" | "tipoENumeroCollettori" | "tipoELitriBollitore" | "dataInstallazione" | "dirittoFissoChiamata",
+            field as
+              | "id"
+              | "marca"
+              | "tipoENumeroCollettori"
+              | "tipoELitriBollitore"
+              | "dataInstallazione"
+              | "dirittoFissoChiamata"
+              | "longitudine"
+              | "latitudine",
             {
               type: "custom",
               message: reason.data.errors[field],
@@ -206,6 +218,24 @@ const EditImpiantiSolareTermico: NextPageWithLayout = () => {
               label="Data di Installazione"
               defaultValue={item?.dataInstallazione ?? ""}
               type="date"
+            />
+            <FormInput
+              className="sm:col-span-3"
+              {...register("longitudine", { required: true })}
+              errorMessage={renderError(errors["longitudine"])}
+              autoComplete="longitudine"
+              aria="Inserisci la Longitudine"
+              label="Longitudine"
+              defaultValue={item?.longitudine ?? ""}
+            />
+            <FormInput
+              className="sm:col-span-3"
+              {...register("latitudine", { required: true })}
+              errorMessage={renderError(errors["latitudine"])}
+              autoComplete="latitudine"
+              aria="Inserisci la Latitudine"
+              label="Latitudine"
+              defaultValue={item?.latitudine ?? ""}
             />
             <FormInput
               className="sm:col-span-3"

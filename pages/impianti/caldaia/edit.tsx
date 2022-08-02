@@ -23,6 +23,8 @@ type ImpiantoCaldaia = {
   alimentazione: string;
   dataInstallazione: string;
   dirittoFissoChiamata: string;
+  longitudine: string;
+  latitudine: string;
 };
 
 const defaultValues: ImpiantoCaldaia = {
@@ -32,6 +34,8 @@ const defaultValues: ImpiantoCaldaia = {
   alimentazione: "",
   dataInstallazione: "",
   dirittoFissoChiamata: "0",
+  longitudine: "",
+  latitudine: "",
 };
 
 const EditImpiantiCaldaia: NextPageWithLayout = () => {
@@ -127,10 +131,21 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
           isAlert: true,
         });
         Object.keys(reason.data.errors).forEach((field: string) => {
-          setError(field as "id" | "marca" | "modello" | "alimentazione" | "dataInstallazione" | "dirittoFissoChiamata", {
-            type: "custom",
-            message: reason.data.errors[field],
-          });
+          setError(
+            field as
+              | "id"
+              | "marca"
+              | "modello"
+              | "alimentazione"
+              | "dataInstallazione"
+              | "dirittoFissoChiamata"
+              | "longitudine"
+              | "latitudine",
+            {
+              type: "custom",
+              message: reason.data.errors[field],
+            }
+          );
         });
       });
   };
@@ -193,6 +208,24 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
               aria="Inserisci il Modello"
               label="Modello"
               defaultValue={item?.modello ?? ""}
+            />
+            <FormInput
+              className="sm:col-span-3"
+              {...register("longitudine", { required: true })}
+              errorMessage={renderError(errors["longitudine"])}
+              autoComplete="longitudine"
+              aria="Inserisci la Longitudine"
+              label="Longitudine"
+              defaultValue={item?.longitudine ?? ""}
+            />
+            <FormInput
+              className="sm:col-span-3"
+              {...register("latitudine", { required: true })}
+              errorMessage={renderError(errors["latitudine"])}
+              autoComplete="latitudine"
+              aria="Inserisci la Latitudine"
+              label="Latitudine"
+              defaultValue={item?.latitudine ?? ""}
             />
             <ComboBox
               className="sm:col-span-3"

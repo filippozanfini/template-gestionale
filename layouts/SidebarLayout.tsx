@@ -113,12 +113,14 @@ function SidebarLayout({ title, children }: any) {
         ];
 
         if (user?.canWrite(item.id)) {
-          childrenMenu.push({
-            id: item.id + "-add",
-            label: "Nuovo",
-            icon: <DocumentAddIcon />,
-            path: "/" + item.id + "/new",
-          });
+          if (item.id !== "ordini") {
+            childrenMenu.push({
+              id: item.id + "-add",
+              label: "Nuovo",
+              icon: <DocumentAddIcon />,
+              path: "/" + item.id + "/new",
+            });
+          }
         }
         if (item.category) {
           childrenMenu.push({
