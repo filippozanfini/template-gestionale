@@ -29,7 +29,7 @@ export const mpApi = {
           Cookies.set("token", data?.token);
         }
         return {
-          ...data,
+          ...data.utente || {},
         };
       },
     },

@@ -5,6 +5,7 @@ import { useState } from "react";
 import logo from "../app/logo.png";
 import Button from "../components/core/Button";
 import Input from "../components/FormInput";
+import { useAlert } from "../components/notifications";
 import FormPasswordInput from "../components/Password";
 import fetchJson, { FetchError } from "../lib/fetchJson";
 import { mpApi } from "../lib/mpApi";
@@ -17,7 +18,7 @@ const Login: NextPage = () => {
     redirectIfFound: true,
   });
 
-  const [errorMsg, setErrorMsg] = useState("");
+   const alert = useAlert();
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
@@ -26,9 +27,24 @@ const Login: NextPage = () => {
       mutateUser((await mpApi.user.actions.login(event.currentTarget.username.value, event.currentTarget.password.value)) as User);
     } catch (error) {
       if (error instanceof FetchError) {
-        setErrorMsg(error.data.message);
+        alert({
+          id: "err-"+ (Math.random() * 1000000),
+          type: "error",
+          title: "Errore nel login",
+          message: error.data.message,
+          isAlert: true,
+          read: false
+        });
       } else {
-        console.error("An unexpected error happened:", error);
+        const err = error as Error;
+        alert({
+          id: "err-"+ (Math.random() * 1000000),
+          type: "error",
+          title: err.name,
+          message: err.message,
+          isAlert: true,
+          read: false
+        });
       }
     }
   };

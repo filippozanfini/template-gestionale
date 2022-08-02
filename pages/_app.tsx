@@ -11,6 +11,7 @@ import { persistor, store } from "../redux/store";
 import { PersistGate } from "redux-persist/integration/react";
 import NotificationsCenter from "../components/notifications/NotificationsCenter";
 import NotificationsContainer from "../components/notifications/NotificationContainer";
+import { useAlert } from "../components/notifications";
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -23,12 +24,13 @@ export type AppPropsWithLayout = AppProps & {
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page);
+  const alert = useAlert();
   return (
     <SWRConfig
       value={{
         fetcher: fetchJson,
         onError: (err) => {
-          console.log("error", err);
+
           if (err.data.code == 403) {
             Router.push("/login");
             return;
@@ -37,6 +39,16 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
             Router.push("/login");
             return;
           }
+
+          alert({
+            id: "err-"+ (Math.random() * 1000000),
+            type: "error",
+            title: "Errore",
+            message: err.message,
+            isAlert: true,
+            read: false
+          });
+
         },
       }}
     >
