@@ -16,27 +16,31 @@ import Combobox from "../../../components/shared/ComboBox/Combobox";
 import { CheckIcon } from "@heroicons/react/solid";
 import ComboBox, { ComboBoxElement } from "../../../components/ComboBox";
 
-type ImpiantoCaldaia = {
+type ImpiantoFotovoltaico = {
   id: number;
-  marca: string;
-  modello: string;
-  alimentazione: string;
-  dataInstallazione: string;
+  potenza: string;
+  tensione: string;
+  moduloFv: string;
+  numeroModuli: string;
+  inverter: string;
+  dataAllaccio: string;
   dirittoFissoChiamata: string;
 };
 
-const defaultValues: ImpiantoCaldaia = {
+const defaultValues: ImpiantoFotovoltaico = {
   id: 0,
-  marca: "",
-  modello: "",
-  alimentazione: "",
-  dataInstallazione: "",
+  potenza: "",
+  tensione: "",
+  moduloFv: "",
+  numeroModuli: "",
+  inverter: "",
+  dataAllaccio: "",
   dirittoFissoChiamata: "0",
 };
 
-const EditImpiantiCaldaia: NextPageWithLayout = () => {
+const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
   const { push, query } = useRouter();
-  const [item, setItem] = useState<ImpiantoCaldaia | null>(defaultValues);
+  const [item, setItem] = useState<ImpiantoFotovoltaico | null>(defaultValues);
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [listCustomers, setListCustomers] = useState<Customer[]>([]);
   /* FILTER */
@@ -44,12 +48,6 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
 
   /* UTILS */
   const [loading, setLoading] = useState<boolean>(false);
-
-  const powerType: ComboBoxElement[] = [
-    { label: "Metano", value: 0 },
-    { label: "Gas", value: 1 },
-  ];
-  const [powerTypeSelected, setPowerTypeSelected] = useState("");
 
   const [autoComputation, setAutoComputation] = useState(true);
 
@@ -75,7 +73,7 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
     reset,
     setError,
     formState: { errors },
-  } = useForm<ImpiantoCaldaia>();
+  } = useForm<ImpiantoFotovoltaico>();
 
   const loadItem = async (ItemId: number) => {
     if (ItemId === 0) {
@@ -95,7 +93,7 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
     }
   };
 
-  const onSubmit: SubmitHandler<ImpiantoCaldaia> = async (formdata: any) => {
+  const onSubmit: SubmitHandler<ImpiantoFotovoltaico> = async (formdata: any) => {
     notify({
       id: new Date().toISOString(),
       type: "success",
@@ -127,10 +125,13 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
           isAlert: true,
         });
         Object.keys(reason.data.errors).forEach((field: string) => {
-          setError(field as "id" | "marca" | "modello" | "alimentazione" | "dataInstallazione" | "dirittoFissoChiamata", {
-            type: "custom",
-            message: reason.data.errors[field],
-          });
+          setError(
+            field as "id" | "potenza" | "tensione" | "moduloFv" | "numeroModuli" | "inverter" | "dataAllaccio" | "dirittoFissoChiamata",
+            {
+              type: "custom",
+              message: reason.data.errors[field],
+            }
+          );
         });
       });
   };
@@ -178,40 +179,58 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
             </div>
             <FormInput
               className="sm:col-span-3"
-              {...register("marca", { required: true })}
-              errorMessage={renderError(errors["marca"])}
-              autoComplete="marca"
-              aria="Inserisci la Marca"
-              label="Marca"
-              defaultValue={item?.marca ?? ""}
+              {...register("potenza", { required: true })}
+              errorMessage={renderError(errors["potenza"])}
+              autoComplete="potenza"
+              aria="Inserisci la Potenza"
+              label="Potenza"
+              defaultValue={item?.potenza ?? ""}
             />
             <FormInput
               className="sm:col-span-3"
-              {...register("modello", { required: true })}
-              errorMessage={renderError(errors["modello"])}
+              {...register("tensione", { required: true })}
+              errorMessage={renderError(errors["tensione"])}
               autoComplete="modello"
-              aria="Inserisci il Modello"
-              label="Modello"
-              defaultValue={item?.modello ?? ""}
-            />
-            <ComboBox
-              className="sm:col-span-3"
-              aria="Seleziona Alimentazione"
-              label="Alimentazione"
-              value={powerTypeSelected}
-              elements={powerType}
-              name="Alimentazione"
-              onSelect={(value: any) => setPowerTypeSelected(value)}
+              aria="Inserisci la Tensione"
+              label="Tensione"
+              defaultValue={item?.tensione ?? ""}
             />
             <FormInput
               className="sm:col-span-3"
-              {...register("dataInstallazione", { required: true })}
-              errorMessage={renderError(errors["dataInstallazione"])}
-              autoComplete="dataInstallazione"
-              aria="Inserisci la Data di Installazione"
-              label="Data di Installazione"
-              defaultValue={item?.dataInstallazione ?? ""}
+              {...register("moduloFv", { required: true })}
+              errorMessage={renderError(errors["moduloFv"])}
+              autoComplete="moduloFv"
+              aria="Inserisci il Modulo Fv"
+              label="Modulo Fv"
+              defaultValue={item?.moduloFv ?? ""}
+            />
+            <FormInput
+              className="sm:col-span-3"
+              {...register("numeroModuli", { required: true })}
+              errorMessage={renderError(errors["numeroModuli"])}
+              autoComplete="numeroModuli"
+              aria="Inserisci il Numero dei Moduli"
+              label="Numero Moduli"
+              defaultValue={item?.numeroModuli ?? ""}
               type="date"
+            />
+            <FormInput
+              className="sm:col-span-3"
+              {...register("inverter", { required: true })}
+              errorMessage={renderError(errors["inverter"])}
+              autoComplete="inverter"
+              aria="Inserisci Inverter"
+              label="Inverter"
+              defaultValue={item?.inverter ?? ""}
+            />
+            <FormInput
+              className="sm:col-span-3"
+              {...register("dataAllaccio", { required: true })}
+              errorMessage={renderError(errors["dataAllaccio"])}
+              autoComplete="dataAllaccio"
+              aria="Inserisci Data Allaccio"
+              label="Data Allaccio"
+              defaultValue={item?.dataAllaccio ?? ""}
             />
             <FormInput
               className="sm:col-span-3"
@@ -260,8 +279,8 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
   );
 };
 
-EditImpiantiCaldaia.getLayout = function getLayout(page: ReactElement) {
-  return <SidebarLayout title="Impianti - caldaia">{page}</SidebarLayout>;
+EditImpiantiFotovoltaici.getLayout = function getLayout(page: ReactElement) {
+  return <SidebarLayout title="Impianti - solare termico">{page}</SidebarLayout>;
 };
 
-export default EditImpiantiCaldaia;
+export default EditImpiantiFotovoltaici;

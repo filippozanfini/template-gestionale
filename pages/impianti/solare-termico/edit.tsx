@@ -16,27 +16,27 @@ import Combobox from "../../../components/shared/ComboBox/Combobox";
 import { CheckIcon } from "@heroicons/react/solid";
 import ComboBox, { ComboBoxElement } from "../../../components/ComboBox";
 
-type ImpiantoCaldaia = {
+type ImpiantoSolareTermico = {
   id: number;
   marca: string;
-  modello: string;
-  alimentazione: string;
   dataInstallazione: string;
   dirittoFissoChiamata: string;
+  tipoENumeroCollettori: string;
+  tipoELitriBollitore: string;
 };
 
-const defaultValues: ImpiantoCaldaia = {
+const defaultValues: ImpiantoSolareTermico = {
   id: 0,
   marca: "",
-  modello: "",
-  alimentazione: "",
   dataInstallazione: "",
+  tipoENumeroCollettori: "",
+  tipoELitriBollitore: "",
   dirittoFissoChiamata: "0",
 };
 
-const EditImpiantiCaldaia: NextPageWithLayout = () => {
+const EditImpiantiSolareTermico: NextPageWithLayout = () => {
   const { push, query } = useRouter();
-  const [item, setItem] = useState<ImpiantoCaldaia | null>(defaultValues);
+  const [item, setItem] = useState<ImpiantoSolareTermico | null>(defaultValues);
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [listCustomers, setListCustomers] = useState<Customer[]>([]);
   /* FILTER */
@@ -44,12 +44,6 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
 
   /* UTILS */
   const [loading, setLoading] = useState<boolean>(false);
-
-  const powerType: ComboBoxElement[] = [
-    { label: "Metano", value: 0 },
-    { label: "Gas", value: 1 },
-  ];
-  const [powerTypeSelected, setPowerTypeSelected] = useState("");
 
   const [autoComputation, setAutoComputation] = useState(true);
 
@@ -75,7 +69,7 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
     reset,
     setError,
     formState: { errors },
-  } = useForm<ImpiantoCaldaia>();
+  } = useForm<ImpiantoSolareTermico>();
 
   const loadItem = async (ItemId: number) => {
     if (ItemId === 0) {
@@ -95,7 +89,7 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
     }
   };
 
-  const onSubmit: SubmitHandler<ImpiantoCaldaia> = async (formdata: any) => {
+  const onSubmit: SubmitHandler<ImpiantoSolareTermico> = async (formdata: any) => {
     notify({
       id: new Date().toISOString(),
       type: "success",
@@ -127,10 +121,13 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
           isAlert: true,
         });
         Object.keys(reason.data.errors).forEach((field: string) => {
-          setError(field as "id" | "marca" | "modello" | "alimentazione" | "dataInstallazione" | "dirittoFissoChiamata", {
-            type: "custom",
-            message: reason.data.errors[field],
-          });
+          setError(
+            field as "id" | "marca" | "tipoENumeroCollettori" | "tipoELitriBollitore" | "dataInstallazione" | "dirittoFissoChiamata",
+            {
+              type: "custom",
+              message: reason.data.errors[field],
+            }
+          );
         });
       });
   };
@@ -187,21 +184,21 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
             />
             <FormInput
               className="sm:col-span-3"
-              {...register("modello", { required: true })}
-              errorMessage={renderError(errors["modello"])}
+              {...register("tipoENumeroCollettori", { required: true })}
+              errorMessage={renderError(errors["tipoENumeroCollettori"])}
               autoComplete="modello"
-              aria="Inserisci il Modello"
-              label="Modello"
-              defaultValue={item?.modello ?? ""}
+              aria="Inserisci il Tipo e il Numero Collettori"
+              label="Tipo e Numero Collettori"
+              defaultValue={item?.tipoENumeroCollettori ?? ""}
             />
-            <ComboBox
+            <FormInput
               className="sm:col-span-3"
-              aria="Seleziona Alimentazione"
-              label="Alimentazione"
-              value={powerTypeSelected}
-              elements={powerType}
-              name="Alimentazione"
-              onSelect={(value: any) => setPowerTypeSelected(value)}
+              {...register("tipoELitriBollitore", { required: true })}
+              errorMessage={renderError(errors["tipoELitriBollitore"])}
+              autoComplete="modello"
+              aria="Inserisci il Tipo e Litri Bollitore"
+              label="Tipo e Litri Bollitore"
+              defaultValue={item?.tipoELitriBollitore ?? ""}
             />
             <FormInput
               className="sm:col-span-3"
@@ -260,8 +257,8 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
   );
 };
 
-EditImpiantiCaldaia.getLayout = function getLayout(page: ReactElement) {
-  return <SidebarLayout title="Impianti - caldaia">{page}</SidebarLayout>;
+EditImpiantiSolareTermico.getLayout = function getLayout(page: ReactElement) {
+  return <SidebarLayout title="Impianti - solare termico">{page}</SidebarLayout>;
 };
 
-export default EditImpiantiCaldaia;
+export default EditImpiantiSolareTermico;

@@ -16,27 +16,27 @@ import Combobox from "../../../components/shared/ComboBox/Combobox";
 import { CheckIcon } from "@heroicons/react/solid";
 import ComboBox, { ComboBoxElement } from "../../../components/ComboBox";
 
-type ImpiantoCaldaia = {
+type ImpiantoPompaDiCalore = {
   id: number;
   marca: string;
   modello: string;
-  alimentazione: string;
+  potenza: string;
   dataInstallazione: string;
   dirittoFissoChiamata: string;
 };
 
-const defaultValues: ImpiantoCaldaia = {
+const defaultValues: ImpiantoPompaDiCalore = {
   id: 0,
   marca: "",
   modello: "",
-  alimentazione: "",
+  potenza: "",
   dataInstallazione: "",
   dirittoFissoChiamata: "0",
 };
 
-const EditImpiantiCaldaia: NextPageWithLayout = () => {
+const EditImpiantiPompaDiCalore: NextPageWithLayout = () => {
   const { push, query } = useRouter();
-  const [item, setItem] = useState<ImpiantoCaldaia | null>(defaultValues);
+  const [item, setItem] = useState<ImpiantoPompaDiCalore | null>(defaultValues);
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [listCustomers, setListCustomers] = useState<Customer[]>([]);
   /* FILTER */
@@ -44,12 +44,6 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
 
   /* UTILS */
   const [loading, setLoading] = useState<boolean>(false);
-
-  const powerType: ComboBoxElement[] = [
-    { label: "Metano", value: 0 },
-    { label: "Gas", value: 1 },
-  ];
-  const [powerTypeSelected, setPowerTypeSelected] = useState("");
 
   const [autoComputation, setAutoComputation] = useState(true);
 
@@ -75,7 +69,7 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
     reset,
     setError,
     formState: { errors },
-  } = useForm<ImpiantoCaldaia>();
+  } = useForm<ImpiantoPompaDiCalore>();
 
   const loadItem = async (ItemId: number) => {
     if (ItemId === 0) {
@@ -95,7 +89,7 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
     }
   };
 
-  const onSubmit: SubmitHandler<ImpiantoCaldaia> = async (formdata: any) => {
+  const onSubmit: SubmitHandler<ImpiantoPompaDiCalore> = async (formdata: any) => {
     notify({
       id: new Date().toISOString(),
       type: "success",
@@ -127,7 +121,7 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
           isAlert: true,
         });
         Object.keys(reason.data.errors).forEach((field: string) => {
-          setError(field as "id" | "marca" | "modello" | "alimentazione" | "dataInstallazione" | "dirittoFissoChiamata", {
+          setError(field as "id" | "marca" | "modello" | "potenza" | "dataInstallazione" | "dirittoFissoChiamata", {
             type: "custom",
             message: reason.data.errors[field],
           });
@@ -194,14 +188,14 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
               label="Modello"
               defaultValue={item?.modello ?? ""}
             />
-            <ComboBox
+            <FormInput
               className="sm:col-span-3"
-              aria="Seleziona Alimentazione"
-              label="Alimentazione"
-              value={powerTypeSelected}
-              elements={powerType}
-              name="Alimentazione"
-              onSelect={(value: any) => setPowerTypeSelected(value)}
+              {...register("potenza", { required: true })}
+              errorMessage={renderError(errors["potenza"])}
+              autoComplete="potenza"
+              aria="Inserisci la Potenza"
+              label="Potenza"
+              defaultValue={item?.potenza ?? ""}
             />
             <FormInput
               className="sm:col-span-3"
@@ -260,8 +254,8 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
   );
 };
 
-EditImpiantiCaldaia.getLayout = function getLayout(page: ReactElement) {
-  return <SidebarLayout title="Impianti - caldaia">{page}</SidebarLayout>;
+EditImpiantiPompaDiCalore.getLayout = function getLayout(page: ReactElement) {
+  return <SidebarLayout title="Impianti - pompa di calore">{page}</SidebarLayout>;
 };
 
-export default EditImpiantiCaldaia;
+export default EditImpiantiPompaDiCalore;
