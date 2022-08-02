@@ -8,7 +8,12 @@ export default async function fetchJson<JSON = unknown>(
     const token = Cookies.get("token");
     init = init || {};
 
-    let headers : any = { 'Accept': 'application/json', "Accept-Language": "it" };
+    let headers : any = {
+      'Accept': 'application/json',
+      'Accept-Language': 'it',
+      'x-api': 'Desktop'
+    };
+
     if( token ){
       headers["Authorization"] = "Bearer " + token;
     }
