@@ -3,8 +3,6 @@ import { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { mpApi } from "../../../lib/mpApi";
 import { useForm, SubmitHandler } from "react-hook-form";
-import Textarea from "../../../components/TextArea";
-import PriceInput from "../../../components/PriceInput";
 import FormInput from "../../../components/FormInput";
 import renderError from "../../../lib/errorMessages";
 import FourOFour from "../../../components/FourOFour";
@@ -14,7 +12,6 @@ import { NextPageWithLayout } from "../../_app";
 import { Customer } from "../../../models/Customer";
 import Combobox from "../../../components/shared/ComboBox/Combobox";
 import { CheckIcon } from "@heroicons/react/solid";
-import ComboBox, { ComboBoxElement } from "../../../components/ComboBox";
 
 type ImpiantoSolareTermico = {
   id: number;

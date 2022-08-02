@@ -82,7 +82,7 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
       reset(defaultValues);
       return null;
     } else {
-      return mpApi.packages.actions
+      return mpApi.installations.actions
         .item(ItemId)
         .then((data: any) => {
           setItem(data);

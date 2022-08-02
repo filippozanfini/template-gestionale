@@ -64,8 +64,6 @@ const EditPreventivi: NextPageWithLayout = () => {
   return (
     <EditPage<IQuote> defaultValues={defaultValues} mpApiAction={mpApi.quotes} slugName="preventivi">
       {(item: Quote, register, renderError, errors) => {
-        console.log("ITEM", item);
-
         return item ? (
           <div>
             <div>
@@ -74,7 +72,7 @@ const EditPreventivi: NextPageWithLayout = () => {
                   "Nuovo Preventivo"
                 ) : (
                   <>
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-2">
                       <span className="text-gray-600"> Preventivo: </span>
                       <span className="text-xl font-semibold tracking-wide text-gray-900">
                         {item.utente?.nome + " " + item.utente?.cognome}

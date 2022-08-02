@@ -3,7 +3,9 @@ import { useRouter } from "next/router";
 import { Input } from "postcss";
 import React, { FC, useEffect, useState } from "react";
 import { useSWRConfig } from "swr";
+import { Installation } from "../../../models/Installation";
 import { SlugName } from "../../../models/types/SlugName";
+import { ImpiantiMapper } from "../../../utils/ImpiantiMapper";
 import InputFilterSearch from "../../core/InputFilterSearch";
 import Pagination from "../../shared/Pagination/Pagination";
 
@@ -61,6 +63,18 @@ const IndexTableTemplate: FC<IndexTableTemplateProps> = ({
     }
   }, [data]);
 
+  const onEdit = (item: any) => {
+    if (item instanceof Installation) {
+      const type = item.categoriaImpianto.nome;
+      console.log("type", type);
+      if (type) {
+        router.push(`/${slugName}/${ImpiantiMapper[type]}/edit?id=${item.id}`);
+      }
+    } else {
+      router.push(`/${slugName}/edit?id=${item.id}`);
+    }
+  };
+
   return (
     <div className="space-y-8 px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
@@ -82,7 +96,7 @@ const IndexTableTemplate: FC<IndexTableTemplateProps> = ({
         <>
           <Table
             items={items}
-            onEditAction={(item: any) => router.push(`/${slugName}/edit?id=${item.id}`)}
+            onEditAction={(item: any) => onEdit(item)}
             onDeleteAction={(item: any) =>
               mpApiAction.actions.delete(Number(item.id)).finally(() => mutate(mpApiAction.routes.list(page, itemsPerPage, filter)))
             }
