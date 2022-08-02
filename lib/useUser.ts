@@ -13,7 +13,9 @@ export default function useUser({ redirectTo = "", redirectIfFound = false } = {
   useEffect(() => {
     if (!userData) return;
 
-    setUser(new User(userData));
+    if( userData.ruoli ){
+      setUser(new User(userData));
+    }
 
     // if no redirect needed, just return (example: already on /dashboard)
     // if user data not yet there (fetch in progress, logged in or not) then don't do anything yet
