@@ -280,7 +280,7 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
 };
 
 EditImpiantiFotovoltaici.getLayout = function getLayout(page: ReactElement) {
-  return <SidebarLayout title="Impianti - solare termico">{page}</SidebarLayout>;
+  return <SidebarLayout title="Impianti - fotovoltaico">{page}</SidebarLayout>;
 };
 
 export default EditImpiantiFotovoltaici;
