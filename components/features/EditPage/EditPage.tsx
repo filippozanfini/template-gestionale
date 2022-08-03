@@ -51,8 +51,8 @@ const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children }
     }
   };
 
-  const onSubmit: SubmitHandler<T> = async (formdata: T) => {
-    console.log("formdata", formdata);
+  const onSubmit: SubmitHandler<T> = async (formdata: T, e: any) => {
+    e.preventDefault();
 
     notify({
       id: new Date().toISOString(),

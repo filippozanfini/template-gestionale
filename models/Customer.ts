@@ -5,9 +5,9 @@ export interface ICustomer {
   cognome?: string;
   email?: string;
   indirizzo?: string;
-  lat?: number;
-  lon?: number;
-  tel?: string;
+  latitudine?: number;
+  longitudine?: number;
+  numeroDiTelefono?: string;
   username?: string;
   ruoli?: string[];
   privacyAccettata?: boolean;
@@ -20,9 +20,9 @@ export class Customer implements ICustomer {
   cognome: string;
   email: string;
   indirizzo: string;
-  lat: number;
-  lon: number;
-  tel: string;
+  latitudine: number;
+  longitudine: number;
+  numeroDiTelefono: string;
   ruoli: string[];
   privacyAccettata: boolean;
 
@@ -33,9 +33,9 @@ export class Customer implements ICustomer {
     this.cognome = data.cognome ?? "";
     this.email = data.email ?? "";
     this.indirizzo = data.indirizzo ?? "";
-    this.lat = data.lat ?? 0;
-    this.lon = data.lon ?? 0;
-    this.tel = data.tel ?? "";
+    this.latitudine = data.latitudine ?? 0;
+    this.longitudine = data.longitudine ?? 0;
+    this.numeroDiTelefono = data.numeroDiTelefono ?? "";
     this.ruoli = data.ruoli ?? [];
     this.privacyAccettata = data.privacyAccettata ?? false;
   }
@@ -48,9 +48,9 @@ export class Customer implements ICustomer {
       cognome: data.cognome,
       email: data.email,
       indirizzo: data.indirizzo,
-      lat: data.lat,
-      lon: data.lon,
-      tel: data.tel,
+      latitudine: data.latitudine,
+      longitudine: data.longitudine,
+      numeroDiTelefono: data.numeroDiTelefono,
       ruoli: data.ruoli,
       privacyAccettata: data.privacyAccettata,
     };

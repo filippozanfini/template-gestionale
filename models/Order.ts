@@ -13,7 +13,7 @@ export enum eOrderStatus {
 
 export interface IOrder {
   id?: number;
-  stato?: eOrderStatus;
+  stato?: string;
   utente?: ICustomer;
   dataAcquisto?: Date | string;
   importo?: number;
@@ -28,7 +28,7 @@ export interface IOrder {
 
 export class Order implements IOrder {
   id: number;
-  stato: eOrderStatus;
+  stato: string;
   utente: ICustomer;
   dataAcquisto: Date | string;
   importo: number;
@@ -42,7 +42,7 @@ export class Order implements IOrder {
 
   constructor(data: IOrder) {
     this.id = data.id ?? 0;
-    this.stato = data.stato ?? eOrderStatus.inCorso;
+    this.stato = data.stato ?? "none";
     this.utente = data.utente ?? new Customer({});
     this.dataAcquisto = data.dataAcquisto ?? new Date();
     this.importo = data.importo ?? 0;

@@ -1,6 +1,9 @@
-import { XCircleIcon } from "@heroicons/react/outline";
+import { DocumentTextIcon, XCircleIcon } from "@heroicons/react/outline";
 import { useEffect, useState } from "react";
+import { mpApi } from "../../lib/mpApi";
 import { eOrderStatus, IOrder, Order } from "../../models/Order";
+import { InverterOrderStatusMapper, OrderStatusMapper } from "../../utils/OrderStatusMapper";
+import ActionDetails from "../core/ActionDetails";
 import ActionEdit from "../core/ActionEdit";
 import IconBadge from "../core/IconBadge";
 import ListBox from "../shared/ListBox/ListBox";
@@ -42,14 +45,26 @@ const listOrderStatus = Object.values(eOrderStatus);
 
 const TableOrders = ({ items, onDeleteAction, onEditAction }: TableListProps) => {
   const [order, setOrder] = useState<IOrder>({});
-  const [orserStatus, setOrderStatus] = useState<eOrderStatus>(eOrderStatus.none);
+  const [orders, setOrders] = useState<IOrder[]>(items);
 
   const handleActionEdit = (item: IOrder) => {
     Object.keys(order).length > 0 ? setOrder({}) : setOrder(item);
   };
 
+  const handleOrderStatus = (order: IOrder, newOrderStatus: string) => {
+    const newOrder: IOrder = { ...order, stato: newOrderStatus };
+    mpApi.orders.actions.save(order, newOrderStatus);
+
+    let tmpOrders = [...orders];
+    console.log(tmpOrders);
+    const index = tmpOrders.indexOf(order);
+    tmpOrders.splice(index, 1, newOrder);
+    console.log(tmpOrders);
+    setOrders(tmpOrders);
+  };
+
   return (
-    <TableList items={items} itemsHead={itemsHeadTable} onDeleteAction={onDeleteAction}>
+    <TableList items={orders} itemsHead={itemsHeadTable} onDeleteAction={onDeleteAction}>
       {(listItems, openModalTrashItem) => {
         return listItems?.map((item: IOrder, index: number) => (
           <Table.Row key={item.id} className={["transition-all duration-500 ", item.id == order.id ? "bg-yellow-100" : ""].join(" ")}>
@@ -69,14 +84,19 @@ const TableOrders = ({ items, onDeleteAction, onEditAction }: TableListProps) =>
             </Table.Cell>
 
             <Table.Cell>
-              <p className="text-xs text-gray-900 ">{item.importo}</p>
+              <p className="text-xs text-gray-900 ">{item.importo} €</p>
             </Table.Cell>
 
             <Table.Cell align="left">
               {item.id == order.id ? (
-                <ListBox listItems={listOrderStatus} onChange={() => {}} selected={item.stato} selectedName={item.stato ?? ""} />
+                <ListBox
+                  listItems={listOrderStatus}
+                  onChange={(value: any) => handleOrderStatus(item, InverterOrderStatusMapper[value])}
+                  selected={OrderStatusMapper[item.stato ?? "none"]}
+                  selectedName={OrderStatusMapper[item.stato ?? "none"] ?? ""}
+                />
               ) : (
-                <p className="text-xs text-gray-900 ">{item.stato}</p>
+                <p className="text-xs text-gray-900 ">{OrderStatusMapper[item.stato ?? "none"]}</p>
               )}
             </Table.Cell>
 
@@ -84,7 +104,10 @@ const TableOrders = ({ items, onDeleteAction, onEditAction }: TableListProps) =>
               {Object.keys(order).length > 0 && item.id == order.id ? (
                 <XCircleIcon className="h-8 w-8 cursor-pointer p-1 pr-2 text-red-500" onClick={() => handleActionEdit(item)} />
               ) : (
-                <ActionEdit onAction={() => handleActionEdit(item)} />
+                <div className="flex items-center">
+                  <ActionDetails onAction={() => {}} />
+                  <ActionEdit onAction={() => handleActionEdit(item)} />
+                </div>
               )}
             </Table.Cell>
           </Table.Row>

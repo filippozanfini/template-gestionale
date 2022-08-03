@@ -238,7 +238,7 @@ export const mpApi = {
         return fetchJson(`/users/${item.id > 0 ? item.id : ""}`, {
           method: item.id > 0 ? "PUT" : "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(itemForSave),
+          body: JSON.stringify({ ...itemForSave, ruolo: "3" }),
         });
       },
 
@@ -414,7 +414,7 @@ export const mpApi = {
         return fetchJson(`/users/${item.id > 0 ? item.id : ""}`, {
           method: item.id > 0 ? "PUT" : "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(itemForSave),
+          body: JSON.stringify({ ...itemForSave, ruolo: "2" }),
         });
       },
 
@@ -460,11 +460,10 @@ export const mpApi = {
         }
         return fetchJson(`/ordini/${id}`);
       },
-      save: async (item: any) => {
-        return fetchJson(`/ordini/${item.id > 0 ? item.id : ""}`, {
+      save: async (item: any, status: string) => {
+        return fetchJson(`/ordini/stato/${item.id > 0 ? item.id : ""}?nome=${status}`, {
           method: item.id > 0 ? "PUT" : "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(item),
         });
       },
       delete: async (id: number) => {

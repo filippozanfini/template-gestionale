@@ -7,6 +7,9 @@ import FormInput from "../../components/FormInput";
 import CheckboxInput from "../../components/core/Checkbox";
 import { mpApi } from "../../lib/mpApi";
 import FormPasswordInput from "../../components/Password";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useNotify } from "../../components/notifications";
+import { useRouter } from "next/router";
 
 const defaultValues: Customer = {
   id: 0,
@@ -14,19 +17,18 @@ const defaultValues: Customer = {
   nome: "",
   cognome: "",
   email: "",
-  tel: "",
+  numeroDiTelefono: "",
   indirizzo: "",
-  lat: 0,
-  lon: 0,
+  latitudine: 0,
+  longitudine: 0,
   privacyAccettata: false,
-  ruoli: [],
+  ruoli: ["3"],
 };
 
 const EditClienti: NextPageWithLayout = () => {
   return (
     <EditPage<Customer> defaultValues={defaultValues} mpApiAction={mpApi.customers} slugName="clienti">
       {(item: Customer, register, renderError, errors) => {
-        console.log("item", item);
         return item ? (
           <div>
             <div>
@@ -90,6 +92,7 @@ const EditClienti: NextPageWithLayout = () => {
                 <FormPasswordInput
                   className="sm:col-span-3"
                   {...register("password", { required: true })}
+                  errorMessage={renderError(errors["password"])}
                   autoComplete="password"
                   aria="Modifica la password"
                   label="Password"
@@ -100,35 +103,14 @@ const EditClienti: NextPageWithLayout = () => {
 
               <FormInput
                 className="sm:col-span-3"
-                {...register("tel", { required: true })}
+                {...register("numeroDiTelefono", { required: true })}
                 errorMessage={renderError(errors["tel"])}
                 autoComplete="tel"
                 aria="Modifica il numero di telefono"
                 label="Telefono"
-                defaultValue={item?.tel ?? ""}
+                defaultValue={item?.numeroDiTelefono ?? ""}
                 type="tel"
               />
-
-              <FormInput
-                className="sm:col-span-3"
-                {...register("lat", { required: true })}
-                errorMessage={renderError(errors["lat"])}
-                autoComplete="lat"
-                aria="Modifica la latitudine"
-                label="Latitudine"
-                defaultValue={item?.lat ?? ""}
-              />
-
-              <FormInput
-                className="sm:col-span-3"
-                {...register("lon", { required: true })}
-                errorMessage={renderError(errors["lon"])}
-                autoComplete="lon"
-                aria="Modifica la longitudine"
-                label="Longitudine"
-                defaultValue={item?.lon ?? ""}
-              />
-
               <FormInput
                 className="sm:col-span-3"
                 {...register("indirizzo", { required: true })}
@@ -137,6 +119,26 @@ const EditClienti: NextPageWithLayout = () => {
                 aria="Modifica l'indirizzo"
                 label="Indirizzo"
                 defaultValue={item?.indirizzo ?? ""}
+              />
+
+              <FormInput
+                className="sm:col-span-3"
+                {...register("latitudine", { required: true })}
+                errorMessage={renderError(errors["lat"])}
+                autoComplete="lat"
+                aria="Modifica la latitudine"
+                label="Latitudine"
+                defaultValue={item?.latitudine ?? ""}
+              />
+
+              <FormInput
+                className="sm:col-span-3"
+                {...register("longitudine", { required: true })}
+                errorMessage={renderError(errors["lon"])}
+                autoComplete="lon"
+                aria="Modifica la longitudine"
+                label="Longitudine"
+                defaultValue={item?.longitudine ?? ""}
               />
 
               <CheckboxInput

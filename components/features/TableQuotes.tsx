@@ -1,6 +1,7 @@
 import { PencilIcon, TrashIcon } from "@heroicons/react/solid";
 import React from "react";
 import { Quote, eQuoteStatus } from "../../models/Quote";
+import { OrderStatusMapper } from "../../utils/OrderStatusMapper";
 import ActionEditDelete from "../shared/ActionEditDelete";
 import { Table } from "../shared/Table/Table";
 import { HeadCell } from "../shared/Table/utils/interfaces/interface";
@@ -54,10 +55,12 @@ const TableQuotes = ({ items, onDeleteAction, onEditAction }: TableListProps) =>
             </Table.Cell>
 
             <Table.Cell>
-              <p className="text-xs text-gray-900 ">{item.costo}</p>
+              <p className="text-xs text-gray-900 ">{item.costo} €</p>
             </Table.Cell>
 
-            <Table.Cell align="center">{item.statoPreventivo}</Table.Cell>
+            <Table.Cell align="center">
+              <p className="text-xs">{OrderStatusMapper[item.statoPreventivo ?? "none"]}</p>
+            </Table.Cell>
 
             <Table.Cell align="center">
               <p className="text-xs text-gray-900 ">{item.dataScadenza.toString()}</p>

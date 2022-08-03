@@ -1,7 +1,6 @@
-import { ReactElement, useState } from "react";
+import { ReactElement } from "react";
 import IndexTableTemplate from "../../components/features/IndexTableTemplate/IndexTableTemplate";
 import TableInstallationsCategories from "../../components/features/TableInstallationsCategories";
-import ListBox from "../../components/shared/ListBox/ListBox";
 import SidebarLayout from "../../layouts/SidebarLayout";
 import { mpApi, useCategories } from "../../lib/mpApi";
 import { NextPageWithLayout } from "../_app";
