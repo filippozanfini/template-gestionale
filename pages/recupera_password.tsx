@@ -1,11 +1,12 @@
+import { ReactElement } from "react";
 import Image from 'next/image'
 import logo from '../app/logo.png'
 import Button from '../components/core/Button'
 import Input from '../components/FormInput'
 
-const Home = () => {}
+const RecuperaPassword = () => {}
 
-Home.getLayout = function getLayout (page: ReactElement) {
+RecuperaPassword.getLayout = function getLayout (page: ReactElement) {
   return (
     <div className='flex flex-col items-center justify-center'>
       <div className='mt-16 w-full rounded bg-white  p-10 shadow md:w-1/2 lg:w-1/3'>
@@ -22,4 +23,4 @@ Home.getLayout = function getLayout (page: ReactElement) {
   )
 }
 
-export default Home
+export default RecuperaPassword

@@ -1,3 +1,4 @@
+import { ReactElement } from "react";
 import Image from 'next/image'
 import logo from '../app/logo.png'
 import Button from '../components/core/Button'
@@ -13,7 +14,7 @@ Home.getLayout = function getLayout (page: ReactElement) {
         <p tabIndex={0} role='heading' aria-label='Area riservata' className='mb-4 text-2xl font-extrabold leading-6 text-gray-800'>
           Area riservata
         </p>
-        <Input type='text' name='password_new' aria='nuova password' label='Nuova password' maxLength='25' />
+        <Input type='text' name='password_new' aria='nuova password' label='Nuova password' />
         <div className='mt-8'>
           <Button className='w-full py-4' title='Invia' aria='invia nuova password' type='submit' />
         </div>
