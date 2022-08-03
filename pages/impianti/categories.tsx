@@ -1,23 +1,25 @@
+import { ReactElement, useState } from "react";
+import IndexTableTemplate from "../../components/features/IndexTableTemplate/IndexTableTemplate";
+import TableInstallationsCategories from "../../components/features/TableInstallationsCategories";
+import ListBox from "../../components/shared/ListBox/ListBox";
 import SidebarLayout from "../../layouts/SidebarLayout";
+import { mpApi, useCategories } from "../../lib/mpApi";
 import { NextPageWithLayout } from "../_app";
-import { ReactElement } from "react";
-import useSWR, { useSWRConfig } from "swr";
-import { mpApi } from "../../lib/mpApi";
-import ActionList, { ActionListItem } from "../../components/ActionList";
-import { useRouter } from "next/router";
 
-const IndiceCategorieManutenzione: NextPageWithLayout = () => {
-  const router = useRouter();
-  const { mutate } = useSWRConfig();
-  const { data, error } = useSWR(mpApi.manutenzione.routes.list(), mpApi.manutenzione.actions.listFetcher);
-
-  console.log("DATA", data);
-
-  return <ActionList items={data?.content as ActionListItem[]} />;
+const IndiceOrdini: NextPageWithLayout = () => {
+  return (
+    <IndexTableTemplate
+      title="Categorie"
+      useFetch={useCategories}
+      slugName="impianti"
+      mpApiAction={mpApi.categories}
+      Table={TableInstallationsCategories}
+    />
+  );
 };
 
-IndiceCategorieManutenzione.getLayout = function getLayout(page: ReactElement) {
+IndiceOrdini.getLayout = function getLayout(page: ReactElement) {
   return <SidebarLayout title="Categorie">{page}</SidebarLayout>;
 };
 
-export default IndiceCategorieManutenzione;
+export default IndiceOrdini;

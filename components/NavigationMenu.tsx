@@ -219,7 +219,7 @@ const NavigationMenu: FC<NavigationMenuProps> = ({
             </Menu.Button>
           </Menu>
         ) : (
-          <div className={`${itemClass} align-content-center flex cursor-pointer py-4`} onClick={() => clicked(menuItem)}>
+          <div className={`${itemClass} align-content-center flex cursor-pointer items-center py-4`} onClick={() => clicked(menuItem)}>
             {icon}
             <div>{menuItem.label}</div>
             {menuItem && menuItem.children && menuItem.children.length > 0 ? (

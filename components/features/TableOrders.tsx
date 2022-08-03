@@ -74,7 +74,7 @@ const TableOrders = ({ items, onDeleteAction, onEditAction }: TableListProps) =>
 
             <Table.Cell align="left">
               {item.id == order.id ? (
-                <ListBox listItems={listOrderStatus} onChange={() => {}} selected={"sfa"} selectedName={"sadfas"} />
+                <ListBox listItems={listOrderStatus} onChange={() => {}} selected={item.stato} selectedName={item.stato ?? ""} />
               ) : (
                 <p className="text-xs text-gray-900 ">{item.stato}</p>
               )}

@@ -34,6 +34,7 @@ import {
   MenuAlt2Icon,
   XIcon,
   ChevronLeftIcon,
+  UploadIcon,
 } from "@heroicons/react/outline";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import NavigationMenu, { MenuItem } from "../components/NavigationMenu";
@@ -128,6 +129,15 @@ function SidebarLayout({ title, children }: any) {
             label: "Categorie",
             icon: <ColorSwatchIcon />,
             path: "/" + item.id + "/categories",
+          });
+        }
+
+        if (item.id === "clienti") {
+          childrenMenu.push({
+            id: item.id + "-importa",
+            label: "Importa",
+            icon: <UploadIcon />,
+            path: "/" + item.id + "/import",
           });
         }
 

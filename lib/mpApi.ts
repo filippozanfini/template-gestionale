@@ -1,4 +1,5 @@
 import useSWR from "swr";
+import { Category } from "../models/Category";
 import { Customer } from "../models/Customer";
 import { Installation } from "../models/Installation";
 import { Order } from "../models/Order";
@@ -29,7 +30,7 @@ export const mpApi = {
           Cookies.set("token", data?.token);
         }
         return {
-          ...data.utente || {},
+          ...(data.utente || {}),
         };
       },
     },
@@ -349,6 +350,35 @@ export const mpApi = {
     },
   },
 
+  categories: {
+    routes: {
+      list: (page: number = 1, limit: number, query: string) => `/impianti/tipologia?page=${page}&limit=${limit}&query=${query}`,
+    },
+    actions: {
+      listFetcher: (input: RequestInfo, init?: RequestInit) =>
+        fetchJson(input, init).then((data: any) => {
+          if (data && data.content) {
+            return {
+              content: data.content.map((item: Category) => {
+                console.log("ITEM", item);
+                return new Category(item);
+              }),
+              totalItems: data.totalElements,
+              totalPages: data.totalPages,
+              currentPage: data.number + 1,
+            };
+          } else {
+            return {
+              content: [],
+              totalItems: 0,
+              totalPages: 0,
+              currentPage: 0,
+            };
+          }
+        }),
+    },
+  },
+
   collaborators: {
     routes: {
       list: (page: number = 1, limit: number, query: string) => `/users/ruoli/2?page=${page}&limit=${limit}&query=${query}`,
@@ -479,6 +509,11 @@ export const usePackages = ({ page, limit }: PageLimitQuery) => {
 
 export const useInstallations = ({ page, limit, query }: PageLimitQuery) => {
   const { data, error } = useSWR(mpApi.installations.routes.list(page, limit, query), mpApi.installations.actions.listFetcher);
+  return { data, error };
+};
+
+export const useCategories = ({ page, limit, query }: PageLimitQuery) => {
+  const { data, error } = useSWR(mpApi.categories.routes.list(page, limit, query), mpApi.categories.actions.listFetcher);
   return { data, error };
 };
 
