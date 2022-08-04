@@ -7,6 +7,7 @@ import { Installation } from "../../../models/Installation";
 import { SlugName } from "../../../models/types/SlugName";
 import { ImpiantiMapper } from "../../../utils/ImpiantiMapper";
 import InputFilterSearch from "../../core/InputFilterSearch";
+import Loader from "../../core/Loader";
 import Pagination from "../../shared/Pagination/Pagination";
 
 interface IndexTableTemplateProps {
@@ -61,6 +62,7 @@ const IndexTableTemplate: FC<IndexTableTemplateProps> = ({
       setTotalItems(data.totalItems);
       setTotalPages(data.totalPages);
     }
+    console.log("data", data);
   }, [data]);
 
   const onEdit = (item: any) => {
@@ -77,8 +79,9 @@ const IndexTableTemplate: FC<IndexTableTemplateProps> = ({
 
   return (
     <div className="space-y-8 px-4 sm:px-6 lg:px-8">
-      <div className="sm:flex sm:items-center">
+      <div className="h-10 gap-4 sm:flex sm:items-center">
         <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
+        {!data && <Loader className="h-8 w-8" />}
       </div>
 
       {isFilterableByUser ? (
@@ -88,7 +91,7 @@ const IndexTableTemplate: FC<IndexTableTemplateProps> = ({
       {/* FOR OTHER FILTERS */}
       {children}
 
-      {!items.length ? (
+      {!items.length && data ? (
         <div className="h-60 w-full">
           <p className="m-auto"> Non sono presenti elementi. </p>
         </div>

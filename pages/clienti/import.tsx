@@ -1,6 +1,4 @@
-import { RefreshIcon } from "@heroicons/react/outline";
-import { useRouter } from "next/router";
-import React, { ReactElement, useEffect } from "react";
+import React, { ReactElement } from "react";
 import Button from "../../components/core/Button";
 import Loader from "../../components/core/Loader";
 import DragDropFile from "../../components/shared/DragDropFile/DragDropFile";
@@ -12,8 +10,6 @@ const ImportClienti: NextPageWithLayout = () => {
   const [file, setFile] = React.useState<File | null>(null);
   const [loadingUpload, setLoadingUplaod] = React.useState(false);
   const [emptyFile, setEmptyFile] = React.useState(false);
-
-  const router = useRouter();
 
   const handleFileChange = (file: File) => {
     setFile(file);
