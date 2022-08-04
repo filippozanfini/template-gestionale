@@ -1,4 +1,5 @@
 import { DocumentTextIcon, XCircleIcon } from "@heroicons/react/outline";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { mpApi } from "../../lib/mpApi";
 import { eOrderStatus, IOrder, Order } from "../../models/Order";
@@ -46,6 +47,7 @@ const listOrderStatus = Object.values(eOrderStatus);
 const TableOrders = ({ items, onDeleteAction, onEditAction }: TableListProps) => {
   const [order, setOrder] = useState<IOrder>({});
   const [orders, setOrders] = useState<IOrder[]>(items);
+  const { push } = useRouter();
 
   const handleActionEdit = (item: IOrder) => {
     Object.keys(order).length > 0 ? setOrder({}) : setOrder(item);
@@ -56,12 +58,14 @@ const TableOrders = ({ items, onDeleteAction, onEditAction }: TableListProps) =>
     mpApi.orders.actions.save(order, newOrderStatus);
 
     let tmpOrders = [...orders];
-    console.log(tmpOrders);
     const index = tmpOrders.indexOf(order);
     tmpOrders.splice(index, 1, newOrder);
-    console.log(tmpOrders);
     setOrders(tmpOrders);
   };
+
+  useEffect(() => {
+    setOrders(items);
+  }, [items]);
 
   return (
     <TableList items={orders} itemsHead={itemsHeadTable} onDeleteAction={onDeleteAction}>
@@ -105,7 +109,7 @@ const TableOrders = ({ items, onDeleteAction, onEditAction }: TableListProps) =>
                 <XCircleIcon className="h-8 w-8 cursor-pointer p-1 pr-2 text-red-500" onClick={() => handleActionEdit(item)} />
               ) : (
                 <div className="flex items-center">
-                  <ActionDetails onAction={() => {}} />
+                  <ActionDetails onAction={() => push(`/ordini/detail/?id=${item.id}`)} />
                   <ActionEdit onAction={() => handleActionEdit(item)} />
                 </div>
               )}
