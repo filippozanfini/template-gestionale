@@ -3,20 +3,27 @@ import { CheckIcon, SelectorIcon } from "@heroicons/react/outline";
 import React, { Fragment } from "react";
 
 interface ListBoxProps {
+  backgroundColor?: string;
+  textColor?: string;
   selected: any;
   onChange: (value: any) => void;
   selectedName: string;
   listItems: any[];
 }
 
-const ListBox = ({ listItems, onChange, selected, selectedName }: ListBoxProps) => {
+const ListBox = ({ listItems, onChange, selected, selectedName, backgroundColor, textColor }: ListBoxProps) => {
   return (
     <ListBoxUI value={selected} onChange={onChange}>
       <div className="relative mt-1">
-        <ListBoxUI.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-300 sm:text-sm">
-          <span className="block truncate">{selectedName}</span>
+        <ListBoxUI.Button
+          className={
+            "relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-300 sm:text-sm " +
+            backgroundColor
+          }
+        >
+          <span className={"block truncate " + textColor}>{selectedName}</span>
           <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-            <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+            <SelectorIcon className={"h-5 w-5 " + textColor ?? "text-gray-400"} aria-hidden="true" />
           </span>
         </ListBoxUI.Button>
         <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
