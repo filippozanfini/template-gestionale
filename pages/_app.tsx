@@ -12,6 +12,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import NotificationsCenter from "../components/notifications/NotificationsCenter";
 import NotificationsContainer from "../components/notifications/NotificationContainer";
 import { useAlert } from "../components/notifications";
+import NextNProgress from "nextjs-progressbar";
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -30,7 +31,6 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
       value={{
         fetcher: fetchJson,
         onError: (err) => {
-
           if (err.data.code == 403) {
             Router.push("/login");
             return;
@@ -41,20 +41,20 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
           }
 
           alert({
-            id: "err-"+ (Math.random() * 1000000),
+            id: "err-" + Math.random() * 1000000,
             type: "error",
             title: "Errore",
             message: err.message,
             isAlert: true,
-            read: false
+            read: false,
           });
-
         },
       }}
     >
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <NotificationsContainer />
+          <NextNProgress color="#136bb6" options={{ showSpinner: false }} />
           {getLayout(<Component {...pageProps} />)}
         </PersistGate>
       </Provider>

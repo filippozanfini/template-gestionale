@@ -56,7 +56,6 @@ const EditClienti: NextPageWithLayout = () => {
                 label="Nome"
                 defaultValue={item?.nome ?? ""}
               />
-
               <FormInput
                 className="sm:col-span-3"
                 {...register("cognome", { required: true })}
@@ -66,7 +65,6 @@ const EditClienti: NextPageWithLayout = () => {
                 label="Cognome"
                 defaultValue={item?.cognome ?? ""}
               />
-
               <FormInput
                 className="sm:col-span-3"
                 {...register("email", { required: true })}
@@ -77,7 +75,6 @@ const EditClienti: NextPageWithLayout = () => {
                 defaultValue={item?.codiceFiscale ?? ""}
                 type="email"
               />
-
               <FormInput
                 className="sm:col-span-3"
                 {...register("codiceFiscale", { required: true })}
@@ -87,7 +84,6 @@ const EditClienti: NextPageWithLayout = () => {
                 label="Codice Fiscale"
                 defaultValue={item?.cognome ?? ""}
               />
-
               {item.id === 0 && (
                 <FormPasswordInput
                   className="sm:col-span-3"
@@ -100,7 +96,6 @@ const EditClienti: NextPageWithLayout = () => {
                   type="password"
                 />
               )}
-
               <FormInput
                 className="sm:col-span-3"
                 {...register("numeroDiTelefono", { required: true })}
@@ -120,7 +115,6 @@ const EditClienti: NextPageWithLayout = () => {
                 label="Indirizzo"
                 defaultValue={item?.indirizzo ?? ""}
               />
-
               <FormInput
                 className="sm:col-span-3"
                 {...register("latitudine", { required: true })}
@@ -129,8 +123,8 @@ const EditClienti: NextPageWithLayout = () => {
                 aria="Modifica la latitudine"
                 label="Latitudine"
                 defaultValue={item?.latitudine ?? ""}
+                type="number"
               />
-
               <FormInput
                 className="sm:col-span-3"
                 {...register("longitudine", { required: true })}
@@ -139,15 +133,18 @@ const EditClienti: NextPageWithLayout = () => {
                 aria="Modifica la longitudine"
                 label="Longitudine"
                 defaultValue={item?.longitudine ?? ""}
+                type="number"
               />
 
-              <CheckboxInput
-                className="sm:col-span-4"
-                {...register("privacyAccettata")}
-                aria="Inserisci novita"
-                label="Privacy"
-                defaultChecked={Boolean(item?.privacyAccettata) || false}
-              />
+              {item.id !== 0 && (
+                <CheckboxInput
+                  className="sm:col-span-4"
+                  {...register("privacyAccettata")}
+                  aria="Inserisci novita"
+                  label="Privacy"
+                  defaultChecked={Boolean(item?.privacyAccettata) || false}
+                />
+              )}
             </div>
           </div>
         ) : (

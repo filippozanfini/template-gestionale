@@ -22,7 +22,6 @@ interface EditPageProps<T> {
 const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children }: EditPageProps<T>) {
   const { push, query } = useRouter();
   const [item, setItem] = useState<T | null>(defaultValues);
-  const notify = useNotify();
   const alert = useAlert();
 
   const {
