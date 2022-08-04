@@ -180,7 +180,7 @@ export const mpApi = {
         return fetchJson(`/pacchetti/${item.id > 0 ? item.id : ""}`, {
           method: item.id > 0 ? "PUT" : "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(item),
+          body: JSON.stringify({ ...item, categorie: [item.categorie] }),
         });
       },
 

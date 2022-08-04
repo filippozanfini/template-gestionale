@@ -34,7 +34,7 @@ const ComboBoxInputElement: ForwardRefRenderFunction<HTMLSelectElement, ComboBox
         >
           {elements &&
             elements.map((item: ComboBoxElement) => (
-              <option key={name + "-" + item.value} value={item.value} selected={otherProps.value === item.value}>
+              <option key={name + "-" + item.value} value={item.value} selected={otherProps.defaultValue === item.value}>
                 {" "}
                 {item.label}{" "}
               </option>

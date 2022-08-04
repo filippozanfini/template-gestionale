@@ -26,8 +26,18 @@ const defaultValues: Package = {
 const EditPacchetti: NextPageWithLayout = () => {
   const { push, query } = useRouter();
   const [item, setItem] = useState<Package | null>(defaultValues);
+  const [itemCategory, setItemCategory] = useState<any>();
+  const [itemNovita, setItemNovita] = useState(false);
   const notify = useNotify();
   const alert = useAlert();
+
+  const categories: ComboBoxElement[] = [
+    { label: "Condizionatore", value: 1 },
+    { label: "Caldaia", value: 2 },
+    { label: "Impianto Fotovoltaico", value: 3 },
+    { label: "Impianto Solare Termico", value: 4 },
+    { label: "Pompa Di Calore", value: 5 },
+  ];
 
   const {
     register,
@@ -64,6 +74,7 @@ const EditPacchetti: NextPageWithLayout = () => {
       read: false,
       isAlert: false,
     });
+
     mpApi.packages.actions
       .save(formdata)
       .then((response: any) => {
@@ -87,7 +98,7 @@ const EditPacchetti: NextPageWithLayout = () => {
           isAlert: true,
         });
         Object.keys(reason.data.errors).forEach((field: string) => {
-          setError(field as "id" | "nome" | "descrizione" | "costo" | "novita", {
+          setError(field as "id" | "nome" | "descrizione" | "costo" | "novita" | "categorie", {
             type: "custom",
             message: reason.data.errors[field],
           });
@@ -102,13 +113,30 @@ const EditPacchetti: NextPageWithLayout = () => {
     }
   }, [query]);
 
-  const categories: ComboBoxElement[] = [
-    { label: "1", value: 1 },
-    { label: "2", value: 2 },
-    { label: "3", value: 3 },
-  ];
+  useEffect(() => {
+    if (item) {
+      setItemNovita(item.novita);
 
-  console.log("ITEM", item);
+      const categorySelected =
+        item.categorie.length > 0 ? categories.find((v: ComboBoxElement) => v.value === item.categorie[0].id) : categories[0];
+
+      const category = {
+        id: categorySelected?.value,
+        nome: categorySelected?.label,
+      };
+
+      setItemCategory(category);
+    }
+  }, [item]);
+
+  const selectCategoryHandler = (categorySelected?: ComboBoxElement) => {
+    const category = {
+      id: categorySelected?.value,
+      nome: categorySelected?.label,
+    };
+
+    setItemCategory(category);
+  };
 
   return item ? (
     <form className="space-y-8 divide-y divide-gray-200" onSubmit={handleSubmit(onSubmit)}>
@@ -143,7 +171,19 @@ const EditPacchetti: NextPageWithLayout = () => {
               label="Costo"
               defaultValue={item?.costo ?? ""}
             />
-            <ComboBox className="sm:col-span-2" aria="categoria" label="Categoria" elements={categories} name="categoria" />
+            <ComboBox
+              className="sm:col-span-2"
+              {...register("categorie", { required: true })}
+              aria="categorie"
+              label="Categoria"
+              elements={categories}
+              onChange={(e) => selectCategoryHandler(categories.find((c: ComboBoxElement) => c.value === Number(e.target.value)))}
+              defaultValue={
+                itemCategory ? categories.find((c: ComboBoxElement) => c.value === itemCategory.id)?.value : categories[0].value
+              }
+              value={itemCategory ? categories.find((c: ComboBoxElement) => c.value === itemCategory.id)?.value : categories[0].value}
+              name="categorie"
+            />
             <Textarea
               className="sm:col-span-6"
               {...register("descrizione", { required: true })}
@@ -158,7 +198,9 @@ const EditPacchetti: NextPageWithLayout = () => {
               {...register("novita")}
               aria="Inserisci novita"
               label="Novità"
-              defaultChecked={item?.novita || false}
+              onChange={() => setItemNovita(!itemNovita)}
+              defaultChecked={itemNovita}
+              checked={itemNovita}
             />
           </div>
         </div>
