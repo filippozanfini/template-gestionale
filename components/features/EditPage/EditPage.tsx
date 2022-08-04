@@ -54,20 +54,9 @@ const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children }
   const onSubmit: SubmitHandler<T> = async (formdata: T, e: any) => {
     e.preventDefault();
 
-    notify({
-      id: new Date().toISOString(),
-      type: "success",
-      title: "Salvataggio Risorsa",
-      message: "Prova",
-      read: false,
-      isAlert: false,
-    });
-
     mpApiAction.actions
       .save(formdata)
       .then((response: any) => {
-        console.log("response", response);
-
         alert({
           id: new Date().toISOString(),
           type: "success",

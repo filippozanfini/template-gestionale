@@ -1,6 +1,7 @@
 import React, { ReactElement } from "react";
 import Button from "../../components/core/Button";
 import Loader from "../../components/core/Loader";
+import { useAlert, useNotify } from "../../components/notifications";
 import DragDropFile from "../../components/shared/DragDropFile/DragDropFile";
 import SidebarLayout from "../../layouts/SidebarLayout";
 import { mpApi } from "../../lib/mpApi";
@@ -10,6 +11,9 @@ const ImportClienti: NextPageWithLayout = () => {
   const [file, setFile] = React.useState<File | null>(null);
   const [loadingUpload, setLoadingUplaod] = React.useState(false);
   const [emptyFile, setEmptyFile] = React.useState(false);
+
+  const notify = useNotify();
+  const alert = useAlert();
 
   const handleFileChange = (file: File) => {
     setFile(file);
@@ -23,10 +27,19 @@ const ImportClienti: NextPageWithLayout = () => {
       // chiamata all'api
       mpApi.customers.actions
         .uploadFile(file)
-        .then((res: any) => {
-          alert(res.message);
+        .then((response: any) => {
           setLoadingUplaod(false);
           setEmptyFile(true);
+          alert({
+            id: new Date().toISOString(),
+            type: "success",
+            title: "Caricamento utenti da CSV",
+            message: response.message,
+            read: false,
+            isAlert: true,
+          });
+
+          // console.log(response);
         })
         .catch((err) => {
           setLoadingUplaod(false);

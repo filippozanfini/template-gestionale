@@ -37,7 +37,6 @@ const DragDropFile = ({ label, validTaypes, emptyFile, onFileChange }: DragDropF
     }
   };
 
-  // triggers when file is selected with click
   const handleChange = function (e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     if (e.target.files && e.target.files[0]) {
@@ -50,7 +49,6 @@ const DragDropFile = ({ label, validTaypes, emptyFile, onFileChange }: DragDropF
     }
   };
 
-  // triggers the input when the button is clicked
   const onButtonClick = () => {
     inputRef.current && inputRef.current.click();
   };
@@ -91,9 +89,9 @@ const DragDropFile = ({ label, validTaypes, emptyFile, onFileChange }: DragDropF
       >
         <div className="space-y-4">
           {file ? (
-            <div className="flex items-end justify-center">
-              <DocumentTextIcon className="h-16 w-16 text-primary-400" />
-              <p className="mb-1 text-2xl font-medium text-primary-400">{file.name}</p>
+            <div className="space-y-1">
+              <DocumentTextIcon className="mx-auto h-20 w-20 text-primary-400" />
+              <p className="mx-auto mb-1 text-2xl font-medium text-primary-400">{file.name}</p>
             </div>
           ) : (
             <p className="font-medium text-primary-800">{label}</p>
