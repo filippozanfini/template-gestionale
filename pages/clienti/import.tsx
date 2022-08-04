@@ -1,5 +1,6 @@
 import { RefreshIcon } from "@heroicons/react/outline";
-import React, { ReactElement } from "react";
+import { useRouter } from "next/router";
+import React, { ReactElement, useEffect } from "react";
 import Button from "../../components/core/Button";
 import Loader from "../../components/core/Loader";
 import DragDropFile from "../../components/shared/DragDropFile/DragDropFile";
@@ -10,6 +11,9 @@ import { NextPageWithLayout } from "../_app";
 const ImportClienti: NextPageWithLayout = () => {
   const [file, setFile] = React.useState<File | null>(null);
   const [loadingUpload, setLoadingUplaod] = React.useState(false);
+  const [emptyFile, setEmptyFile] = React.useState(false);
+
+  const router = useRouter();
 
   const handleFileChange = (file: File) => {
     setFile(file);
@@ -17,13 +21,16 @@ const ImportClienti: NextPageWithLayout = () => {
 
   const uploadFile = () => {
     if (file) {
+      setEmptyFile(false);
       setLoadingUplaod(true);
+
       // chiamata all'api
       mpApi.customers.actions
         .uploadFile(file)
         .then((res: any) => {
           alert(res.message);
           setLoadingUplaod(false);
+          setEmptyFile(true);
         })
         .catch((err) => {
           setLoadingUplaod(false);
@@ -31,8 +38,6 @@ const ImportClienti: NextPageWithLayout = () => {
         });
     }
   };
-
-  console.log();
 
   return (
     <div>
@@ -46,6 +51,7 @@ const ImportClienti: NextPageWithLayout = () => {
             label="Trascina qui il file CSV o clicca per caricare"
             validTaypes={["text/csv"]}
             onFileChange={(file) => handleFileChange(file)}
+            emptyFile={emptyFile}
           />
 
           {loadingUpload && (

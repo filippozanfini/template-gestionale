@@ -5,9 +5,10 @@ interface DragDropFileProps {
   onFileChange: (file: File) => void;
   label: string;
   validTaypes: string[];
+  emptyFile?: boolean;
 }
 
-const DragDropFile = ({ label, validTaypes, onFileChange }: DragDropFileProps) => {
+const DragDropFile = ({ label, validTaypes, emptyFile, onFileChange }: DragDropFileProps) => {
   const [dragActive, setDragActive] = React.useState(false);
   const [file, setFile] = React.useState<File | null>(null);
   const inputRef: any = React.useRef(null);
@@ -65,6 +66,12 @@ const DragDropFile = ({ label, validTaypes, onFileChange }: DragDropFileProps) =
       onFileChange(file);
     }
   }, [file]);
+
+  useEffect(() => {
+    if (emptyFile) {
+      setFile(null);
+    }
+  }, [emptyFile]);
 
   return (
     <form
