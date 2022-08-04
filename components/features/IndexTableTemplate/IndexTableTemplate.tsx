@@ -43,14 +43,13 @@ const IndexTableTemplate: FC<IndexTableTemplateProps> = ({
   const [totalPages, setTotalPages] = useState(0);
 
   /* FILTER */
-  const [filter, setFilter] = useState("");
+  const [filterName, setFilterName] = useState("");
+  const [filter, setFilter] = useState(filterName);
 
   const router = useRouter();
   const { mutate } = useSWRConfig();
 
   const { data, error } = useFetch({ page, limit: itemsPerPage, query: filter, ...queryParams });
-
-  // console.log(`Data from mpApi ${slugName}`, data);
 
   const handlePageChanged = (page: number) => {
     setPage(page + 1);
@@ -62,13 +61,11 @@ const IndexTableTemplate: FC<IndexTableTemplateProps> = ({
       setTotalItems(data.totalItems);
       setTotalPages(data.totalPages);
     }
-    console.log("data", data);
   }, [data]);
 
   const onEdit = (item: any) => {
     if (item instanceof Installation) {
       const type = item.categoriaImpianto.nome;
-      console.log("type", type);
       if (type) {
         router.push(`/${slugName}/${ImpiantiMapper[type]}/edit?id=${item.id}`);
       }
@@ -76,6 +73,14 @@ const IndexTableTemplate: FC<IndexTableTemplateProps> = ({
       router.push(`/${slugName}/edit?id=${item.id}`);
     }
   };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setFilter(filterName);
+    }, 400);
+
+    return () => clearTimeout(timeout);
+  }, [filterName]);
 
   return (
     <div className="space-y-8 px-4 sm:px-6 lg:px-8">
@@ -85,7 +90,11 @@ const IndexTableTemplate: FC<IndexTableTemplateProps> = ({
       </div>
 
       {isFilterableByUser ? (
-        <InputFilterSearch onChange={(e: any) => setFilter(e.target.value)} value={filter} placeholder="Filtra per Nome e Cognome" />
+        <InputFilterSearch
+          onChange={(e: any) => setFilterName(e.target.value)}
+          value={filterName}
+          placeholder="Filtra per Nome e Cognome"
+        />
       ) : null}
 
       {/* FOR OTHER FILTERS */}

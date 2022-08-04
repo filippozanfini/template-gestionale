@@ -16,6 +16,7 @@ const IndiceImpianti: NextPageWithLayout = () => {
       slugName="impianti"
       mpApiAction={mpApi.installations}
       Table={TableInstallations}
+      isFilterableByUser
     />
   );
 };
