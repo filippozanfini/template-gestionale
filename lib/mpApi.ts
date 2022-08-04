@@ -245,6 +245,15 @@ export const mpApi = {
       autocomplete: async (page: number = 1, limit: number, query: string) => {
         return fetchJson(`/users?page=${page}&limit=${limit}&query=${query}`);
       },
+
+      uploadFile: async (file: File) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        return fetchJson(`/users/carica`, {
+          method: "POST",
+          body: formData,
+        });
+      },
     },
   },
 
