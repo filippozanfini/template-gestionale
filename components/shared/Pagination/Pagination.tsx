@@ -55,14 +55,11 @@ const Pagination = ({
 
       <ReactPaginate
         previousLabel={
-          <button
-            disabled={currentPage === 1}
-            className={["cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"].join(" ")}
-          >
+          <button disabled={currentPage === 1} className={["cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"].join(" ")}>
             <ChevronLeftIcon className="h-6 w-6" />
           </button>
         }
-        previousLinkClassName={`h-10 w-10 flex justify-center border-r border-gray-300 items-center hover:bg-gray-100 hover:rounded-l-md transition-all duration-300`}
+        previousLinkClassName={`h-10 w-10 flex justify-center  border-gray-300 items-center hover:bg-gray-100 hover:rounded-l-md `}
         nextLabel={
           <button
             disabled={currentPage === totalPage}
@@ -71,20 +68,20 @@ const Pagination = ({
             <ChevronRightIcon className="h-6 w-6 " />
           </button>
         }
-        nextLinkClassName={`h-10 w-10 flex justify-center items-center hover:bg-gray-100 hover:rounded-r-md transition-all duration-300`}
+        nextLinkClassName={`h-10 w-10 flex justify-center items-center hover:bg-gray-100 hover:rounded-r-md `}
         breakLabel={"..."}
         breakLinkClassName={"h-10 w-5 flex justify-center items-center rounded-full"}
         pageCount={totalPage}
         containerClassName="flex"
-        className={[
-          "flex  rounded-md border border-gray-300 bg-white text-center  text-base font-semibold text-slate-600 shadow transition-all duration-300 ",
-        ].join(" ")}
+        className={["flex rounded-md border border-gray-300 bg-white text-center  text-base font-semibold text-slate-600 shadow  "].join(
+          " "
+        )}
         onPageChange={({ selected }) => onPageChange(selected)}
         pageRangeDisplayed={3}
         marginPagesDisplayed={1}
         activeClassName={`cursor-default bg-primary-800 text-white hover:bg-primary-700`}
         pageClassName={
-          "h-10 w-10 flex justify-center border-r hover:bg-gray-100 border-gray-300 items-center hover  text-center text-base font-semibold transition-all duration-300 "
+          "h-10 w-10 flex justify-center border-x hover:bg-gray-100 border-gray-300 items-center hover  text-center text-base font-semibold  "
         }
       />
     </div>

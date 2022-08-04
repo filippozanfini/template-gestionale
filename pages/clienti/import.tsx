@@ -28,8 +28,6 @@ const ImportClienti: NextPageWithLayout = () => {
       mpApi.customers.actions
         .uploadFile(file)
         .then((response: any) => {
-          setLoadingUplaod(false);
-          setEmptyFile(true);
           alert({
             id: new Date().toISOString(),
             type: "success",
@@ -38,12 +36,14 @@ const ImportClienti: NextPageWithLayout = () => {
             read: false,
             isAlert: true,
           });
+          setLoadingUplaod(false);
+          setEmptyFile(true);
 
           // console.log(response);
         })
         .catch((err) => {
           setLoadingUplaod(false);
-          console.log(err);
+          console.error(err);
         });
     }
   };

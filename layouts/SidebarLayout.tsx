@@ -236,19 +236,15 @@ function SidebarLayout({ title, children }: any) {
         >
           <div className="sticky top-0 z-10 flex h-16 flex-shrink-0 bg-white shadow">
             <div className="flex flex-1 items-center justify-between px-4">
-              <div>
-                <h1 className="text-2xl font-semibold text-gray-900">
-                  {" "}
-                  <button
-                    onClick={() => {
-                      router.back();
-                    }}
-                  >
-                    {" "}
-                    <ChevronLeftIcon className="h-5 w-5" />{" "}
-                  </button>{" "}
-                  {title}
-                </h1>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    router.back();
+                  }}
+                >
+                  <ChevronLeftIcon className="h-5 w-5 text-gray-900" />
+                </button>
+                <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
               </div>
               <div className="ml-4 flex items-center md:ml-6">
                 <Notifications />
