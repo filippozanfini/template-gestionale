@@ -16,10 +16,10 @@ const defaultValues: Customer = {
   nome: "",
   cognome: "",
   email: "",
-  tel: "",
+  numeroDiTelefono: "",
   indirizzo: "",
-  lat: 0,
-  lon: 0,
+  latitudine: 0,
+  longitudine: 0,
   privacyAccettata: false,
   codiceFiscale: "",
   ruoli: [],
@@ -63,12 +63,12 @@ const EditUsers: NextPageWithLayout = () => {
       nome: formdata.nome !== item?.nome ? formdata.nome : undefined,
       cognome: formdata.cognome !== item?.cognome ? formdata.cognome : undefined,
       email: formdata.email !== item?.email ? formdata.email : undefined,
-      tel: formdata.tel !== item?.tel ? formdata.tel : undefined,
+      numeroDiTelefono: formdata.numeroDiTelefono !== item?.numeroDiTelefono ? formdata.numeroDiTelefono : undefined,
       privacyAccettata: formdata.privacyAccettata !== item?.privacyAccettata ? formdata.privacyAccettata : undefined,
       ruoli: formdata.ruoli !== item?.ruoli ? formdata.ruoli : undefined,
       indirizzo: formdata.indirizzo !== item?.indirizzo ? formdata.indirizzo : undefined,
-      lat: formdata.lat !== item?.lat ? formdata.lat : undefined,
-      lon: formdata.lon !== item?.lon ? formdata.lon : undefined,
+      latitudine: formdata.latitudine !== item?.latitudine ? formdata.latitudine : undefined,
+      longitudine: formdata.longitudine !== item?.longitudine ? formdata.longitudine : undefined,
     };
 
     Object.keys(formdataMap).forEach((key) => {
@@ -110,10 +110,23 @@ const EditUsers: NextPageWithLayout = () => {
 
         if (reason && reason.data && reason.data.errors) {
           Object.keys(reason?.data?.errors).forEach((field: string) => {
-            setError(field as "id" | "nome" | "cognome" | "email" | "indirizzo" | "lat" | "lon" | "tel" | "ruoli" | "privacyAccettata", {
-              type: "custom",
-              message: reason.data.errors[field],
-            });
+            setError(
+              field as
+                | "id"
+                | "nome"
+                | "cognome"
+                | "email"
+                | "indirizzo"
+                | "latitudine"
+                | "longitudine"
+                | "numeroDiTelefono"
+                | "ruoli"
+                | "privacyAccettata",
+              {
+                type: "custom",
+                message: reason.data.errors[field],
+              }
+            );
           });
         }
       });
@@ -183,33 +196,33 @@ const EditUsers: NextPageWithLayout = () => {
 
             <FormInput
               className="sm:col-span-3"
-              {...register("tel", { required: true })}
-              errorMessage={renderError(errors["tel"])}
-              autoComplete="tel"
+              {...register("numeroDiTelefono", { required: true })}
+              errorMessage={renderError(errors["numeroDiTelefono"])}
+              autoComplete="numeroDiTelefono"
               aria="Modifica il numero di telefono"
               label="Telefono"
-              defaultValue={item?.tel ?? ""}
+              defaultValue={item?.numeroDiTelefono ?? ""}
               type="tel"
             />
 
             <FormInput
               className="sm:col-span-3"
-              {...register("lat", { required: true })}
-              errorMessage={renderError(errors["lat"])}
-              autoComplete="lat"
+              {...register("latitudine", { required: true })}
+              errorMessage={renderError(errors["latitudine"])}
+              autoComplete="latitudine"
               aria="Modifica la latitudine"
               label="Latitudine"
-              defaultValue={item?.lat ?? ""}
+              defaultValue={item?.latitudine ?? ""}
             />
 
             <FormInput
               className="sm:col-span-3"
-              {...register("lon", { required: true })}
-              errorMessage={renderError(errors["lon"])}
-              autoComplete="lon"
+              {...register("longitudine", { required: true })}
+              errorMessage={renderError(errors["longitudine"])}
+              autoComplete="longitudine"
               aria="Modifica la longitudine"
               label="Longitudine"
-              defaultValue={item?.lon ?? ""}
+              defaultValue={item?.longitudine ?? ""}
             />
 
             <FormInput
