@@ -75,7 +75,7 @@ const NotificationsCenter = () => {
                     <>
                       <div>
                         <button
-                          className="flex w-full cursor-pointer items-center justify-center bg-primary-600 p-2 text-sm font-semibold tracking-wide text-white hover:bg-primary-400"
+                          className="flex  w-full cursor-pointer items-center justify-center bg-primary-600 p-2 text-sm font-semibold tracking-wide text-white hover:bg-primary-400"
                           onClick={() => {
                             notifications.forEach((notification) => {
                               markAsRead(notification);

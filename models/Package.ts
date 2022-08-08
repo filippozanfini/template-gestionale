@@ -1,3 +1,4 @@
+import { Category } from "./Category";
 import { ICategory } from "./interfaces/Category";
 
 export interface IPackage {
@@ -6,7 +7,7 @@ export interface IPackage {
   descrizione?: string;
   costo?: number;
   novita?: boolean;
-  categorie?: ICategory[];
+  categorie?: string[];
 }
 
 export class Package implements IPackage {
@@ -15,7 +16,7 @@ export class Package implements IPackage {
   descrizione: string;
   costo: number;
   novita: boolean;
-  categorie: ICategory[];
+  categorie: string[];
 
   constructor(data: IPackage) {
     this.id = data.id ?? 0;
