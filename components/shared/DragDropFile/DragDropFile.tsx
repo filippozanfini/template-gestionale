@@ -3,12 +3,13 @@ import React, { useEffect } from "react";
 
 interface DragDropFileProps {
   onFileChange: (file: File) => void;
+  onError: (message: string) => void;
   label: string;
   validTaypes: string[];
   emptyFile?: boolean;
 }
 
-const DragDropFile = ({ label, validTaypes, emptyFile, onFileChange }: DragDropFileProps) => {
+const DragDropFile = ({ label, validTaypes, emptyFile, onFileChange, onError }: DragDropFileProps) => {
   const [dragActive, setDragActive] = React.useState(false);
   const [file, setFile] = React.useState<File | null>(null);
   const inputRef: any = React.useRef(null);
@@ -32,7 +33,7 @@ const DragDropFile = ({ label, validTaypes, emptyFile, onFileChange }: DragDropF
       if (checkFileType(file)) {
         setFile(file);
       } else {
-        alert("File non supportato");
+        onError("Formato file non valido, accetta solo file CSV");
       }
     }
   };
@@ -44,7 +45,7 @@ const DragDropFile = ({ label, validTaypes, emptyFile, onFileChange }: DragDropF
       if (checkFileType(file)) {
         setFile(file);
       } else {
-        alert("File non supportato");
+        onError("Formato file non valido, accetta solo file CSV");
       }
     }
   };
