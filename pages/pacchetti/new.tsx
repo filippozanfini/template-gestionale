@@ -1,3 +1,3 @@
-import NewServizio from "./edit";
+import EditPacchetti from "./edit";
 
-export default NewServizio;
+export default EditPacchetti;

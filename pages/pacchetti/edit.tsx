@@ -32,7 +32,7 @@ const EditPacchetti: NextPageWithLayout = () => {
   const [item, setItem] = useState<Package | null>(defaultValues);
   const [itemCategory, setItemCategory] = useState<string[]>([]);
   const [itemNovita, setItemNovita] = useState(false);
-  const [tabIndex, setTabIndex] = useState(0);
+  const [tabIndex, setTabIndex] = useState(1);
   const notify = useNotify();
   const alert = useAlert();
 
@@ -143,6 +143,8 @@ const EditPacchetti: NextPageWithLayout = () => {
     }
   };
 
+  console.log(tabIndex === 0 ? "IMPIANTO" : "IMPIANTO FOTOVOLTAICO");
+
   useEffect(() => {
     if (query.id) {
       const ItemId: number = Number(query.id);
@@ -155,8 +157,6 @@ const EditPacchetti: NextPageWithLayout = () => {
       setItemNovita(item.novita);
 
       if (item.categorie) {
-        console.log("FROM ITEM", item.categorie);
-
         setItemCategory(item.categorie);
         setValue("categorie", item.categorie);
 
@@ -181,7 +181,7 @@ const EditPacchetti: NextPageWithLayout = () => {
               {item?.id > 0 ? "CODICE: " + item.id : "Nuovo pacchetto manutenzione"}
             </h3>
             <div className="mt-10">
-              <Tab.Group selectedIndex={tabIndex}>
+              <Tab.Group selectedIndex={tabIndex} onChange={(index: number) => setTabIndex(index)}>
                 <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
                   <Tab
                     className={({ selected }) =>
@@ -189,7 +189,6 @@ const EditPacchetti: NextPageWithLayout = () => {
                         selected ? "bg-white shadow" : "text-gray-50 hover:bg-white/[0.12] hover:text-white"
                       }`
                     }
-                    onClick={() => setTabIndex(0)}
                     disabled={item.categorie.find((c: any) => c === 3) ? true : false}
                   >
                     Altri impianti
@@ -200,8 +199,7 @@ const EditPacchetti: NextPageWithLayout = () => {
                         selected ? "bg-white shadow" : "text-gray-50 hover:bg-white/[0.12] hover:text-white"
                       }`
                     }
-                    onClick={() => setTabIndex(1)}
-                    disabled={!item.categorie.find((c: any) => c === 3) ? true : false}
+                    disabled={item.categorie.length > 0 && !item.categorie.find((c: any) => c === 3) ? true : false}
                   >
                     Impianto Fotovoltaico
                   </Tab>

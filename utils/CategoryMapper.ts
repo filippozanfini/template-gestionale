@@ -1,5 +1,5 @@
 type CategoryMapperType = {
-  [key: number]: string;
+  [key: string]: string;
 };
 
 export const CategoryMapper: CategoryMapperType = {

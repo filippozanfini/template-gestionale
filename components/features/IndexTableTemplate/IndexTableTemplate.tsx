@@ -5,6 +5,7 @@ import React, { FC, useEffect, useState } from "react";
 import { useSWRConfig } from "swr";
 import { Installation } from "../../../models/Installation";
 import { SlugName } from "../../../models/types/SlugName";
+import { CategoryMapper } from "../../../utils/CategoryMapper";
 import { ImpiantiMapper } from "../../../utils/ImpiantiMapper";
 import InputFilterSearch from "../../core/InputFilterSearch";
 import Loader from "../../core/Loader";
@@ -65,7 +66,7 @@ const IndexTableTemplate: FC<IndexTableTemplateProps> = ({
 
   const onEdit = (item: any) => {
     if (item instanceof Installation) {
-      const type = item.categoriaImpianto.nome;
+      const type = CategoryMapper[item.categoriaImpianto];
       if (type) {
         router.push(`/${slugName}/${ImpiantiMapper[type]}/edit?id=${item.id}`);
       }
