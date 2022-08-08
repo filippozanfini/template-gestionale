@@ -52,6 +52,15 @@ const DetailPage: NextPageWithLayout = () => {
     setItem(newOrder);
   };
 
+  const backgroundCss =
+    item?.stato === "inCorso"
+      ? "bg-gray-600"
+      : item?.stato === "pagato"
+      ? "bg-blue-500"
+      : item?.stato === "concluso"
+      ? "bg-green-500"
+      : "bg-red-500";
+
   return (
     <>
       {item && (
@@ -69,7 +78,7 @@ const DetailPage: NextPageWithLayout = () => {
             <div className="flex items-center gap-3">
               <p className="font-semibold ">Stato ordine:</p>
               <ListBox
-                backgroundColor="bg-blue-500"
+                backgroundColor={backgroundCss}
                 textColor="text-white"
                 listItems={listOrderStatus}
                 onChange={(value: any) => handleOrderStatus(item, InverterOrderStatusMapper[value])}
