@@ -7,9 +7,6 @@ import FormInput from "../../components/FormInput";
 import CheckboxInput from "../../components/core/Checkbox";
 import { mpApi } from "../../lib/mpApi";
 import FormPasswordInput from "../../components/Password";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useNotify } from "../../components/notifications";
-import { useRouter } from "next/router";
 
 const defaultValues: Customer = {
   id: 0,
@@ -29,6 +26,7 @@ const EditClienti: NextPageWithLayout = () => {
   return (
     <EditPage<Customer> defaultValues={defaultValues} mpApiAction={mpApi.customers} slugName="clienti">
       {(item: Customer, register, renderError, errors) => {
+        console.log("item", item);
         return item ? (
           <div>
             <div>
@@ -72,7 +70,7 @@ const EditClienti: NextPageWithLayout = () => {
                 autoComplete="email"
                 aria="Modifica l'Email"
                 label="Email"
-                defaultValue={item?.codiceFiscale ?? ""}
+                defaultValue={item?.email ?? ""}
                 type="email"
               />
               <FormInput
@@ -82,7 +80,7 @@ const EditClienti: NextPageWithLayout = () => {
                 autoComplete="codiceFiscale"
                 aria="Modifica il Codice Fiscale"
                 label="Codice Fiscale"
-                defaultValue={item?.cognome ?? ""}
+                defaultValue={item?.codiceFiscale ?? ""}
               />
               {item.id === 0 && (
                 <FormPasswordInput
@@ -92,7 +90,7 @@ const EditClienti: NextPageWithLayout = () => {
                   autoComplete="password"
                   aria="Modifica la password"
                   label="Password"
-                  defaultValue={item?.email ?? ""}
+                  defaultValue={""}
                   type="password"
                 />
               )}
