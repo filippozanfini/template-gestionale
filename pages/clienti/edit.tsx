@@ -26,7 +26,6 @@ const EditClienti: NextPageWithLayout = () => {
   return (
     <EditPage<Customer> defaultValues={defaultValues} mpApiAction={mpApi.customers} slugName="clienti">
       {(item: Customer, register, renderError, errors) => {
-        console.log("item", item);
         return item ? (
           <div>
             <div>
