@@ -1,6 +1,6 @@
 import moment from "moment";
 import { useRouter } from "next/router";
-import React, { useState, useEffect, FC, ReactElement } from "react";
+import React, { useState, useEffect, FC, ReactElement, useMemo } from "react";
 import ListBox from "../../components/shared/ListBox/ListBox";
 import SidebarLayout from "../../layouts/SidebarLayout";
 import { mpApi } from "../../lib/mpApi";
@@ -35,7 +35,10 @@ const DetailPage: NextPageWithLayout = () => {
     }
   }, [query, item]);
 
-  const listOrderStatus = Object.values(eOrderStatus);
+  const listOrderStatus = Object.values(eOrderStatus).filter((value) => {
+    return value !== "NONE";
+  });
+
   const nomeAcquisto = item?.servizio ? item.servizio.nome : item?.pacchetto ? item?.pacchetto.nome : "";
   const costoAcquisto = item?.servizio
     ? item.servizio.costo
@@ -52,14 +55,15 @@ const DetailPage: NextPageWithLayout = () => {
     setItem(newOrder);
   };
 
-  const backgroundCss =
-    item?.stato === "inCorso"
+  const backgroundCss = useMemo(() => {
+    return item?.stato === "inCorso"
       ? "bg-gray-600"
       : item?.stato === "pagato"
       ? "bg-blue-500"
       : item?.stato === "concluso"
       ? "bg-green-500"
       : "bg-red-500";
+  }, [item?.stato]);
 
   return (
     <>
@@ -77,14 +81,16 @@ const DetailPage: NextPageWithLayout = () => {
             </div>
             <div className="flex items-center gap-3">
               <p className="font-semibold ">Stato ordine:</p>
-              <ListBox
-                backgroundColor={backgroundCss}
-                textColor="text-white"
-                listItems={listOrderStatus}
-                onChange={(value: any) => handleOrderStatus(item, InverterOrderStatusMapper[value])}
-                selected={OrderStatusMapper[item.stato ?? "none"]}
-                selectedName={OrderStatusMapper[item.stato ?? "none"] ?? ""}
-              />
+              <div className="z-50 w-36">
+                <ListBox
+                  backgroundColor={backgroundCss}
+                  textColor="text-white"
+                  listItems={listOrderStatus}
+                  onChange={(value: any) => handleOrderStatus(item, InverterOrderStatusMapper[value])}
+                  selected={OrderStatusMapper[item.stato ?? "none"] === "NONE" ? "" : OrderStatusMapper[item.stato ?? "none"]}
+                  selectedName={OrderStatusMapper[item.stato ?? "none"] ?? ""}
+                />
+              </div>
             </div>
           </div>
           <div className="mt-5 h-[1px] w-full bg-gray-200" />
@@ -125,7 +131,7 @@ const DetailPage: NextPageWithLayout = () => {
             </div>
             <div className="max-h-[400px] w-1/2 flex-col justify-center rounded-md bg-gray-50 p-10">
               <p className="text-bold text-right text-xl font-bold">Storico stato</p>
-              <div className="mt-5 flex max-h-[290px] flex-col gap-4 overflow-y-scroll">
+              <div className="mt-5 flex max-h-[290px] flex-col gap-4 overflow-y-auto">
                 {item.listaStati.reverse().map((l: any) => {
                   return (
                     <div key={l.id} className="flex w-full items-center justify-end gap-3">

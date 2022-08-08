@@ -1,4 +1,4 @@
-import { DocumentTextIcon, XCircleIcon } from "@heroicons/react/outline";
+import { CheckCircleIcon, DocumentTextIcon, XCircleIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { mpApi } from "../../lib/mpApi";
@@ -42,7 +42,9 @@ const itemsHeadTable: HeadCell[] = [
   },
 ];
 
-const listOrderStatus = Object.values(eOrderStatus);
+const listOrderStatus = Object.values(eOrderStatus).filter((value) => {
+  return value !== "NONE";
+});
 
 const TableOrders = ({ items, onDeleteAction, onEditAction }: TableListProps) => {
   const [order, setOrder] = useState<IOrder>({});
@@ -50,7 +52,7 @@ const TableOrders = ({ items, onDeleteAction, onEditAction }: TableListProps) =>
   const { push } = useRouter();
 
   const handleActionEdit = (item: IOrder) => {
-    Object.keys(order).length > 0 ? setOrder({}) : setOrder(item);
+    Object.keys(order).length > 0 ? setOrder({}) : setOrder({ ...item });
   };
 
   const handleOrderStatus = (order: IOrder, newOrderStatus: string) => {
@@ -91,14 +93,16 @@ const TableOrders = ({ items, onDeleteAction, onEditAction }: TableListProps) =>
               <p className="text-xs text-gray-900 ">{item.importo} €</p>
             </Table.Cell>
 
-            <Table.Cell align="left">
+            <Table.Cell align="left" position={item.id == order.id ? "absolute" : "relative"}>
               {item.id == order.id ? (
-                <ListBox
-                  listItems={listOrderStatus}
-                  onChange={(value: any) => handleOrderStatus(item, InverterOrderStatusMapper[value])}
-                  selected={OrderStatusMapper[item.stato ?? "none"]}
-                  selectedName={OrderStatusMapper[item.stato ?? "none"] ?? ""}
-                />
+                <div className="absolute top-3 left-0 z-50 w-36">
+                  <ListBox
+                    listItems={listOrderStatus}
+                    onChange={(value: any) => handleOrderStatus(item, InverterOrderStatusMapper[value])}
+                    selected={OrderStatusMapper[item.stato ?? "none"]}
+                    selectedName={OrderStatusMapper[item.stato ?? "none"] ?? ""}
+                  />
+                </div>
               ) : (
                 <p className="text-xs text-gray-900 ">{OrderStatusMapper[item.stato ?? "none"]}</p>
               )}
@@ -106,7 +110,9 @@ const TableOrders = ({ items, onDeleteAction, onEditAction }: TableListProps) =>
 
             <Table.Cell align="right">
               {Object.keys(order).length > 0 && item.id == order.id ? (
-                <XCircleIcon className="h-8 w-8 cursor-pointer p-1 pr-2 text-red-500" onClick={() => handleActionEdit(item)} />
+                <div className="flex gap-2">
+                  <CheckCircleIcon className="h-8 w-8 cursor-pointer p-1 pr-2 text-green-500" onClick={() => handleActionEdit(item)} />
+                </div>
               ) : (
                 <div className="flex items-center">
                   <ActionDetails onAction={() => push(`/ordini/detail/?id=${item.id}`)} />
