@@ -31,6 +31,7 @@ const defaultValues: Servizio = {
 const EditServizi: NextPageWithLayout = () => {
   const { push, query } = useRouter();
   const [item, setItem] = useState<Servizio | null>(defaultValues);
+  const [itemNovita, setItemNovita] = useState(false);
   const notify = useNotify();
   const alert = useAlert();
 
@@ -107,6 +108,12 @@ const EditServizi: NextPageWithLayout = () => {
     }
   }, [query]);
 
+  useEffect(() => {
+    if (item) {
+      setItemNovita(item.novita);
+    }
+  }, [item]);
+
   return item ? (
     <form className="space-y-8 divide-y divide-gray-200" onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-8 divide-y divide-gray-200">
@@ -147,13 +154,7 @@ const EditServizi: NextPageWithLayout = () => {
               label="Descrizione"
               defaultValue={item?.descrizione ?? ""}
             />
-            <CheckboxInput
-              className="sm:col-span-4"
-              {...register("novita")}
-              aria="Inserisci novita"
-              label="Novità"
-              defaultChecked={item?.novita || false}
-            />
+            <CheckboxInput className="sm:col-span-4" {...register("novita")} aria="Inserisci novità" label="Novità" checked={item.novita} />
           </div>
         </div>
       </div>
