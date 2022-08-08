@@ -1,7 +1,8 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useEffect } from "react";
 import Button from "../../components/core/Button";
 import Loader from "../../components/core/Loader";
-import { useAlert, useNotify } from "../../components/notifications";
+import { useAlert } from "../../components/notifications";
+import Dialog from "../../components/shared/Dialog/Dialog";
 import DragDropFile from "../../components/shared/DragDropFile/DragDropFile";
 import SidebarLayout from "../../layouts/SidebarLayout";
 import { mpApi } from "../../lib/mpApi";
@@ -12,11 +13,23 @@ const ImportClienti: NextPageWithLayout = () => {
   const [loadingUpload, setLoadingUplaod] = React.useState(false);
   const [emptyFile, setEmptyFile] = React.useState(false);
 
-  const notify = useNotify();
+  const [res, setRes] = React.useState<any>();
+
   const alert = useAlert();
 
   const handleFileChange = (file: File) => {
     setFile(file);
+  };
+
+  const handleError = (message: string) => {
+    alert({
+      id: new Date().toISOString(),
+      type: "error",
+      title: "Errore caricamento file",
+      message: message,
+      read: false,
+      isAlert: true,
+    });
   };
 
   const uploadFile = () => {
@@ -28,14 +41,7 @@ const ImportClienti: NextPageWithLayout = () => {
       mpApi.customers.actions
         .uploadFile(file)
         .then((response: any) => {
-          alert({
-            id: new Date().toISOString(),
-            type: "success",
-            title: "Caricamento utenti da CSV",
-            message: response.message,
-            read: false,
-            isAlert: true,
-          });
+          setRes(response);
           setLoadingUplaod(false);
           setEmptyFile(true);
 
@@ -47,6 +53,12 @@ const ImportClienti: NextPageWithLayout = () => {
         });
     }
   };
+
+  useEffect(() => {
+    if (emptyFile) {
+      setFile(null);
+    }
+  }, [emptyFile]);
 
   return (
     <div>
@@ -60,6 +72,7 @@ const ImportClienti: NextPageWithLayout = () => {
             label="Trascina qui il file CSV o clicca per caricare"
             validTaypes={["text/csv"]}
             onFileChange={(file) => handleFileChange(file)}
+            onError={handleError}
             emptyFile={emptyFile}
           />
 
@@ -69,18 +82,24 @@ const ImportClienti: NextPageWithLayout = () => {
             </div>
           )}
         </div>
+
         <div className="ml-auto w-44">
-          <Button aria="upload" title="Carica File" onClick={() => uploadFile()}>
-            Carica File
-          </Button>
+          <Button aria="upload" title="Carica File" onClick={() => uploadFile()} disabled={!file} />
         </div>
       </div>
+
+      <Dialog isOpen={Boolean(res)} onClose={() => setRes(null)} title={res?.message}>
+        <div className="mt-4 space-y-1">
+          <p>Utenti caricati con successo: {res?.utentiCaricatiCorrettamente}</p>
+          <p>Utenti non caricati: {res?.utentiCaricamentoFallito}</p>
+        </div>
+      </Dialog>
     </div>
   );
 };
 
 ImportClienti.getLayout = function getLayout(page: ReactElement) {
-  return <SidebarLayout title="Clienti">{page}</SidebarLayout>;
+  return <SidebarLayout title="Importa Clienti">{page}</SidebarLayout>;
 };
 
 export default ImportClienti;

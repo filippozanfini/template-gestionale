@@ -47,7 +47,7 @@ const RecuperaPassword = () => {
           Area riservata
         </p>
 
-        <p className="text-sm">Inserisci un'email a cui inviare le istruzioni di recupero password</p>
+        <p className="text-sm">{"Inserisci un'email a cui inviare le istruzioni di recupero password"}</p>
 
         <form className="space-y-6" onSubmit={(e) => handleSubmit(e)}>
           <Input

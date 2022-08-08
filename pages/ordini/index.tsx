@@ -22,13 +22,23 @@ const IndiceOrdini: NextPageWithLayout = () => {
   const handleFilterOrderStatus = (value: string) => {
     const index = Object.values(listFilterStatus).indexOf(value);
     setFilterStatusValue(value);
-    setFilterStatusSelectedKey(Object.keys(listFilterStatus)[index]);
+    console.log(Object.keys(listFilterStatus)[index]);
+
+    if (Object.keys(listFilterStatus)[index] === "vuoto") {
+      setFilterStatusSelectedKey("");
+    } else {
+      setFilterStatusSelectedKey(Object.keys(listFilterStatus)[index]);
+    }
   };
 
   const handleFilterOrderBy = (value: string) => {
     const index = Object.values(listOrderBy).indexOf(value);
     setOrderByValue(value);
-    setOrderBySelectedKey(Object.keys(listOrderBy)[index]);
+    if (Object.keys(listOrderBy)[index] === "vuoto") {
+      setOrderBySelectedKey("");
+    } else {
+      setOrderBySelectedKey(Object.keys(listOrderBy)[index]);
+    }
   };
 
   return (
@@ -44,7 +54,7 @@ const IndiceOrdini: NextPageWithLayout = () => {
       <div className="flex gap-16">
         <div className="flex items-center gap-4">
           <span className="text-sm text-gray-700">Filtra per stato:</span>
-          <div className="w-48">
+          <div className="z-50 w-48">
             <ListBox
               listItems={Object.values(listFilterStatus)}
               onChange={(value) => handleFilterOrderStatus(value)}
@@ -56,7 +66,7 @@ const IndiceOrdini: NextPageWithLayout = () => {
 
         <div className="flex items-center gap-4">
           <span className="text-sm text-gray-700">Ordina per:</span>
-          <div className="w-48">
+          <div className="z-50 w-48">
             <ListBox
               listItems={Object.values(listOrderBy)}
               onChange={(value) => handleFilterOrderBy(value)}

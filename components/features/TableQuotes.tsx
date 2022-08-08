@@ -21,7 +21,7 @@ const itemsHeadTable: HeadCell[] = [
   },
   {
     title: "Costo",
-    align: "left",
+    align: "center",
   },
   {
     title: "Stato Preventivo",
@@ -54,7 +54,7 @@ const TableQuotes = ({ items, onDeleteAction, onEditAction }: TableListProps) =>
               </div>
             </Table.Cell>
 
-            <Table.Cell>
+            <Table.Cell align="center">
               <p className="text-xs text-gray-900 ">{item.costo} €</p>
             </Table.Cell>
 
