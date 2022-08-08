@@ -184,7 +184,13 @@ export const mpApi = {
           body: JSON.stringify(item),
         });
       },
-
+      saveFotovoltaico: async (item: any) => {
+        return fetchJson(`/pacchetti/fotovoltaico/${item.id > 0 ? item.id : ""}`, {
+          method: item.id > 0 ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(item),
+        });
+      },
       delete: async (id: number) => {
         let data: any = await fetchJson(`/pacchetti/${id}`, {
           method: "DELETE",

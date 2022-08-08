@@ -8,6 +8,9 @@ export interface IPackage {
   costo?: number;
   novita?: boolean;
   categorie?: string[];
+  potenzaMin?: number;
+  potenzaMax?: number;
+  tensione?: string;
 }
 
 export class Package implements IPackage {
@@ -17,6 +20,9 @@ export class Package implements IPackage {
   costo: number;
   novita: boolean;
   categorie: string[];
+  potenzaMin: number;
+  potenzaMax: number;
+  tensione: string;
 
   constructor(data: IPackage) {
     this.id = data.id ?? 0;
@@ -25,6 +31,9 @@ export class Package implements IPackage {
     this.costo = data.costo ?? 0;
     this.novita = data.novita ?? false;
     this.categorie = data.categorie ?? [];
+    this.potenzaMin = data.potenzaMin ?? 0.0;
+    this.potenzaMax = data.potenzaMax ?? 0.0;
+    this.tensione = data.tensione ?? "";
   }
 
   static factory(data: Package): IPackage {
@@ -35,6 +44,9 @@ export class Package implements IPackage {
       costo: data.costo,
       novita: data.novita,
       categorie: data.categorie,
+      potenzaMin: data.potenzaMin,
+      potenzaMax: data.potenzaMax,
+      tensione: data.tensione,
     };
   }
 }
