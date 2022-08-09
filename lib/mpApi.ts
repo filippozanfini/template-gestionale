@@ -35,6 +35,9 @@ export const mpApi = {
         };
       },
     },
+    logout: () => {
+      Cookies.del("token");
+    },
   },
 
   services: {

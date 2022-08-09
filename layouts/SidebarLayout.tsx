@@ -36,20 +36,28 @@ import {
   ChevronLeftIcon,
   UploadIcon,
 } from "@heroicons/react/outline";
-import { Dialog, Menu, Transition } from "@headlessui/react";
+import { Menu, Transition } from "@headlessui/react";
 import NavigationMenu, { MenuItem } from "../components/NavigationMenu";
 import { useRouter } from "next/router";
 import Notifications from "../components/notifications/NotificationsCenter";
 import { ArrowLeftIcon } from "@heroicons/react/solid";
+import { mpApi } from "../lib/mpApi";
+import Dialog from "../components/shared/Dialog/Dialog";
 
 function SidebarLayout({ title, children }: any) {
+  const { replace } = useRouter();
   const [sidebar, setSidebar] = useState(true);
   const { user } = useUser({});
+  const [showDialog, setShowDialog] = useState(false);
   const [current, setCurrent] = useState("");
   const [userNavigation, setUserNavigation] = useState([
     { name: "Profilo", href: "#" },
     { name: "Impostazioni", href: "#" },
-    { name: "Esci", href: "#" },
+    {
+      name: "Esci",
+      href: "#",
+      onClick: () => setShowDialog(true),
+    },
   ]);
   const [sezioni, setSezioni] = useState<MenuItem[]>([]);
   const router = useRouter();
@@ -163,7 +171,11 @@ function SidebarLayout({ title, children }: any) {
     setUserNavigation([
       { name: "Profilo", href: "/profilo" },
       { name: "Impostazioni", href: "#" },
-      { name: "Esci", href: "#" },
+      {
+        name: "Esci",
+        href: "",
+        onClick: () => setShowDialog(true),
+      },
     ]);
   }, [user, router]);
 
@@ -207,7 +219,10 @@ function SidebarLayout({ title, children }: any) {
             width: sidebar ? "240px" : "70px",
           }}
         >
-          <div className="w-full bg-black/40 px-2 py-4 text-center drop-shadow-md">
+          <div
+            className="w-full cursor-pointer bg-black/40 px-2 py-4 text-center drop-shadow-md hover:opacity-90"
+            onClick={() => replace("/")}
+          >
             <Image className="block-inline mx-auto w-full" src={logo} layout="responsive" objectFit="contain" alt="Logo" />
           </div>
           <div className="grow overflow-y-auto">
@@ -271,8 +286,9 @@ function SidebarLayout({ title, children }: any) {
                         <Menu.Item key={item.name}>
                           {({ active }: { active: boolean }) => (
                             <a
-                              href={item.href}
+                              href={item.href !== "" ? item.href : undefined}
                               className={[active ? "bg-gray-100" : "", "block px-4 py-2 text-sm text-gray-700"].join(" ")}
+                              onClick={item.onClick}
                             >
                               {item.name}
                             </a>
@@ -295,6 +311,20 @@ function SidebarLayout({ title, children }: any) {
             </div>
           </main>
         </div>
+        <Dialog title={`Sei sicuro di voler uscire?`} isOpen={showDialog} onClose={() => setShowDialog(false)}>
+          <div className="mt-6 flex gap-3">
+            <Button title="Annulla" aria="" className="w-full bg-gray-500 px-5 py-2" onClick={() => setShowDialog(false)} />
+            <Button
+              title="Conferma"
+              aria=""
+              className="w-full bg-red-500 px-5 py-2 outline-hidden outline-red-500 hover:bg-red-600"
+              onClick={() => {
+                mpApi.user.logout();
+                router.reload();
+              }}
+            />
+          </div>
+        </Dialog>
       </div>
     </>
   );

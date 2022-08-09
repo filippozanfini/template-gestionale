@@ -10,7 +10,7 @@ import Button from "../../components/core/Button";
 import Dialog from "../../components/shared/Dialog/Dialog";
 
 const ProfiloUtente: NextPageWithLayout = () => {
-  const router = useRouter();
+  const { reload } = useRouter();
   const { mutate } = useSWRConfig();
   const { data: userData, mutate: mutateUser } = useSWR<any>(mpApi.user.routes.me);
   const [showDialog, setShowDialog] = useState(false);
@@ -54,7 +54,10 @@ const ProfiloUtente: NextPageWithLayout = () => {
             title="Conferma"
             aria=""
             className="w-full bg-red-500 px-5 py-2 outline-hidden outline-red-500 hover:bg-red-600"
-            onClick={() => {}}
+            onClick={() => {
+              mpApi.user.logout();
+              reload();
+            }}
           />
         </div>
       </Dialog>
