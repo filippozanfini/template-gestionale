@@ -11,6 +11,7 @@ import Textarea from "../../components/TextArea";
 import Combobox from "../../components/shared/ComboBox/Combobox";
 import { CheckIcon } from "@heroicons/react/solid";
 import moment from "moment";
+import { OrderStatusMapper } from "../../utils/OrderStatusMapper";
 
 const defaultValues: IQuote = {
   id: 0,
@@ -81,47 +82,10 @@ const EditPreventivi: NextPageWithLayout = () => {
               <div className="mt-1 text-sm text-gray-500"></div>
             </div>
 
-            <div className="mt-10 flex justify-between">
-              <FormInput
-                className="sm:col-span-6"
-                {...register("costo", { required: true })}
-                errorMessage={renderError(errors["costo"])}
-                autoComplete="costo"
-                aria="Modifica il Costo"
-                label="Costo"
-                defaultValue={item?.costo ?? ""}
-                type="number"
-              />
-              {item.id !== 0 && (
-                <FormInput
-                  className="sm:col-span-6"
-                  aria="Modifica il Costo"
-                  label="Stato Preventivo"
-                  value={item.statoPreventivo}
-                  type="text"
-                  name="stato"
-                  disabled
-                />
-              )}
-              {item.id !== 0 && (
-                <FormInput
-                  className="sm:col-span-6"
-                  aria="Modifica Data di Scadenza"
-                  label="Data di Scadenza"
-                  value={item.dataScadenza.toString()}
-                  type="text"
-                  name="data-di-scadenza"
-                  disabled
-                />
-              )}
-            </div>
-
-            <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-              <input type="hidden" value={item?.id} {...register("id")} />
-
+            <div className="mt-10 flex justify-between gap-4">
               {/* SE SI STA CREANDO UN PREVENTIVO  */}
               {item.id == 0 ? (
-                <div className="col-span-5 flex flex-col items-start">
+                <div className="flex w-full flex-col items-start">
                   <span className="block text-sm font-medium text-gray-700">Cerca Utente</span>
                   <Combobox
                     listItems={listCustomers}
@@ -150,6 +114,42 @@ const EditPreventivi: NextPageWithLayout = () => {
               ) : null}
 
               {customer?.id && <input type="hidden" value={customer?.id} {...register("idUtente")} />}
+              <FormInput
+                className="sm:col-span-6"
+                {...register("costo", { required: true })}
+                errorMessage={renderError(errors["costo"])}
+                autoComplete="costo"
+                aria="Modifica il Costo"
+                label="Costo"
+                defaultValue={item?.costo ?? ""}
+                type="number"
+              />
+              {item.id !== 0 && (
+                <FormInput
+                  className="sm:col-span-6"
+                  aria="Modifica il Costo"
+                  label="Stato Preventivo"
+                  value={OrderStatusMapper[item.statoPreventivo]}
+                  type="text"
+                  name="stato"
+                  disabled
+                />
+              )}
+              {item.id !== 0 && (
+                <FormInput
+                  className="sm:col-span-6"
+                  aria="Modifica Data di Scadenza"
+                  label="Data di Scadenza"
+                  value={item.dataScadenza.toString()}
+                  type="text"
+                  name="data-di-scadenza"
+                  disabled
+                />
+              )}
+            </div>
+
+            <div className="mt-3 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+              <input type="hidden" value={item?.id} {...register("id")} />
 
               <Textarea
                 className="sm:col-span-6"

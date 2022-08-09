@@ -10,7 +10,7 @@ import Button from "../../components/core/Button";
 import Dialog from "../../components/shared/Dialog/Dialog";
 
 const ProfiloUtente: NextPageWithLayout = () => {
-  const router = useRouter();
+  const { reload } = useRouter();
   const { mutate } = useSWRConfig();
   const { data: userData, mutate: mutateUser } = useSWR<any>(mpApi.user.routes.me);
   const [showDialog, setShowDialog] = useState(false);
@@ -32,17 +32,17 @@ const ProfiloUtente: NextPageWithLayout = () => {
           <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
         <div className="flex flex-col gap-1">
-          <p className="text-lg font-bold">
-            ID: <span className="font-normal text-gray-500">{userData.id}</span>
+          <p className="text-lg text-gray-500">
+            ID: <span className="font-bold text-black">{userData.id}</span>
           </p>
-          <p className="text-lg font-bold">
-            Nome: <span className="font-normal text-gray-500">{userData.nome}</span>
+          <p className="text-lg text-gray-500">
+            Nome: <span className="font-bold text-black">{userData.nome}</span>
           </p>
-          <p className="text-lg font-bold">
-            Cognome: <span className="font-normal text-gray-500">{userData.cognome}</span>
+          <p className="text-lg text-gray-500">
+            Cognome: <span className="font-bold text-black">{userData.cognome}</span>
           </p>
-          <p className="text-lg font-bold">
-            CF: <span className="font-normal text-gray-500">{userData.codiceFiscale}</span>
+          <p className="text-lg text-gray-500">
+            CF: <span className="font-bold text-black">{userData.codiceFiscale}</span>
           </p>
         </div>
       </div>
@@ -54,7 +54,10 @@ const ProfiloUtente: NextPageWithLayout = () => {
             title="Conferma"
             aria=""
             className="w-full bg-red-500 px-5 py-2 outline-hidden outline-red-500 hover:bg-red-600"
-            onClick={() => {}}
+            onClick={() => {
+              mpApi.user.logout();
+              reload();
+            }}
           />
         </div>
       </Dialog>

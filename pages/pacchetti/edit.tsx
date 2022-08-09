@@ -31,7 +31,6 @@ const EditPacchetti: NextPageWithLayout = () => {
   const { push, query } = useRouter();
   const [item, setItem] = useState<Package | null>(defaultValues);
   const [itemCategory, setItemCategory] = useState<string[]>([]);
-  const [itemNovita, setItemNovita] = useState(false);
   const [tabIndex, setTabIndex] = useState(0);
   const notify = useNotify();
   const alert = useAlert();
@@ -148,13 +147,15 @@ const EditPacchetti: NextPageWithLayout = () => {
     if (query.id) {
       const ItemId: number = Number(query.id);
       loadItem(ItemId);
+    } else {
+      reset(defaultValues);
+      setItem(defaultValues);
+      setTabIndex(0);
     }
   }, [query]);
 
   useEffect(() => {
     if (item) {
-      setItemNovita(item.novita);
-
       if (item.categorie) {
         setItemCategory(item.categorie);
         setValue("categorie", item.categorie);
@@ -167,7 +168,9 @@ const EditPacchetti: NextPageWithLayout = () => {
   }, [item]);
 
   useEffect(() => {
-    reset(defaultValues);
+    if (!query.id) {
+      reset(defaultValues);
+    }
   }, [tabIndex]);
 
   const selectCategoryHandler = (categorySelected: any[]) => {
@@ -290,9 +293,7 @@ const EditPacchetti: NextPageWithLayout = () => {
                   {...register("novita")}
                   aria="Inserisci novita"
                   label="Novità"
-                  onChange={() => setItemNovita(!itemNovita)}
-                  defaultChecked={itemNovita}
-                  checked={itemNovita}
+                  aria-checked={item?.novita}
                 />
               </div>
             </div>

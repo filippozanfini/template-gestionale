@@ -139,7 +139,7 @@ const EditClienti: NextPageWithLayout = () => {
                   {...register("privacyAccettata")}
                   aria="Inserisci novita"
                   label="Privacy"
-                  defaultChecked={Boolean(item?.privacyAccettata) || false}
+                  aria-checked={item?.privacyAccettata}
                 />
               )}
             </div>

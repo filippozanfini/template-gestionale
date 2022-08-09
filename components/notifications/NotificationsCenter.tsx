@@ -39,7 +39,7 @@ const NotificationsCenter = () => {
   return (
     <>
       <Popover as="div" className="relative inline-block text-left">
-        {({ open }) => (
+        {({ open, close }) => (
           <>
             <Popover.Button className="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
               {unreadCount > 0 && (
@@ -80,6 +80,7 @@ const NotificationsCenter = () => {
                             notifications.forEach((notification) => {
                               markAsRead(notification);
                             });
+                            close();
                           }}
                         >
                           <TrashIcon className="mr-1 h-4 w-4" aria-hidden="true" />

@@ -49,7 +49,7 @@ const TableServices = ({ items, onDeleteAction, onEditAction }: TableListProps) 
 
             <Table.Cell>
               <div className="flex flex-col text-sm">
-                <p className="font-normal text-gray-500/90">{item.nome}</p>
+                <p className="font-normal ">{item.nome}</p>
               </div>
             </Table.Cell>
 
