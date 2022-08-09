@@ -1,7 +1,7 @@
 import React, { ForwardRefRenderFunction, InputHTMLAttributes } from "react";
 
 export interface ComboBoxElement {
-  value: number;
+  value: number | string;
   label: string;
 }
 

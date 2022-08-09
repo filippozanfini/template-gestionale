@@ -57,6 +57,7 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
     { label: "Metano", value: 0 },
     { label: "Gas", value: 1 },
   ];
+
   const [powerTypeSelected, setPowerTypeSelected] = useState(powerType[0].value);
 
   const [autoComputation, setAutoComputation] = useState(true);
@@ -92,7 +93,6 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
   };
 
   const onSubmit: SubmitHandler<ImpiantoCaldaia> = async (formdata: any, e: any) => {
-    console.log("formdata", formdata);
     e.preventDefault();
     const apiAction = type === "caldaia" ? mpApi.installations.actions.saveBoiler : mpApi.installations.actions.saveAirConditioning;
 
@@ -102,8 +102,6 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
       idUtente: customer?.id || 0,
       dirittoFisso: !formdata.dirittoFisso ? -1 : formdata.dirittoFisso,
     };
-
-    console.log("newFormData", newFormData);
 
     apiAction(newFormData)
       .then((response: any) => {
@@ -174,7 +172,7 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
   }, [date, item]);
 
   useEffect(() => {
-    setValue("alimentazione", powerTypeSelected);
+    setValue("alimentazione", Number(powerTypeSelected));
   }, [powerTypeSelected]);
 
   return item ? (

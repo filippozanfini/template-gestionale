@@ -2,9 +2,7 @@ import SidebarLayout from "../../../layouts/SidebarLayout";
 import { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { mpApi } from "../../../lib/mpApi";
-import { useForm, SubmitHandler } from "react-hook-form";
-import Textarea from "../../../components/TextArea";
-import PriceInput from "../../../components/PriceInput";
+import { useForm, SubmitHandler, Path } from "react-hook-form";
 import FormInput from "../../../components/FormInput";
 import renderError from "../../../lib/errorMessages";
 import FourOFour from "../../../components/FourOFour";
@@ -18,35 +16,46 @@ import ComboBox, { ComboBoxElement } from "../../../components/ComboBox";
 
 type ImpiantoFotovoltaico = {
   id: number;
+  idUtente: number;
   potenza: string;
   tensione: string;
-  moduloFv: string;
-  numeroModuli: string;
+  moduloFV: string;
+  numeroModuli: number;
   inverter: string;
-  dataAllaccio: string;
-  dirittoFissoChiamata: string;
+  dataInstallazione: string;
+  dirittoFisso: string;
   longitudine: string;
   latitudine: string;
 };
 
 const defaultValues: ImpiantoFotovoltaico = {
   id: 0,
+  idUtente: 0,
   potenza: "",
   tensione: "",
-  moduloFv: "",
-  numeroModuli: "",
+  moduloFV: "",
+  numeroModuli: 0,
   inverter: "",
-  dataAllaccio: "",
-  dirittoFissoChiamata: "0",
+  dataInstallazione: "",
+  dirittoFisso: "0",
   longitudine: "",
   latitudine: "",
 };
+
+const tensionValues: ComboBoxElement[] = [
+  { label: "media", value: "media" },
+  { label: "bassa", value: "bassa" },
+];
 
 const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
   const { push, query } = useRouter();
   const [item, setItem] = useState<ImpiantoFotovoltaico | null>(defaultValues);
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [listCustomers, setListCustomers] = useState<Customer[]>([]);
+
+  const [date, setDate] = useState<string>("");
+  const [tensionValueSelected, setTensionValueSelected] = useState<string>(String(tensionValues[0].value));
+
   /* FILTER */
   const [filter, setFilter] = useState<string>("");
 
@@ -76,6 +85,7 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
     handleSubmit,
     reset,
     setError,
+    setValue,
     formState: { errors },
   } = useForm<ImpiantoFotovoltaico>();
 
@@ -97,17 +107,18 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
     }
   };
 
-  const onSubmit: SubmitHandler<ImpiantoFotovoltaico> = async (formdata: any) => {
-    notify({
-      id: new Date().toISOString(),
-      type: "success",
-      title: "Salvataggio Risorsa",
-      message: "Prova",
-      read: false,
-      isAlert: false,
-    });
-    mpApi.services.actions
-      .save(formdata)
+  const onSubmit: SubmitHandler<ImpiantoFotovoltaico> = async (formdata: any, e: any) => {
+    e.preventDefault();
+
+    const newFormData: any = {
+      ...formdata,
+      dataInstallazione: formdata.dataInstallazione.split("-").reverse().join("/"),
+      idUtente: customer?.id || 0,
+      dirittoFisso: !formdata.dirittoFisso ? -1 : formdata.dirittoFisso,
+    };
+
+    mpApi.installations.actions
+      .savePhotovoltaic(newFormData)
       .then((response: any) => {
         alert({
           id: new Date().toISOString(),
@@ -117,7 +128,7 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
           read: false,
           isAlert: true,
         });
-        push("/impianti/caldaia/edit?id=" + response.data.id);
+        push("/impianti/fotovoltaico/edit?id=" + response.data.id);
       })
       .catch((reason: any) => {
         alert({
@@ -129,23 +140,10 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
           isAlert: true,
         });
         Object.keys(reason.data.errors).forEach((field: string) => {
-          setError(
-            field as
-              | "id"
-              | "potenza"
-              | "tensione"
-              | "moduloFv"
-              | "numeroModuli"
-              | "inverter"
-              | "dataAllaccio"
-              | "dirittoFissoChiamata"
-              | "longitudine"
-              | "latitudine",
-            {
-              type: "custom",
-              message: reason.data.errors[field],
-            }
-          );
+          setError(field as Path<ImpiantoFotovoltaico>, {
+            type: "custom",
+            message: reason.data.errors[field],
+          });
         });
       });
   };
@@ -157,6 +155,14 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
     }
   }, [query]);
 
+  useEffect(() => {
+    setValue("dataInstallazione", date);
+  }, [date, item]);
+
+  useEffect(() => {
+    setValue("tensione", tensionValueSelected);
+  }, [tensionValueSelected]);
+
   return item ? (
     <form className="space-y-8 divide-y divide-gray-200" onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-8 divide-y divide-gray-200">
@@ -166,31 +172,49 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
             <div className="mt-1 text-sm text-gray-500"></div>
           </div>
           <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-            <input type="hidden" value={item?.id} {...register("id")} />
+            {item.id > 0 ? <input type="hidden" value={item?.id} {...register("id")} /> : null}
+
             <div className="col-span-6 flex flex-col items-start">
-              <span className="block text-sm font-medium text-gray-700">Cerca Utente</span>
-              <Combobox
-                listItems={listCustomers}
-                onFilterChange={(filter) => setFilter(filter)}
-                onSelectedChange={(value) => setCustomer(value)}
-                selectedName={customer ? customer?.nome + " " + customer?.cognome + "     " + customer?.indirizzo : ""}
-                loading={loading}
-              >
-                {(item: Customer, selected, active) => (
-                  <div className="flex items-center gap-4">
-                    <span className={`block w-1/4 truncate ${selected ? "font-medium" : "font-normal"}`}>
-                      {item.nome + " " + item.cognome}
-                    </span>
-                    <span className="w-1/3">{item.indirizzo}</span>
-                    {selected ? (
-                      <span className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? "text-white" : "text-primary-600"}`}>
-                        <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                      </span>
-                    ) : null}
-                  </div>
-                )}
-              </Combobox>
+              {item.id == 0 ? (
+                <>
+                  <span className="block text-sm font-medium text-gray-700">Cerca Utente</span>
+                  <Combobox
+                    listItems={listCustomers}
+                    onFilterChange={(filter) => setFilter(filter)}
+                    onSelectedChange={(value) => setCustomer(value)}
+                    selectedName={customer ? customer?.nome + " " + customer?.cognome + ", " + customer?.indirizzo : ""}
+                    loading={loading}
+                    selected={customer}
+                  >
+                    {(item: Customer, selected, active) => (
+                      <div className="flex items-center gap-4">
+                        <span className={`block w-1/4 truncate ${selected ? "font-medium" : "font-normal"}`}>
+                          {item.nome + " " + item.cognome}
+                        </span>
+                        <span className="w-1/3">{item.indirizzo}</span>
+                        {selected ? (
+                          <span
+                            className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? "text-white" : "text-primary-600"}`}
+                          >
+                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                          </span>
+                        ) : null}
+                      </div>
+                    )}
+                  </Combobox>
+                </>
+              ) : (
+                <FormInput
+                  label="Utente"
+                  type="text"
+                  value={customer ? customer?.nome + " " + customer?.cognome + ", " + customer?.indirizzo : ""}
+                  disabled={true}
+                  aria="utente"
+                  name="Utente"
+                />
+              )}
             </div>
+
             <FormInput
               className="sm:col-span-3"
               {...register("potenza", { required: true })}
@@ -201,23 +225,26 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
               type="number"
               defaultValue={item?.potenza ?? ""}
             />
-            <FormInput
+
+            <ComboBox
               className="sm:col-span-3"
-              {...register("tensione", { required: true })}
-              errorMessage={renderError(errors["tensione"])}
-              autoComplete="modello"
               aria="Inserisci la Tensione"
               label="Tensione"
-              defaultValue={item?.tensione ?? ""}
+              value={tensionValueSelected}
+              elements={tensionValues}
+              name="Tensione"
+              onChange={(e: any) => {
+                setTensionValueSelected(e.target.value);
+              }}
             />
             <FormInput
               className="sm:col-span-3"
-              {...register("moduloFv", { required: true })}
-              errorMessage={renderError(errors["moduloFv"])}
-              autoComplete="moduloFv"
+              {...register("moduloFV", { required: true })}
+              errorMessage={renderError(errors["moduloFV"])}
+              autoComplete="moduloFV"
               aria="Inserisci il Modulo Fv"
               label="Modulo Fv"
-              defaultValue={item?.moduloFv ?? ""}
+              defaultValue={item?.moduloFV ?? ""}
             />
             <FormInput
               className="sm:col-span-3"
@@ -240,17 +267,20 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
             />
             <FormInput
               className="sm:col-span-3"
-              {...register("dataAllaccio", { required: true })}
-              errorMessage={renderError(errors["dataAllaccio"])}
-              autoComplete="dataAllaccio"
-              aria="Inserisci Data Allaccio"
-              label="Data Allaccio"
+              {...register("dataInstallazione", { required: true })}
+              errorMessage={renderError(errors["dataInstallazione"])}
+              autoComplete="dataInstallazione"
+              aria="Inserisci la Data di Installazione"
+              label="Data di Installazione"
+              value={date ?? ""}
+              onChange={(e: any) => {
+                setDate(e.target.value);
+              }}
               type="date"
-              defaultValue={item?.dataAllaccio ?? ""}
             />
             <FormInput
               className="sm:col-span-3"
-              {...register("longitudine", { required: true })}
+              {...register("longitudine")}
               errorMessage={renderError(errors["longitudine"])}
               autoComplete="longitudine"
               aria="Inserisci la Longitudine"
@@ -259,7 +289,7 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
             />
             <FormInput
               className="sm:col-span-3"
-              {...register("latitudine", { required: true })}
+              {...register("latitudine")}
               errorMessage={renderError(errors["latitudine"])}
               autoComplete="latitudine"
               aria="Inserisci la Latitudine"
@@ -268,12 +298,12 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
             />
             <FormInput
               className="sm:col-span-3"
-              {...register("dirittoFissoChiamata", { required: true })}
-              errorMessage={renderError(errors["dirittoFissoChiamata"])}
-              autoComplete="dirittoFissoChiamata"
+              {...register("dirittoFisso")}
+              errorMessage={renderError(errors["dirittoFisso"])}
+              autoComplete="dirittoFisso"
               aria="Inserisci il Diritto Fisso di Chiamata"
               label="Diritto Fisso di Chiamata"
-              value={item?.dirittoFissoChiamata ?? 0}
+              defaultValue={Number(item?.dirittoFisso) ?? 0}
               type="number"
               disabled={autoComputation}
             />
