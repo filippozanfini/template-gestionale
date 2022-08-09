@@ -202,6 +202,7 @@ const EditImpiantiPompaDiCalore: NextPageWithLayout = () => {
               autoComplete="potenza"
               aria="Inserisci la Potenza"
               label="Potenza"
+              type="number"
               defaultValue={item?.potenza ?? ""}
             />
             <FormInput
@@ -241,8 +242,6 @@ const EditImpiantiPompaDiCalore: NextPageWithLayout = () => {
               label="Diritto Fisso di Chiamata"
               value={item?.dirittoFissoChiamata ?? 0}
               type="number"
-              min={0}
-              max={1}
               disabled={autoComputation}
             />
             <CheckboxInput
