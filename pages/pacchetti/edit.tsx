@@ -164,7 +164,9 @@ const EditPacchetti: NextPageWithLayout = () => {
   }, [item]);
 
   useEffect(() => {
-    reset(defaultValues);
+    if (!query.id) {
+      reset(defaultValues);
+    }
   }, [tabIndex]);
 
   const selectCategoryHandler = (categorySelected: any[]) => {
