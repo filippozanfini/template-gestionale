@@ -60,7 +60,7 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
 
   const [powerTypeSelected, setPowerTypeSelected] = useState(powerType[0].value);
 
-  const [autoComputation, setAutoComputation] = useState(true);
+  const [autoComputation, setAutoComputation] = useState(false);
 
   const alert = useAlert();
 
@@ -100,7 +100,7 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
       ...formdata,
       dataInstallazione: formdata.dataInstallazione.split("-").reverse().join("/"),
       idUtente: customer?.id || 0,
-      dirittoFisso: !formdata.dirittoFisso ? -1 : formdata.dirittoFisso,
+      dirittoFisso: autoComputation ? -1 : formdata.dirittoFisso,
     };
 
     apiAction(newFormData)

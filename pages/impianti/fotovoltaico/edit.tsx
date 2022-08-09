@@ -62,7 +62,7 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
   /* UTILS */
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [autoComputation, setAutoComputation] = useState(true);
+  const [autoComputation, setAutoComputation] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -98,10 +98,14 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
         .item(ItemId)
         .then((data: any) => {
           setItem(data);
+          setCustomer(new Customer(data.utente));
+          setDate(data.dataInstallazione.split("/").reverse().join("-"));
           reset(data);
         })
         .catch((data: any) => {
           setItem(null);
+          setCustomer(null);
+          setDate("");
           reset(defaultValues);
         });
     }
@@ -114,7 +118,7 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
       ...formdata,
       dataInstallazione: formdata.dataInstallazione.split("-").reverse().join("/"),
       idUtente: customer?.id || 0,
-      dirittoFisso: !formdata.dirittoFisso ? -1 : formdata.dirittoFisso,
+      dirittoFisso: autoComputation ? -1 : formdata.dirittoFisso,
     };
 
     mpApi.installations.actions
