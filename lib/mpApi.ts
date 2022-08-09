@@ -7,6 +7,7 @@ import { Package } from "../models/Package";
 import { Quote } from "../models/Quote";
 import { Service } from "../models/Service";
 import { User } from "../models/User";
+import { CategoryMapper } from "../utils/CategoryMapper";
 import Cookies from "./cookies";
 import fetchJson from "./fetchJson";
 import { PageLimitQuery, PageLimitQueryStatusOrder } from "./interfaces/Queries";
@@ -180,10 +181,16 @@ export const mpApi = {
         return fetchJson(`/pacchetti/${item.id > 0 ? item.id : ""}`, {
           method: item.id > 0 ? "PUT" : "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...item, categorie: [item.categorie] }),
+          body: JSON.stringify(item),
         });
       },
-
+      saveFotovoltaico: async (item: any) => {
+        return fetchJson(`/pacchetti/fotovoltaico/${item.id > 0 ? item.id : ""}`, {
+          method: item.id > 0 ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(item),
+        });
+      },
       delete: async (id: number) => {
         let data: any = await fetchJson(`/pacchetti/${id}`, {
           method: "DELETE",

@@ -198,6 +198,7 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
               autoComplete="potenza"
               aria="Inserisci la Potenza"
               label="Potenza"
+              type="number"
               defaultValue={item?.potenza ?? ""}
             />
             <FormInput
@@ -226,7 +227,7 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
               aria="Inserisci il Numero dei Moduli"
               label="Numero Moduli"
               defaultValue={item?.numeroModuli ?? ""}
-              type="date"
+              type="number"
             />
             <FormInput
               className="sm:col-span-3"
@@ -244,6 +245,7 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
               autoComplete="dataAllaccio"
               aria="Inserisci Data Allaccio"
               label="Data Allaccio"
+              type="date"
               defaultValue={item?.dataAllaccio ?? ""}
             />
             <FormInput
@@ -273,8 +275,6 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
               label="Diritto Fisso di Chiamata"
               value={item?.dirittoFissoChiamata ?? 0}
               type="number"
-              min={0}
-              max={1}
               disabled={autoComputation}
             />
             <CheckboxInput

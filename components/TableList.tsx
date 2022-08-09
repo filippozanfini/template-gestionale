@@ -70,7 +70,7 @@ const TableList: FC<TableListProps> = ({ items, itemsHead, children, onDeleteAct
       <Dialog title={`Conferma eliminazione?`} isOpen={showDialog} onClose={() => closeModalTrashItem()}>
         <p className="mt-2 text-sm">{"L'azione sarà irreversibile."}</p>
         <div className="mt-6 flex gap-3">
-          <Button title="Annulla" aria="" className="w-full bg-primary-500 px-5 py-2" onClick={() => closeModalTrashItem()} />
+          <Button title="Annulla" aria="" className="w-full bg-gray-500 px-5 py-2" onClick={() => closeModalTrashItem()} />
           <Button
             title="Conferma"
             aria=""

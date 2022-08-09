@@ -1,9 +1,9 @@
 import SidebarLayout from "../../layouts/SidebarLayout";
 import { NextPageWithLayout } from "../_app";
-import { ReactElement, useEffect, useState } from "react";
+import { LegacyRef, ReactElement, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { mpApi } from "../../lib/mpApi";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Path } from "react-hook-form";
 import Textarea from "../../components/TextArea";
 import PriceInput from "../../components/PriceInput";
 import FormInput from "../../components/FormInput";
@@ -12,7 +12,8 @@ import FourOFour from "../../components/FourOFour";
 import { useNotify, useAlert } from "../../components/notifications";
 import CheckboxInput from "../../components/core/Checkbox";
 import { Package } from "../../models/Package";
-import ComboBox, { ComboBoxElement } from "../../components/ComboBox";
+import ComboBoxInput from "../../components/ComboBoxInput";
+import { Tab } from "@headlessui/react";
 
 const defaultValues: Package = {
   id: 0,
@@ -21,20 +22,23 @@ const defaultValues: Package = {
   categorie: [],
   costo: 0,
   novita: false,
+  tensione: "",
+  potenzaMin: 0.0,
+  potenzaMax: 0.0,
 };
 
 const EditPacchetti: NextPageWithLayout = () => {
   const { push, query } = useRouter();
   const [item, setItem] = useState<Package | null>(defaultValues);
-  const [itemCategory, setItemCategory] = useState<any>();
+  const [itemCategory, setItemCategory] = useState<string[]>([]);
   const [itemNovita, setItemNovita] = useState(false);
+  const [tabIndex, setTabIndex] = useState(0);
   const notify = useNotify();
   const alert = useAlert();
 
-  const categories: ComboBoxElement[] = [
+  const categories: any[] = [
     { label: "Condizionatore", value: 1 },
     { label: "Caldaia", value: 2 },
-    { label: "Impianto Fotovoltaico", value: 3 },
     { label: "Impianto Solare Termico", value: 4 },
     { label: "Pompa Di Calore", value: 5 },
   ];
@@ -42,6 +46,7 @@ const EditPacchetti: NextPageWithLayout = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     reset,
     setError,
     formState: { errors },
@@ -65,7 +70,8 @@ const EditPacchetti: NextPageWithLayout = () => {
     }
   };
 
-  const onSubmit: SubmitHandler<Package> = async (formdata: any) => {
+  const onSubmit: SubmitHandler<Package> = async (formdata: any, e: any) => {
+    e.preventDefault();
     notify({
       id: new Date().toISOString(),
       type: "success",
@@ -75,35 +81,67 @@ const EditPacchetti: NextPageWithLayout = () => {
       isAlert: false,
     });
 
-    mpApi.packages.actions
-      .save(formdata)
-      .then((response: any) => {
-        alert({
-          id: new Date().toISOString(),
-          type: "success",
-          title: "Salvataggio Risorsa",
-          message: response.message,
-          read: false,
-          isAlert: true,
-        });
-        push("/pacchetti/edit?id=" + response.data.id);
-      })
-      .catch((reason: any) => {
-        alert({
-          id: new Date().toISOString(),
-          type: "error",
-          title: "Salvataggio Risorsa",
-          message: reason.message,
-          read: false,
-          isAlert: true,
-        });
-        Object.keys(reason.data.errors).forEach((field: string) => {
-          setError(field as "id" | "nome" | "descrizione" | "costo" | "novita" | "categorie", {
-            type: "custom",
-            message: reason.data.errors[field],
+    if (tabIndex === 0) {
+      mpApi.packages.actions
+        .save(formdata)
+        .then((response: any) => {
+          alert({
+            id: new Date().toISOString(),
+            type: "success",
+            title: "Salvataggio Risorsa",
+            message: response.message,
+            read: false,
+            isAlert: true,
+          });
+          push("/pacchetti/edit?id=" + response.data.id);
+        })
+        .catch((reason: any) => {
+          alert({
+            id: new Date().toISOString(),
+            type: "error",
+            title: "Salvataggio Risorsa",
+            message: reason.message,
+            read: false,
+            isAlert: true,
+          });
+          Object.keys(reason.data.errors).forEach((field: string) => {
+            setError(field as "id" | "nome" | "descrizione" | "costo" | "novita" | "categorie" | "tensione" | "potenzaMin" | "potenzaMax", {
+              type: "custom",
+              message: reason.data.errors[field],
+            });
           });
         });
-      });
+    } else {
+      mpApi.packages.actions
+        .saveFotovoltaico(formdata)
+        .then((response: any) => {
+          alert({
+            id: new Date().toISOString(),
+            type: "success",
+            title: "Salvataggio Risorsa",
+            message: response.message,
+            read: false,
+            isAlert: true,
+          });
+          push("/pacchetti/edit?id=" + response.data.id);
+        })
+        .catch((reason: any) => {
+          alert({
+            id: new Date().toISOString(),
+            type: "error",
+            title: "Salvataggio Risorsa",
+            message: reason.message,
+            read: false,
+            isAlert: true,
+          });
+          Object.keys(reason.data.errors).forEach((field: string) => {
+            setError(field as "id" | "nome" | "descrizione" | "costo" | "novita" | "categorie" | "tensione" | "potenzaMin" | "potenzaMax", {
+              type: "custom",
+              message: reason.data.errors[field],
+            });
+          });
+        });
+    }
   };
 
   useEffect(() => {
@@ -117,25 +155,24 @@ const EditPacchetti: NextPageWithLayout = () => {
     if (item) {
       setItemNovita(item.novita);
 
-      const categorySelected =
-        item.categorie.length > 0 ? categories.find((v: ComboBoxElement) => v.value === item.categorie[0].id) : categories[0];
+      if (item.categorie) {
+        setItemCategory(item.categorie);
+        setValue("categorie", item.categorie);
 
-      const category = {
-        id: categorySelected?.value,
-        nome: categorySelected?.label,
-      };
-
-      setItemCategory(category);
+        if (item.categorie.find((c: any) => c === 3)) {
+          setTabIndex(1);
+        }
+      }
     }
   }, [item]);
 
-  const selectCategoryHandler = (categorySelected?: ComboBoxElement) => {
-    const category = {
-      id: categorySelected?.value,
-      nome: categorySelected?.label,
-    };
+  useEffect(() => {
+    reset(defaultValues);
+  }, [tabIndex]);
 
-    setItemCategory(category);
+  const selectCategoryHandler = (categorySelected: any[]) => {
+    setItemCategory(categorySelected);
+    setValue("categorie", categorySelected);
   };
 
   return item ? (
@@ -146,62 +183,120 @@ const EditPacchetti: NextPageWithLayout = () => {
             <h3 className="text-lg font-medium leading-6 text-gray-900">
               {item?.id > 0 ? "CODICE: " + item.id : "Nuovo pacchetto manutenzione"}
             </h3>
+            <div className="mt-10">
+              <Tab.Group selectedIndex={tabIndex} onChange={(index: number) => setTabIndex(index)}>
+                <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
+                  <Tab
+                    className={({ selected }) =>
+                      `w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-900/20 focus:outline-none ${
+                        selected ? "bg-white shadow" : "text-gray-50 hover:bg-white/[0.12] hover:text-white"
+                      }`
+                    }
+                    disabled={item.categorie.find((c: any) => c === 3) ? true : false}
+                  >
+                    Altri impianti
+                  </Tab>
+                  <Tab
+                    className={({ selected }) =>
+                      `w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-900/20 focus:outline-none ${
+                        selected ? "bg-white shadow" : "text-gray-50 hover:bg-white/[0.12] hover:text-white"
+                      }`
+                    }
+                    disabled={item.categorie.length > 0 && !item.categorie.find((c: any) => c === 3) ? true : false}
+                  >
+                    Impianto Fotovoltaico
+                  </Tab>
+                </Tab.List>
+              </Tab.Group>
+              <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                <input type="hidden" value={item?.id} {...register("id")} />
+                <FormInput
+                  className="sm:col-span-2"
+                  {...register("nome", { required: true })}
+                  errorMessage={renderError(errors["nome"])}
+                  autoComplete="nome"
+                  aria="Inserisci il Nome"
+                  label="Nome"
+                  defaultValue={item?.nome ?? ""}
+                />
+                <PriceInput
+                  className="sm:col-span-2"
+                  {...register("costo", {
+                    required: true,
+                    min: { value: 0.1, message: "Il valore minimo è 0.1€" },
+                  })}
+                  errorMessage={renderError(errors["costo"])}
+                  autoComplete="costo"
+                  aria="costo"
+                  label="Costo"
+                  defaultValue={item?.costo ?? ""}
+                />
+
+                {tabIndex === 0 ? (
+                  <ComboBoxInput
+                    elements={categories}
+                    {...register("categorie", { required: true })}
+                    value={itemCategory}
+                    selectedOptions={itemCategory}
+                    aria="combobox"
+                    label="Categoria"
+                    name="categoria"
+                    onChange={selectCategoryHandler}
+                  />
+                ) : (
+                  <FormInput
+                    className="sm:col-span-2"
+                    {...register("tensione", { required: true })}
+                    errorMessage={renderError(errors["tensione"])}
+                    autoComplete="tensione"
+                    aria="Inserisci la Tensione"
+                    label="Tensione"
+                    defaultValue={item?.tensione ?? ""}
+                  />
+                )}
+                {tabIndex === 1 && (
+                  <FormInput
+                    className="sm:col-span-3"
+                    {...register("potenzaMin", { required: true })}
+                    errorMessage={renderError(errors["potenzaMin"])}
+                    autoComplete="potenzaMin"
+                    aria="Inserisci la Potenza minima"
+                    label="Potenza minima"
+                    defaultValue={item?.potenzaMin ?? ""}
+                  />
+                )}
+                {tabIndex === 1 && (
+                  <FormInput
+                    className="sm:col-span-3"
+                    {...register("potenzaMax", { required: true })}
+                    errorMessage={renderError(errors["potenzaMax"])}
+                    autoComplete="potenzaMax"
+                    aria="Inserisci la Potenza massima"
+                    label="Potenza massima"
+                    defaultValue={item?.potenzaMax ?? ""}
+                  />
+                )}
+                <Textarea
+                  className="sm:col-span-6"
+                  {...register("descrizione", { required: true })}
+                  errorMessage={renderError(errors["descrizione"])}
+                  autoComplete="descrizione"
+                  aria="Descrizione"
+                  label="Descrizione"
+                  defaultValue={item?.descrizione ?? ""}
+                />
+                <CheckboxInput
+                  className="sm:col-span-4"
+                  {...register("novita")}
+                  aria="Inserisci novita"
+                  label="Novità"
+                  onChange={() => setItemNovita(!itemNovita)}
+                  defaultChecked={itemNovita}
+                  checked={itemNovita}
+                />
+              </div>
+            </div>
             <div className="mt-1 text-sm text-gray-500"></div>
-          </div>
-          <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-            <input type="hidden" value={item?.id} {...register("id")} />
-            <FormInput
-              className="sm:col-span-2"
-              {...register("nome", { required: true })}
-              errorMessage={renderError(errors["nome"])}
-              autoComplete="nome"
-              aria="Inserisci il Nome"
-              label="Nome"
-              defaultValue={item?.nome ?? ""}
-            />
-            <PriceInput
-              className="sm:col-span-2"
-              {...register("costo", {
-                required: true,
-                min: { value: 0.1, message: "Il valore minimo è 0.1€" },
-              })}
-              errorMessage={renderError(errors["costo"])}
-              autoComplete="costo"
-              aria="costo"
-              label="Costo"
-              defaultValue={item?.costo ?? ""}
-            />
-            <ComboBox
-              className="sm:col-span-2"
-              {...register("categorie", { required: true })}
-              aria="categorie"
-              label="Categoria"
-              elements={categories}
-              onChange={(e) => selectCategoryHandler(categories.find((c: ComboBoxElement) => c.value === Number(e.target.value)))}
-              defaultValue={
-                itemCategory ? categories.find((c: ComboBoxElement) => c.value === itemCategory.id)?.value : categories[0].value
-              }
-              value={itemCategory ? categories.find((c: ComboBoxElement) => c.value === itemCategory.id)?.value : categories[0].value}
-              name="categorie"
-            />
-            <Textarea
-              className="sm:col-span-6"
-              {...register("descrizione", { required: true })}
-              errorMessage={renderError(errors["descrizione"])}
-              autoComplete="descrizione"
-              aria="Descrizione"
-              label="Descrizione"
-              defaultValue={item?.descrizione ?? ""}
-            />
-            <CheckboxInput
-              className="sm:col-span-4"
-              {...register("novita")}
-              aria="Inserisci novita"
-              label="Novità"
-              onChange={() => setItemNovita(!itemNovita)}
-              defaultChecked={itemNovita}
-              checked={itemNovita}
-            />
           </div>
         </div>
       </div>

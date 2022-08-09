@@ -33,7 +33,7 @@ const TableInstallationsCategories = ({ items }: TableListProps) => {
               <p className="text-sm font-semibold text-gray-900">{item.id}</p>
             </Table.Cell>
             <Table.Cell title="Nome">
-              <p className="text-sm font-semibold text-gray-900">{item.name}</p>
+              <p className="text-sm font-semibold text-gray-900">{item.nome}</p>
             </Table.Cell>
           </Table.Row>
         ));

@@ -5,7 +5,7 @@ import { Package } from "./Package";
 export interface IInstallation {
   id?: number;
   utente?: Customer;
-  categoriaImpianto?: ICategory;
+  categoriaImpianto?: string;
   dataInstallazione?: string;
   pacchetti?: Package[];
   dirittoFissoDiChiamata?: number;
@@ -20,7 +20,7 @@ export interface IInstallation {
 export class Installation implements IInstallation {
   id: number;
   utente: Customer;
-  categoriaImpianto: ICategory;
+  categoriaImpianto: string;
   dataInstallazione: string;
   pacchetti: Package[];
   dirittoFissoDiChiamata: number;
@@ -34,7 +34,7 @@ export class Installation implements IInstallation {
   constructor(data: IInstallation) {
     this.id = data.id ?? 0;
     this.utente = data.utente ?? new Customer({});
-    this.categoriaImpianto = data.categoriaImpianto ?? { id: 0, nome: "" };
+    this.categoriaImpianto = data.categoriaImpianto ?? "";
     this.dataInstallazione = data.dataInstallazione ?? "";
     this.pacchetti = data.pacchetti ?? [];
     this.dirittoFissoDiChiamata = data.dirittoFissoDiChiamata ?? 0;

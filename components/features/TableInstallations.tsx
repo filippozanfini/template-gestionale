@@ -1,6 +1,7 @@
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 import { title } from "process";
 import { IInstallation } from "../../models/Installation";
+import { CategoryMapper } from "../../utils/CategoryMapper";
 import ActionEditDelete from "../shared/ActionEditDelete";
 import { Table } from "../shared/Table/Table";
 import { HeadCell } from "../shared/Table/utils/interfaces/interface";
@@ -59,7 +60,7 @@ const TableInstallations = ({ items, onDeleteAction, onEditAction }: TableListPr
             </Table.Cell>
 
             <Table.Cell>
-              <p className="text-xs text-gray-900 ">{item.categoriaImpianto?.nome}</p>
+              <p className="text-xs text-gray-900 ">{item.categoriaImpianto && CategoryMapper[item.categoriaImpianto]}</p>
             </Table.Cell>
 
             <Table.Cell align="left">

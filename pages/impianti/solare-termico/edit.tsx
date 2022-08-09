@@ -246,8 +246,6 @@ const EditImpiantiSolareTermico: NextPageWithLayout = () => {
               label="Diritto Fisso di Chiamata"
               value={item?.dirittoFissoChiamata ?? 0}
               type="number"
-              min={0}
-              max={1}
               disabled={autoComputation}
             />
             <CheckboxInput
