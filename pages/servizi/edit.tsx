@@ -61,14 +61,6 @@ const EditServizi: NextPageWithLayout = () => {
   };
 
   const onSubmit: SubmitHandler<Servizio> = async (formdata: any) => {
-    notify({
-      id: new Date().toISOString(),
-      type: "success",
-      title: "Salvataggio Risorsa",
-      message: "Prova",
-      read: false,
-      isAlert: false,
-    });
     mpApi.services.actions
       .save(formdata)
       .then((response: any) => {

@@ -8,7 +8,7 @@ export interface IInstallation {
   categoriaImpianto?: string;
   dataInstallazione?: string;
   pacchetti?: Package[];
-  dirittoFissoDiChiamata?: number;
+  dirittoFisso?: number;
   tipologiaCircolazione?: string;
   marca?: string;
   tipoENumeroCollettori?: string;
@@ -23,7 +23,7 @@ export class Installation implements IInstallation {
   categoriaImpianto: string;
   dataInstallazione: string;
   pacchetti: Package[];
-  dirittoFissoDiChiamata: number;
+  dirittoFisso: number;
   tipologiaCircolazione: string;
   marca: string;
   tipoENumeroCollettori: string;
@@ -37,7 +37,7 @@ export class Installation implements IInstallation {
     this.categoriaImpianto = data.categoriaImpianto ?? "";
     this.dataInstallazione = data.dataInstallazione ?? "";
     this.pacchetti = data.pacchetti ?? [];
-    this.dirittoFissoDiChiamata = data.dirittoFissoDiChiamata ?? 0;
+    this.dirittoFisso = data.dirittoFisso ?? 0;
     this.tipologiaCircolazione = data.tipologiaCircolazione ?? "";
     this.marca = data.marca ?? "";
     this.tipoENumeroCollettori = data.tipoENumeroCollettori ?? "";
@@ -53,7 +53,7 @@ export class Installation implements IInstallation {
       categoriaImpianto: data.categoriaImpianto,
       dataInstallazione: data.dataInstallazione,
       pacchetti: data.pacchetti,
-      dirittoFissoDiChiamata: data.dirittoFissoDiChiamata,
+      dirittoFisso: data.dirittoFisso,
       tipologiaCircolazione: data.tipologiaCircolazione,
       marca: data.marca,
       tipoENumeroCollettori: data.tipoENumeroCollettori,

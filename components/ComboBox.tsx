@@ -17,6 +17,7 @@ const ComboBoxInputElement: ForwardRefRenderFunction<HTMLSelectElement, ComboBox
   ref
 ) => {
   const id = otherProps.id || name;
+
   return (
     <div className={otherProps.className || "mt-6 w-full"}>
       <label htmlFor={id} className="block text-sm font-medium text-gray-700">
@@ -35,8 +36,7 @@ const ComboBoxInputElement: ForwardRefRenderFunction<HTMLSelectElement, ComboBox
           {elements &&
             elements.map((item: ComboBoxElement) => (
               <option key={name + "-" + item.value} value={item.value} selected={otherProps.defaultValue === item.value}>
-                {" "}
-                {item.label}{" "}
+                {item.label}
               </option>
             ))}
         </select>

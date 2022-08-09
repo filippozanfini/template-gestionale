@@ -365,6 +365,7 @@ export const mpApi = {
       },
 
       saveBoiler: async (item: any) => {
+        console.log("item", item);
         return fetchJson(`/impianti/caldaia/${item.id > 0 ? item.id : ""}`, {
           method: item.id > 0 ? "PUT" : "POST",
           headers: { "Content-Type": "application/json" },

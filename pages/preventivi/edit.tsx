@@ -57,10 +57,6 @@ const EditPreventivi: NextPageWithLayout = () => {
     fetchData();
   }, [filter]);
 
-  useEffect(() => {
-    console.log("edit customer", customer?.id);
-  }, [customer]);
-
   return (
     <EditPage<IQuote> defaultValues={defaultValues} mpApiAction={mpApi.quotes} slugName="preventivi">
       {(item: Quote, register, renderError, errors) => {

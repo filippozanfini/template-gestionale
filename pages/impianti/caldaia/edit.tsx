@@ -2,7 +2,7 @@ import SidebarLayout from "../../../layouts/SidebarLayout";
 import { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { mpApi } from "../../../lib/mpApi";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Path } from "react-hook-form";
 import FormInput from "../../../components/FormInput";
 import renderError from "../../../lib/errorMessages";
 import FourOFour from "../../../components/FourOFour";
@@ -16,31 +16,37 @@ import ComboBox, { ComboBoxElement } from "../../../components/ComboBox";
 
 type ImpiantoCaldaia = {
   id: number;
+  idUtente: number;
   marca: string;
   modello: string;
-  alimentazione: string;
+  alimentazione: number;
   dataInstallazione: string;
-  dirittoFissoChiamata: string;
-  longitudine: string;
-  latitudine: string;
+  dirittoFisso: number | string;
+  longitudine: number;
+  latitudine: number;
 };
 
 const defaultValues: ImpiantoCaldaia = {
   id: 0,
+  idUtente: 0,
   marca: "",
   modello: "",
-  alimentazione: "",
+  alimentazione: 0,
   dataInstallazione: "",
-  dirittoFissoChiamata: "0",
-  longitudine: "",
-  latitudine: "",
+  dirittoFisso: 0,
+  longitudine: 0,
+  latitudine: 0,
 };
 
 const EditImpiantiCaldaia: NextPageWithLayout = () => {
-  const { push, query } = useRouter();
+  const { push, query, pathname } = useRouter();
   const [item, setItem] = useState<ImpiantoCaldaia | null>(defaultValues);
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [listCustomers, setListCustomers] = useState<Customer[]>([]);
+
+  const [type, setType] = useState<"caldaia" | "condizionatore" | string>("");
+  const [date, setDate] = useState<string>("");
+
   /* FILTER */
   const [filter, setFilter] = useState<string>("");
 
@@ -51,9 +57,85 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
     { label: "Metano", value: 0 },
     { label: "Gas", value: 1 },
   ];
-  const [powerTypeSelected, setPowerTypeSelected] = useState("");
+  const [powerTypeSelected, setPowerTypeSelected] = useState(powerType[0].value);
 
   const [autoComputation, setAutoComputation] = useState(true);
+
+  const alert = useAlert();
+
+  const { register, handleSubmit, reset, setError, setValue, formState } = useForm<ImpiantoCaldaia>();
+
+  const { errors } = formState;
+
+  const loadItem = async (ItemId: number) => {
+    if (ItemId === 0) {
+      reset(defaultValues);
+      return null;
+    } else {
+      return mpApi.installations.actions
+        .item(ItemId)
+        .then((data: any) => {
+          setItem(data);
+          setPowerTypeSelected(data.alimentazione);
+          setCustomer(new Customer(data.utente));
+          setDate(data.dataInstallazione.split("/").reverse().join("-"));
+          reset(data);
+        })
+        .catch((data: any) => {
+          setItem(null);
+          setPowerTypeSelected(powerType[0].value);
+          setCustomer(null);
+          setDate("");
+          reset(defaultValues);
+        });
+    }
+  };
+
+  const onSubmit: SubmitHandler<ImpiantoCaldaia> = async (formdata: any, e: any) => {
+    console.log("formdata", formdata);
+    e.preventDefault();
+    const apiAction = type === "caldaia" ? mpApi.installations.actions.saveBoiler : mpApi.installations.actions.saveAirConditioning;
+
+    const newFormData: any = {
+      ...formdata,
+      dataInstallazione: formdata.dataInstallazione.split("-").reverse().join("/"),
+      idUtente: customer?.id || 0,
+      dirittoFisso: !formdata.dirittoFisso ? -1 : formdata.dirittoFisso,
+    };
+
+    console.log("newFormData", newFormData);
+
+    apiAction(newFormData)
+      .then((response: any) => {
+        alert({
+          id: new Date().toISOString(),
+          type: "success",
+          title: "Salvataggio Risorsa",
+          message: response.message,
+          read: false,
+          isAlert: true,
+        });
+        push(`/impianti/${type}/edit?id=` + response.data.id);
+      })
+      .catch((reason: any) => {
+        alert({
+          id: new Date().toISOString(),
+          type: "error",
+          title: "Salvataggio Risorsa",
+          message: reason.message,
+          read: false,
+          isAlert: true,
+        });
+
+        reason?.data?.errors &&
+          Object.keys(reason.data.errors).forEach((field: string) => {
+            setError(field as Path<ImpiantoCaldaia>, {
+              type: "custom",
+              message: reason.data.errors[field],
+            });
+          });
+      });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,95 +150,32 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
 
     fetchData();
   }, [filter]);
-  const notify = useNotify();
-  const alert = useAlert();
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setError,
-    formState: { errors },
-  } = useForm<ImpiantoCaldaia>();
-
-  const loadItem = async (ItemId: number) => {
-    if (ItemId === 0) {
-      reset(defaultValues);
-      return null;
-    } else {
-      return mpApi.installations.actions
-        .item(ItemId)
-        .then((data: any) => {
-          setItem(data);
-          reset(data);
-        })
-        .catch((data: any) => {
-          setItem(null);
-          reset(defaultValues);
-        });
-    }
-  };
-
-  const onSubmit: SubmitHandler<ImpiantoCaldaia> = async (formdata: any) => {
-    notify({
-      id: new Date().toISOString(),
-      type: "success",
-      title: "Salvataggio Risorsa",
-      message: "Prova",
-      read: false,
-      isAlert: false,
-    });
-
-    mpApi.installations.actions
-      .saveBoiler(formdata)
-      .then((response: any) => {
-        alert({
-          id: new Date().toISOString(),
-          type: "success",
-          title: "Salvataggio Risorsa",
-          message: response.message,
-          read: false,
-          isAlert: true,
-        });
-        push("/impianti/caldaia/edit?id=" + response.data.id);
-      })
-      .catch((reason: any) => {
-        alert({
-          id: new Date().toISOString(),
-          type: "error",
-          title: "Salvataggio Risorsa",
-          message: reason.message,
-          read: false,
-          isAlert: true,
-        });
-        Object.keys(reason.data.errors).forEach((field: string) => {
-          setError(
-            field as
-              | "id"
-              | "marca"
-              | "modello"
-              | "alimentazione"
-              | "dataInstallazione"
-              | "dirittoFissoChiamata"
-              | "longitudine"
-              | "latitudine",
-            {
-              type: "custom",
-              message: reason.data.errors[field],
-            }
-          );
-        });
-      });
-  };
 
   useEffect(() => {
     if (query.id) {
-      console.log("query.id", query.id);
       const ItemId: number = Number(query.id);
       loadItem(ItemId);
     }
-    console.log("query", query);
   }, [query]);
+
+  useEffect(() => {
+    if (pathname) {
+      const path = pathname.split("/");
+      if (path.indexOf("caldaia") > -1) {
+        setType("caldaia");
+      } else if (path.indexOf("condizionatore") > -1) {
+        setType("condizionatore");
+      }
+    }
+  }, [pathname]);
+
+  useEffect(() => {
+    setValue("dataInstallazione", date);
+  }, [date, item]);
+
+  useEffect(() => {
+    setValue("alimentazione", powerTypeSelected);
+  }, [powerTypeSelected]);
 
   return item ? (
     <form className="space-y-8 divide-y divide-gray-200" onSubmit={handleSubmit(onSubmit)}>
@@ -166,32 +185,53 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
             <h3 className="text-lg font-medium leading-6 text-gray-900">{item?.id > 0 ? "CODICE: " + item.id : "Nuovo impianto"}</h3>
             <div className="mt-1 text-sm text-gray-500"></div>
           </div>
+
           <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-            <input type="hidden" value={item?.id} {...register("id")} />
+            {item.id > 0 ? <input type="hidden" value={item?.id} {...register("id")} /> : null}
+
             <div className="col-span-6 flex flex-col items-start">
-              <span className="block text-sm font-medium text-gray-700">Cerca Utente</span>
-              <Combobox
-                listItems={listCustomers}
-                onFilterChange={(filter) => setFilter(filter)}
-                onSelectedChange={(value) => setCustomer(value)}
-                selectedName={customer ? customer?.nome + " " + customer?.cognome + "     " + customer?.indirizzo : ""}
-                loading={loading}
-              >
-                {(item: Customer, selected, active) => (
-                  <div className="flex items-center gap-4">
-                    <span className={`block w-1/4 truncate ${selected ? "font-medium" : "font-normal"}`}>
-                      {item.nome + " " + item.cognome}
-                    </span>
-                    <span className="w-1/3">{item.indirizzo}</span>
-                    {selected ? (
-                      <span className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? "text-white" : "text-primary-600"}`}>
-                        <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                      </span>
-                    ) : null}
-                  </div>
-                )}
-              </Combobox>
+              {item.id == 0 ? (
+                <>
+                  <span className="block text-sm font-medium text-gray-700">Cerca Utente</span>
+                  <Combobox
+                    listItems={listCustomers}
+                    onFilterChange={(filter) => setFilter(filter)}
+                    onSelectedChange={(value) => setCustomer(value)}
+                    selectedName={customer ? customer?.nome + " " + customer?.cognome + ", " + customer?.indirizzo : ""}
+                    loading={loading}
+                    selected={customer}
+                  >
+                    {(item: Customer, selected, active) => (
+                      <div className="flex items-center gap-4">
+                        <span className={`block w-1/4 truncate ${selected ? "font-medium" : "font-normal"}`}>
+                          {item.nome + " " + item.cognome}
+                        </span>
+                        <span className="w-1/3">{item.indirizzo}</span>
+                        {selected ? (
+                          <span
+                            className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? "text-white" : "text-primary-600"}`}
+                          >
+                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                          </span>
+                        ) : null}
+                      </div>
+                    )}
+                  </Combobox>
+                </>
+              ) : (
+                <FormInput
+                  label="Utente"
+                  type="text"
+                  value={customer ? customer?.nome + " " + customer?.cognome + ", " + customer?.indirizzo : ""}
+                  disabled={true}
+                  aria="utente"
+                  name="Utente"
+                />
+              )}
             </div>
+
+            {customer?.id && <input type="hidden" value={customer?.id} {...register("idUtente")} />}
+
             <FormInput
               className="sm:col-span-3"
               {...register("marca", { required: true })}
@@ -201,6 +241,7 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
               label="Marca"
               defaultValue={item?.marca ?? ""}
             />
+
             <FormInput
               className="sm:col-span-3"
               {...register("modello", { required: true })}
@@ -210,24 +251,29 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
               label="Modello"
               defaultValue={item?.modello ?? ""}
             />
+
             <FormInput
               className="sm:col-span-3"
-              {...register("longitudine", { required: true })}
+              {...register("longitudine")}
               errorMessage={renderError(errors["longitudine"])}
               autoComplete="longitudine"
               aria="Inserisci la Longitudine"
               label="Longitudine"
               defaultValue={item?.longitudine ?? ""}
+              type="number"
             />
+
             <FormInput
               className="sm:col-span-3"
-              {...register("latitudine", { required: true })}
+              {...register("latitudine")}
               errorMessage={renderError(errors["latitudine"])}
               autoComplete="latitudine"
               aria="Inserisci la Latitudine"
               label="Latitudine"
               defaultValue={item?.latitudine ?? ""}
+              type="number"
             />
+
             <ComboBox
               className="sm:col-span-3"
               aria="Seleziona Alimentazione"
@@ -235,8 +281,11 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
               value={powerTypeSelected}
               elements={powerType}
               name="Alimentazione"
-              onSelect={(value: any) => setPowerTypeSelected(value)}
+              onChange={(e: any) => {
+                setPowerTypeSelected(e.target.value);
+              }}
             />
+
             <FormInput
               className="sm:col-span-3"
               {...register("dataInstallazione", { required: true })}
@@ -244,20 +293,25 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
               autoComplete="dataInstallazione"
               aria="Inserisci la Data di Installazione"
               label="Data di Installazione"
-              defaultValue={item?.dataInstallazione ?? ""}
+              value={date ?? ""}
+              onChange={(e: any) => {
+                setDate(e.target.value);
+              }}
               type="date"
             />
+
             <FormInput
               className="sm:col-span-3"
-              {...register("dirittoFissoChiamata", { required: true })}
-              errorMessage={renderError(errors["dirittoFissoChiamata"])}
-              autoComplete="dirittoFissoChiamata"
+              {...register("dirittoFisso")}
+              errorMessage={renderError(errors["dirittoFisso"])}
+              autoComplete="dirittoFisso"
               aria="Inserisci il Diritto Fisso di Chiamata"
               label="Diritto Fisso di Chiamata"
-              value={item?.dirittoFissoChiamata ?? 0}
+              defaultValue={Number(item?.dirittoFisso) ?? 0}
               type="number"
               disabled={autoComputation}
             />
+
             <CheckboxInput
               aria="Calcolo automatico"
               label="Calcolo automatico"
