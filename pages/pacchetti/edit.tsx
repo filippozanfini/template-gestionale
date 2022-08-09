@@ -1,6 +1,6 @@
 import SidebarLayout from "../../layouts/SidebarLayout";
 import { NextPageWithLayout } from "../_app";
-import { ReactElement, useEffect, useState } from "react";
+import { LegacyRef, ReactElement, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { mpApi } from "../../lib/mpApi";
 import { useForm, SubmitHandler, Path } from "react-hook-form";
@@ -32,7 +32,7 @@ const EditPacchetti: NextPageWithLayout = () => {
   const [item, setItem] = useState<Package | null>(defaultValues);
   const [itemCategory, setItemCategory] = useState<string[]>([]);
   const [itemNovita, setItemNovita] = useState(false);
-  const [tabIndex, setTabIndex] = useState(1);
+  const [tabIndex, setTabIndex] = useState(0);
   const notify = useNotify();
   const alert = useAlert();
 
@@ -70,7 +70,8 @@ const EditPacchetti: NextPageWithLayout = () => {
     }
   };
 
-  const onSubmit: SubmitHandler<Package> = async (formdata: any) => {
+  const onSubmit: SubmitHandler<Package> = async (formdata: any, e: any) => {
+    e.preventDefault();
     notify({
       id: new Date().toISOString(),
       type: "success",
@@ -104,7 +105,7 @@ const EditPacchetti: NextPageWithLayout = () => {
             isAlert: true,
           });
           Object.keys(reason.data.errors).forEach((field: string) => {
-            setError(field as Path<Package>, {
+            setError(field as "id" | "nome" | "descrizione" | "costo" | "novita" | "categorie" | "tensione" | "potenzaMin" | "potenzaMax", {
               type: "custom",
               message: reason.data.errors[field],
             });
@@ -134,7 +135,7 @@ const EditPacchetti: NextPageWithLayout = () => {
             isAlert: true,
           });
           Object.keys(reason.data.errors).forEach((field: string) => {
-            setError(field as Path<Package>, {
+            setError(field as "id" | "nome" | "descrizione" | "costo" | "novita" | "categorie" | "tensione" | "potenzaMin" | "potenzaMax", {
               type: "custom",
               message: reason.data.errors[field],
             });
@@ -142,8 +143,6 @@ const EditPacchetti: NextPageWithLayout = () => {
         });
     }
   };
-
-  console.log(tabIndex === 0 ? "IMPIANTO" : "IMPIANTO FOTOVOLTAICO");
 
   useEffect(() => {
     if (query.id) {
@@ -166,6 +165,10 @@ const EditPacchetti: NextPageWithLayout = () => {
       }
     }
   }, [item]);
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [tabIndex]);
 
   const selectCategoryHandler = (categorySelected: any[]) => {
     setItemCategory(categorySelected);
