@@ -147,6 +147,10 @@ const EditPacchetti: NextPageWithLayout = () => {
     if (query.id) {
       const ItemId: number = Number(query.id);
       loadItem(ItemId);
+    } else {
+      reset(defaultValues);
+      setItem(defaultValues);
+      setTabIndex(0);
     }
   }, [query]);
 

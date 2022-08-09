@@ -92,6 +92,9 @@ const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children }
     if (query.id) {
       const ItemId: number = Number(query.id);
       loadItem(ItemId);
+    } else {
+      reset(defaultValues);
+      setItem(defaultValues);
     }
   }, [query]);
 
