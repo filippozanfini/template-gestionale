@@ -35,6 +35,13 @@ import {
   XIcon,
   ChevronLeftIcon,
   UploadIcon,
+  ShoppingCartIcon,
+  CalculatorIcon,
+  ChipIcon,
+  CubeIcon,
+  UserGroupIcon,
+  CollectionIcon,
+  PlusIcon,
 } from "@heroicons/react/outline";
 import { Menu, Transition } from "@headlessui/react";
 import NavigationMenu, { MenuItem } from "../components/NavigationMenu";
@@ -70,33 +77,33 @@ function SidebarLayout({ title, children }: any) {
         {
           id: "servizi",
           label: "Servizi",
-          icon: <DownloadIcon />,
+          icon: <CollectionIcon />,
           open: false,
         },
         {
           id: "impianti",
           label: "Impianti",
-          icon: <TicketIcon />,
+          icon: <ChipIcon />,
           children: [],
           category: 10,
         },
         {
           id: "pacchetti",
           label: "Pacchetti",
-          icon: <OfficeBuildingIcon />,
+          icon: <CubeIcon />,
           open: false,
           category: 10,
         },
         {
           id: "ordini",
           label: "Ordini",
-          icon: <OfficeBuildingIcon />,
+          icon: <ShoppingCartIcon />,
           open: false,
         },
         {
           id: "collaboratori",
           label: "Collaboratori",
-          icon: <StarIcon />,
+          icon: <UserGroupIcon />,
           open: false,
         },
         {
@@ -108,7 +115,7 @@ function SidebarLayout({ title, children }: any) {
         {
           id: "preventivi",
           label: "Preventivi",
-          icon: <LibraryIcon />,
+          icon: <CalculatorIcon />,
           open: false,
         },
       ].map((item: any) => {
@@ -126,7 +133,7 @@ function SidebarLayout({ title, children }: any) {
             childrenMenu.push({
               id: item.id + "-add",
               label: "Nuovo",
-              icon: <DocumentAddIcon />,
+              icon: <PlusIcon />,
               path: "/" + item.id + "/new",
             });
           }
@@ -135,7 +142,7 @@ function SidebarLayout({ title, children }: any) {
           childrenMenu.push({
             id: item.id + "-category",
             label: "Categorie",
-            icon: <ColorSwatchIcon />,
+            icon: <TagIcon />,
             path: "/" + item.id + "/categories",
           });
         }
