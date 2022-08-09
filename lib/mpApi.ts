@@ -356,6 +356,42 @@ export const mpApi = {
           headers: { "Content-Type": "application/json" },
         });
       },
+
+      saveBoiler: async (item: any) => {
+        return fetchJson(`/impianti/caldaia/${item.id > 0 ? item.id : ""}`, {
+          method: item.id > 0 ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(item),
+        });
+      },
+      savePhotovoltaic: async (item: any) => {
+        return fetchJson(`/impianti/impiantoFV/${item.id > 0 ? item.id : ""}`, {
+          method: item.id > 0 ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(item),
+        });
+      },
+      saveSolarThermal: async (item: any) => {
+        return fetchJson(`/impianti/impiantoST/${item.id > 0 ? item.id : ""}`, {
+          method: item.id > 0 ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(item),
+        });
+      },
+      savePump: async (item: any) => {
+        return fetchJson(`/impianti/pompaDC/${item.id > 0 ? item.id : ""}`, {
+          method: item.id > 0 ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(item),
+        });
+      },
+      saveAirConditioning: async (item: any) => {
+        return fetchJson(`/impianti/condizionatore/${item.id > 0 ? item.id : ""}`, {
+          method: item.id > 0 ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(item),
+        });
+      },
     },
   },
 
