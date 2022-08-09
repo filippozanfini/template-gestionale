@@ -1,22 +1,28 @@
 import SidebarLayout from "../../layouts/SidebarLayout";
 import { NextPageWithLayout } from "../_app";
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import useSWR, { useSWRConfig } from "swr";
 import { mpApi } from "../../lib/mpApi";
 import React, { ForwardRefRenderFunction, InputHTMLAttributes } from "react";
 import { useRouter } from "next/router";
 import { ArrowLeftIcon } from "@heroicons/react/solid";
+import Button from "../../components/core/Button";
+import Dialog from "../../components/shared/Dialog/Dialog";
 
 const ProfiloUtente: NextPageWithLayout = () => {
   const router = useRouter();
   const { mutate } = useSWRConfig();
   const { data: userData, mutate: mutateUser } = useSWR<any>(mpApi.user.routes.me);
+  const [showDialog, setShowDialog] = useState(false);
 
   return (
     <div className="mt-5 flex flex-col justify-center gap-4 rounded-xl bg-white p-20 pt-10">
       <div className="flex w-full items-center justify-between">
         <h3 className="text-2xl font-bold leading-6 text-gray-900">Profilo</h3>
-        <button className="flex items-center gap-2 rounded-md bg-red-500 p-3 text-white hover:bg-red-600">
+        <button
+          className="flex items-center gap-2 rounded-md bg-red-500 p-3 text-white hover:bg-red-600"
+          onClick={() => setShowDialog(true)}
+        >
           <ArrowLeftIcon width={20} height={20} />
           Esci
         </button>
@@ -40,6 +46,18 @@ const ProfiloUtente: NextPageWithLayout = () => {
           </p>
         </div>
       </div>
+
+      <Dialog title={`Sei sicuro di voler uscire?`} isOpen={showDialog} onClose={() => setShowDialog(false)}>
+        <div className="mt-6 flex gap-3">
+          <Button title="Annulla" aria="" className="w-full bg-gray-500 px-5 py-2" onClick={() => setShowDialog(false)} />
+          <Button
+            title="Conferma"
+            aria=""
+            className="w-full bg-red-500 px-5 py-2 outline-hidden outline-red-500 hover:bg-red-600"
+            onClick={() => {}}
+          />
+        </div>
+      </Dialog>
     </div>
   );
 };
