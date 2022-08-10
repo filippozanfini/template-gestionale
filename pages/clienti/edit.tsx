@@ -20,7 +20,7 @@ const defaultValues: Customer = {
   latitudine: 0,
   longitudine: 0,
   privacyAccettata: false,
-  ruoli: "3",
+  ruolo: "3",
 };
 
 const EditClienti: NextPageWithLayout = () => {

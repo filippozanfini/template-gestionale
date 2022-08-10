@@ -29,7 +29,7 @@ const defaultValues: IQuote = {
     latitudine: 0,
     longitudine: 0,
     privacyAccettata: false,
-    ruoli: [],
+    ruolo: "",
   },
 };
 
