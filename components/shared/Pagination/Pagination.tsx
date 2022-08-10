@@ -79,7 +79,7 @@ const Pagination = ({
         onPageChange={({ selected }) => onPageChange(selected)}
         pageRangeDisplayed={3}
         marginPagesDisplayed={1}
-        activeClassName={`bg-primary-800 hover:bg-primary-800 cursor-pointer text-white hover:bg-primary-700`}
+        activeClassName={`bg-gray-800 hover:bg-gray-800 cursor-pointer text-white hover:bg-primary-700`}
         pageClassName={
           "h-10 w-10 flex justify-center border-x hover:bg-gray-100 cursor-pointer border-gray-300 items-center hover  text-center text-base font-semibold  "
         }
