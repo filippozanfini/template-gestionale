@@ -69,7 +69,7 @@ const DetailPage: NextPageWithLayout = () => {
     <>
       {item && (
         <div className="mt-5 flex flex-col gap-4 rounded-xl bg-white p-20 pt-10">
-          <h3 className="text-2xl font-bold leading-6 text-gray-900">ID Ordine: {item.id}</h3>
+          <h3 className="text-4xl font-bold leading-6 text-gray-900">ID Ordine: {item.id}</h3>
           <div className="mt-3 flex items-center justify-between">
             <div className="flex flex-col gap-2">
               <p className="text-gray-400">

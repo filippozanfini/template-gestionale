@@ -29,13 +29,13 @@ const EditClienti: NextPageWithLayout = () => {
         return item ? (
           <div>
             <div>
-              <h3 className="text-2xl font-bold leading-6 text-gray-900">
+              <h3 className="text-4xl font-bold leading-6 text-gray-900">
                 {item.id === 0 ? (
                   "Nuovo Cliente"
                 ) : (
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-600"> Cliente: </span>
-                    <span className="text-2xl font-semibold tracking-wide text-gray-900">{item.nome + " " + item.cognome}</span>
+                    <span className=""> Cliente: </span>
+                    <span className="text-4xl font-semibold tracking-wide text-gray-900">{item.nome + " " + item.cognome}</span>
                   </div>
                 )}
               </h3>

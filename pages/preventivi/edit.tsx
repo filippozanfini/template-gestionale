@@ -64,14 +64,14 @@ const EditPreventivi: NextPageWithLayout = () => {
         return item ? (
           <div>
             <div>
-              <h3 className="text-2xl font-bold leading-6 text-gray-900">
+              <h3 className="text-4xl font-bold leading-6 text-gray-900">
                 {item.id === 0 ? (
                   "Nuovo Preventivo"
                 ) : (
                   <>
                     <div className="flex items-center gap-2">
-                      <span className="text-gray-600"> Preventivo: </span>
-                      <span className="text-2xl font-semibold tracking-wide text-gray-900">
+                      <span className=""> Preventivo: </span>
+                      <span className="text-4xl font-semibold tracking-wide text-gray-900">
                         {item.utente?.nome + " " + item.utente?.cognome}
                       </span>
                       <span className="text-xl font-semibold tracking-wide text-gray-500">{item.dataScadenza.toString()}</span>
