@@ -183,7 +183,7 @@ const EditPacchetti: NextPageWithLayout = () => {
       <div className="space-y-8 divide-y divide-gray-200">
         <div>
           <div>
-            <h3 className="text-lg font-medium leading-6 text-gray-900">
+            <h3 className="text-2xl font-bold leading-6 text-gray-900">
               {item?.id > 0 ? "CODICE: " + item.id : "Nuovo pacchetto manutenzione"}
             </h3>
             <div className="mt-10">
@@ -191,7 +191,7 @@ const EditPacchetti: NextPageWithLayout = () => {
                 <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
                   <Tab
                     className={({ selected }) =>
-                      `w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-900/20 focus:outline-none ${
+                      `w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-primary-700 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-900/20 focus:outline-none ${
                         selected ? "bg-white shadow" : "text-gray-50 hover:bg-white/[0.12] hover:text-white"
                       }`
                     }
@@ -201,7 +201,7 @@ const EditPacchetti: NextPageWithLayout = () => {
                   </Tab>
                   <Tab
                     className={({ selected }) =>
-                      `w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-900/20 focus:outline-none ${
+                      `w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-primary-700 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-900/20 focus:outline-none ${
                         selected ? "bg-white shadow" : "text-gray-50 hover:bg-white/[0.12] hover:text-white"
                       }`
                     }

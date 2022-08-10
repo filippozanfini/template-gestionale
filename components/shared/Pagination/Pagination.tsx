@@ -73,15 +73,15 @@ const Pagination = ({
         breakLinkClassName={"h-10 w-5 flex justify-center items-center rounded-full"}
         pageCount={totalPage}
         containerClassName="flex"
-        className={["flex rounded-md border border-gray-300 bg-white text-center  text-base font-semibold text-slate-600 shadow  "].join(
+        className={["flex rounded-md border border-gray-300 bg-white text-center text-base  font-semibold text-slate-600 shadow-lg  "].join(
           " "
         )}
         onPageChange={({ selected }) => onPageChange(selected)}
         pageRangeDisplayed={3}
         marginPagesDisplayed={1}
-        activeClassName={`cursor-default bg-primary-800 text-white hover:bg-primary-700`}
+        activeClassName={`bg-primary-800 hover:bg-primary-800 cursor-pointer text-white hover:bg-primary-700`}
         pageClassName={
-          "h-10 w-10 flex justify-center border-x hover:bg-gray-100 border-gray-300 items-center hover  text-center text-base font-semibold  "
+          "h-10 w-10 flex justify-center border-x hover:bg-gray-100 cursor-pointer border-gray-300 items-center hover  text-center text-base font-semibold  "
         }
       />
     </div>

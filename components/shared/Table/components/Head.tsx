@@ -13,7 +13,7 @@ const Head: HeadComponent = ({ children, ...props }) => {
 
   return useMemo(
     () => (
-      <thead className="bg-gray-50 text-sm" {...props}>
+      <thead className="bg-gray-800 text-sm text-white" {...props}>
         {childrenWithProps}
       </thead>
     ),
