@@ -1,6 +1,4 @@
-import { SearchIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
-import { Input } from "postcss";
 import React, { FC, useEffect, useState } from "react";
 import { useSWRConfig } from "swr";
 import { Installation } from "../../../models/Installation";
