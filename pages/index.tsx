@@ -1,7 +1,16 @@
 import SidebarLayout from "../layouts/SidebarLayout";
 import { NextPageWithLayout } from "./_app";
 import { ReactElement, useState } from "react";
-import { ArrowRightIcon } from "@heroicons/react/outline";
+import {
+  ArrowRightIcon,
+  CalculatorIcon,
+  ChipIcon,
+  CollectionIcon,
+  CubeIcon,
+  ShoppingCartIcon,
+  UserGroupIcon,
+  UsersIcon,
+} from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 import { Quote } from "../models/Quote";
 import { Order } from "../models/Order";
@@ -13,16 +22,22 @@ import { useCollaborators, useCustomers, useInstallations, useOrders, usePackage
 
 const MiniCard = (props: any) => {
   const { push } = useRouter();
+  const Icon = props.icon;
   return (
     <div
       onClick={() => push(props.path)}
-      className="group h-[150px] w-[20%] cursor-pointer flex-col justify-center rounded-xl bg-zinc-500 p-6 shadow-2xl transition-all duration-500 hover:scale-105"
+      className="group h-[150px] w-[20%] cursor-pointer flex-col justify-center rounded-xl bg-zinc-600 p-6 shadow-2xl transition-all duration-500 hover:scale-105"
     >
-      <p className="text-bold text-2xl font-bold text-white/70">{props.count}</p>
-      <a href="#" className="text-bold inline-block text-2xl font-bold text-white transition duration-300">
-        {props.title}
-        <span className="block h-[3px] max-w-0 bg-white transition-all duration-500 group-hover:max-w-full"></span>
-      </a>
+      <div className="flex justify-between">
+        <div>
+          <p className="text-bold text-2xl font-bold text-white/70">{props.count}</p>
+          <a className="text-bold inline-block text-[21px] font-bold text-white transition duration-300">
+            {props.title}
+            <span className="block h-[3px] max-w-0 bg-white transition-all duration-500 group-hover:max-w-full"></span>
+          </a>
+        </div>
+        <Icon width={30} height={30} color="white" />
+      </div>
       <ArrowRightIcon
         width={25}
         height={25}
@@ -63,11 +78,18 @@ const Home: NextPageWithLayout = () => {
           onClick={() => push("/preventivi")}
           className="group h-[500px] w-[40%] cursor-pointer flex-col justify-center rounded-xl bg-gray-800 p-10 shadow-2xl transition-all duration-500 hover:scale-105"
         >
-          <p className="text-bold text-3xl font-bold text-white/70">{quotes.data?.totalItems}</p>
-          <a href="#" className="text-bold inline-block text-3xl font-bold text-white transition duration-300">
-            Preventivi
-            <span className="block h-[3px] max-w-0 bg-white transition-all duration-500 group-hover:max-w-full"></span>
-          </a>
+          <div className="flex justify-between">
+            <div>
+              <p className="text-bold text-3xl font-bold text-white/70">{quotes.data?.totalItems}</p>
+              <a className="text-bold inline-block text-3xl font-bold text-white transition duration-300">
+                Preventivi
+                <span className="block h-[3px] max-w-0 bg-white transition-all duration-500 group-hover:max-w-full"></span>
+              </a>
+            </div>
+            <div className="flex h-[70px] w-[70px] items-center justify-center rounded-full text-white transition-colors group-hover:bg-white group-hover:text-gray-800">
+              <CalculatorIcon width={50} height={50} />
+            </div>
+          </div>
           <div className="mt-5 flex items-center justify-between p-3  ">
             <p className={["font-semibold text-white"].join(" ")}>ID</p>
             <p className={["font-semibold text-white"].join(" ")}>Nome</p>
@@ -105,7 +127,9 @@ const Home: NextPageWithLayout = () => {
           </div>
           <div className="mt-7 flex w-full items-end justify-start">
             <div className="flex items-center gap-3 opacity-0 transition-opacity group-hover:animate-pulse group-hover:opacity-100">
-              <p className="text-lg font-semibold text-white">Vedi tutti i preventivi</p>
+              <p className="text-lg font-semibold text-white text-transparent transition-colors group-hover:text-white">
+                Vedi tutti i preventivi
+              </p>
               <ArrowRightIcon width={25} height={25} className="flex text-transparent transition-colors group-hover:text-white" />
             </div>
           </div>
@@ -114,10 +138,13 @@ const Home: NextPageWithLayout = () => {
           onClick={() => push("/ordini")}
           className="group max-h-[500px] w-[60%] cursor-pointer flex-col justify-center rounded-xl bg-primary-700 p-10 shadow-2xl transition-all duration-500 hover:scale-105"
         >
-          <div className="flex w-full justify-end">
+          <div className="flex w-full justify-between">
+            <div className="flex h-[70px] w-[70px] items-center justify-center rounded-full text-white transition-colors group-hover:bg-white group-hover:text-primary-700">
+              <ShoppingCartIcon width={50} height={50} />
+            </div>
             <div>
               <p className="text-bold text-right text-3xl font-bold text-white/70">{orders.data?.totalItems}</p>
-              <a href="#" className="text-bold inline-block text-right text-3xl font-bold text-white transition duration-300">
+              <a className="text-bold inline-block text-right text-3xl font-bold text-white transition duration-300">
                 Ordini
                 <span className="block h-[3px] max-w-0 bg-white transition-all duration-500 group-hover:max-w-full"></span>
               </a>
@@ -160,18 +187,24 @@ const Home: NextPageWithLayout = () => {
           </div>
           <div className="mt-7 flex w-full items-end justify-end">
             <div className="flex items-center gap-3 opacity-0 transition-opacity group-hover:animate-pulse group-hover:opacity-100">
-              <p className="text-lg font-semibold text-white">Vedi tutti gli ordini</p>
-              <ArrowRightIcon width={25} height={25} className="flex text-transparent transition-colors group-hover:text-white" />
+              <p className="text-lg font-semibold text-white text-transparent transition-colors group-hover:text-white">
+                Vedi tutti gli ordini
+              </p>
+              <ArrowRightIcon
+                width={25}
+                height={25}
+                className="flex animate-pulse text-transparent transition-colors group-hover:text-white"
+              />
             </div>
           </div>
         </div>
       </div>
       <div className="flex justify-between gap-4">
-        <MiniCard title="Servizi" count={services.data?.totalItems} path="/servizi" />
-        <MiniCard title="Impianti" count={installations.data?.totalItems} path="/impianti" />
-        <MiniCard title="Pacchetti" count={packages.data?.totalItems} path="/pacchetti" />
-        <MiniCard title="Collaboratori" count={collaborators.data?.totalItems} path="/collaboratori" />
-        <MiniCard title="Clienti" count={customers.data?.totalItems} path="/clienti" />
+        <MiniCard title="Servizi" icon={CollectionIcon} count={services.data?.totalItems} path="/servizi" />
+        <MiniCard title="Impianti" icon={ChipIcon} count={installations.data?.totalItems} path="/impianti" />
+        <MiniCard title="Pacchetti" icon={CubeIcon} count={packages.data?.totalItems} path="/pacchetti" />
+        <MiniCard title="Collaboratori" icon={UserGroupIcon} count={collaborators.data?.totalItems} path="/collaboratori" />
+        <MiniCard title="Clienti" icon={UsersIcon} count={customers.data?.totalItems} path="/clienti" />
       </div>
     </div>
   );
