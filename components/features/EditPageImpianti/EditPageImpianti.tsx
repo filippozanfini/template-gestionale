@@ -101,6 +101,12 @@ const EditPageImpianti = function <T>({
       delete newFormData.id;
     }
 
+    Object.keys(newFormData).forEach((key) => {
+      if (newFormData[key] === "") {
+        delete newFormData[key];
+      }
+    });
+
     mpApiAction(newFormData)
       .then((response: any) => {
         alert({
@@ -156,7 +162,14 @@ const EditPageImpianti = function <T>({
       setLoading(false);
     };
 
-    fetchData();
+    if (filter) {
+      const timeout = setTimeout(() => fetchData(), 400);
+
+      return () => clearTimeout(timeout);
+    } else {
+      setListCustomers([]);
+      setCustomer(null);
+    }
   }, [filter]);
 
   useEffect(() => {
@@ -191,7 +204,7 @@ const EditPageImpianti = function <T>({
                     listItems={listCustomers}
                     onFilterChange={(filters) => setFilter(filters)}
                     onSelectedChange={(value) => setCustomer(value)}
-                    selectedName={customer ? customer?.nome + " " + customer?.cognome + ", " + customer?.indirizzo : ""}
+                    selectedName={customer ? customer?.nome + " " + customer?.cognome + ", " + customer?.indirizzo : filter}
                     loading={loading}
                     selected={customer}
                   >
