@@ -94,6 +94,7 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
       onItemFromApi={handleFormItemChange}
     >
       {(item: ImpiantoCaldaia, errors, register, renderError) => {
+        console.log("item", item);
         return item ? (
           <>
             <FormInput
@@ -136,7 +137,7 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
                 autoComplete="alimentazione"
                 aria="Inserisci la tipo di alimentazione"
                 label="Tipo di alimentazione"
-                defaultValue={item?.alimentazione}
+                defaultValue={item?.alimentazione ?? ""}
                 type="text"
               />
             )}

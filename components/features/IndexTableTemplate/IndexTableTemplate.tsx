@@ -81,6 +81,12 @@ const IndexTableTemplate: FC<IndexTableTemplateProps> = ({
     return () => clearTimeout(timeout);
   }, [filterName]);
 
+  useEffect(() => {
+    if (error) {
+      setPage(1);
+    }
+  }, [error]);
+
   return (
     <div className="space-y-8 px-4 sm:px-6 lg:px-8">
       <div className="h-10 gap-4 sm:flex sm:items-center">

@@ -54,6 +54,7 @@ const Pagination = ({
       ) : null}
 
       <ReactPaginate
+        forcePage={currentPage - 1}
         previousLabel={
           <button disabled={currentPage === 1} className={["cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"].join(" ")}>
             <ChevronLeftIcon className="h-6 w-6" />
