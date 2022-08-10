@@ -107,7 +107,7 @@ const EditServizi: NextPageWithLayout = () => {
       <div className="space-y-8 divide-y divide-gray-200">
         <div>
           <div>
-            <h3 className="text-2xl font-bold leading-6 text-gray-900">{item?.id > 0 ? "CODICE: " + item.id : "Nuovo Servizio"}</h3>
+            <h3 className="text-4xl font-bold leading-6 text-gray-900">{item?.id > 0 ? "CODICE: " + item.id : "Nuovo servizio"}</h3>
             <div className="mt-1 text-sm text-gray-500"></div>
           </div>
           <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">

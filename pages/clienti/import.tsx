@@ -62,8 +62,8 @@ const ImportClienti: NextPageWithLayout = () => {
 
   return (
     <div>
-      <h1 className="text-xl">
-        Importa Clienti: File <strong> CSV </strong>
+      <h1 className="text-4xl font-bold">
+        Importa Clienti: <span className="text-gray-500">File CSV</span>
       </h1>
 
       <div className="my-10 flex  flex-col gap-8">
