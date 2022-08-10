@@ -20,7 +20,7 @@ type TableComponent = FC<TableProps & TableHTMLAttributes<HTMLTableElement>> & {
 export const Table: TableComponent = ({ children, ...props }) => {
   return useMemo(
     () => (
-      <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+      <div className="overflow-hidden ring-1 ring-black  ring-opacity-5 drop-shadow-xl md:rounded-lg">
         <table className="w-full table-auto border-collapse divide-y divide-gray-300" {...props}>
           {children}
         </table>

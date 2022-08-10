@@ -6,33 +6,10 @@ import logo from "../app/logo-negativo.png";
 import Image from "next/image";
 
 import {
-  CameraIcon,
   ChevronDoubleLeftIcon,
-  ChevronDownIcon,
-  ColorSwatchIcon,
-  DocumentAddIcon,
-  DocumentIcon,
-  DownloadIcon,
-  LibraryIcon,
-  LocationMarkerIcon,
-  MapIcon,
-  NewspaperIcon,
-  OfficeBuildingIcon,
-  PencilIcon,
-  PhotographIcon,
-  StarIcon,
   TagIcon,
-  TicketIcon,
   UsersIcon,
   ViewListIcon,
-  BellIcon,
-  CalendarIcon,
-  ChartBarIcon,
-  FolderIcon,
-  HomeIcon,
-  InboxIcon,
-  MenuAlt2Icon,
-  XIcon,
   ChevronLeftIcon,
   UploadIcon,
   ShoppingCartIcon,
@@ -47,7 +24,6 @@ import { Menu, Transition } from "@headlessui/react";
 import NavigationMenu, { MenuItem } from "../components/NavigationMenu";
 import { useRouter } from "next/router";
 import Notifications from "../components/notifications/NotificationsCenter";
-import { ArrowLeftIcon } from "@heroicons/react/solid";
 import { mpApi } from "../lib/mpApi";
 import Dialog from "../components/shared/Dialog/Dialog";
 
@@ -59,7 +35,6 @@ function SidebarLayout({ title, children }: any) {
   const [current, setCurrent] = useState("");
   const [userNavigation, setUserNavigation] = useState([
     { name: "Profilo", href: "#" },
-    { name: "Impostazioni", href: "#" },
     {
       name: "Esci",
       href: "#",
@@ -177,7 +152,6 @@ function SidebarLayout({ title, children }: any) {
 
     setUserNavigation([
       { name: "Profilo", href: "/profilo" },
-      { name: "Impostazioni", href: "#" },
       {
         name: "Esci",
         href: "",
@@ -274,7 +248,7 @@ function SidebarLayout({ title, children }: any) {
                 <Menu as="div" className="relative ml-3">
                   <div>
                     <Menu.Button className="max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1">
-                      <svg className="h-8 w-8 rounded-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                      <svg className="h-8 w-8 rounded-full bg-gray-200 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
                       </svg>
                     </Menu.Button>
@@ -294,7 +268,7 @@ function SidebarLayout({ title, children }: any) {
                           {({ active }: { active: boolean }) => (
                             <a
                               href={item.href !== "" ? item.href : undefined}
-                              className={[active ? "bg-gray-100" : "", "block px-4 py-2 text-sm text-gray-700"].join(" ")}
+                              className={[active ? "bg-gray-100" : "", "block cursor-pointer px-4 py-2 text-sm text-gray-700"].join(" ")}
                               onClick={item.onClick}
                             >
                               {item.name}

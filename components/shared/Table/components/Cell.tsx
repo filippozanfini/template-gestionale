@@ -31,7 +31,7 @@ const Cell: CellComponent = ({ children, variant, align = "left", clickable, pos
 
   return useMemo(
     () => (
-      <HtmlTag className={["p-3.5 font-semibold first:pl-8 last:pr-8 ", position, clickable ? "cursor-pointer" : ""].join(" ")} {...props}>
+      <HtmlTag className={["p-3.5 font-semibold first:pl-8 last:pr-8", position, clickable ? "cursor-pointer" : ""].join(" ")} {...props}>
         <div className={["w-fit", alignCss].join(" ")}>{children}</div>
       </HtmlTag>
     ),

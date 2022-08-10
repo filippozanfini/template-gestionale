@@ -71,7 +71,8 @@ const NavigationMenu: FC<NavigationMenuProps> = ({
   }, [menu, selected]);
 
   const clicked = (item: InternalMenuItem) => {
-    if (item.id === current && item.isOpened) {
+    console.log("HERE");
+    if (item.id === current || item.isOpened) {
       //toggled
       setSezioni(processMenu(menu, ""));
       setCurrent("");
@@ -225,7 +226,9 @@ const NavigationMenu: FC<NavigationMenuProps> = ({
             {menuItem && menuItem.children && menuItem.children.length > 0 ? (
               <div className={collpsedStyle + " ml-auto h-5 w-5"}>
                 <ChevronDownIcon
-                  className={`${menuItem.id === current ? "rotate-180 transform" : ""} transition duration-500 ease-in-out`}
+                  className={`${
+                    menuItem.id === current || menuItem.isOpened ? "rotate-180 transform" : ""
+                  } transition duration-500 ease-in-out`}
                 />
               </div>
             ) : null}

@@ -64,7 +64,7 @@ const TableList: FC<TableListProps> = ({ items, itemsHead, children, onDeleteAct
           </Table.Row>
         </Table.Header>
 
-        <Table.Body className="divide-y bg-white">{children && children(listItems, openModalTrashItem)}</Table.Body>
+        <Table.Body className="divide-y bg-white ">{children && children(listItems, openModalTrashItem)}</Table.Body>
       </Table>
 
       <Dialog title={`Conferma eliminazione?`} isOpen={showDialog} onClose={() => closeModalTrashItem()}>

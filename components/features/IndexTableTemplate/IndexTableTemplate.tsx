@@ -1,6 +1,4 @@
-import { SearchIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
-import { Input } from "postcss";
 import React, { FC, useEffect, useState } from "react";
 import { useSWRConfig } from "swr";
 import { Installation } from "../../../models/Installation";
@@ -86,7 +84,7 @@ const IndexTableTemplate: FC<IndexTableTemplateProps> = ({
   return (
     <div className="space-y-8 px-4 sm:px-6 lg:px-8">
       <div className="h-10 gap-4 sm:flex sm:items-center">
-        <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
+        <h1 className="text-4xl font-bold text-gray-900">{title}</h1>
         {!data && <Loader className="h-8 w-8" />}
       </div>
 
