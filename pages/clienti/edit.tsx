@@ -164,18 +164,6 @@ const EditClienti: NextPageWithLayout = () => {
   );
 };
 EditClienti.getLayout = function getLayout(page: ReactElement) {
-  const [type, setType] = useState<"Clienti" | "Collaboratori" | string>("");
-  const { pathname } = useRouter();
-
-  useEffect(() => {
-    const path = pathname.split("/");
-
-    if (path.includes("clienti")) {
-      setType("Clienti");
-    } else if (path.includes("collaboratori")) {
-      setType("Collaboratori");
-    }
-  }, [pathname]);
-  return <SidebarLayout title={type}>{page}</SidebarLayout>;
+  return <SidebarLayout title="Clienti">{page}</SidebarLayout>;
 };
 export default EditClienti;
