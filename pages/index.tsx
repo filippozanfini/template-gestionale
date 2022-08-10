@@ -81,7 +81,7 @@ const Home: NextPageWithLayout = () => {
                   key={item.id}
                   className={[
                     "shadow-2xl",
-                    index === last ? "opacity-10 shadow-none" : index === last - 1 ? "opacity-40" : "opacity-100",
+                    index === last ? "opacity-20 shadow-none" : index === last - 1 ? "opacity-50" : "opacity-100",
                   ].join(" ")}
                 >
                   <ListCard
@@ -128,7 +128,7 @@ const Home: NextPageWithLayout = () => {
                   key={item.id}
                   className={[
                     "shadow-2xl",
-                    index === last ? "opacity-10 shadow-none" : index === last - 1 ? "opacity-40" : "opacity-100",
+                    index === last ? "opacity-20 shadow-none" : index === last - 1 ? "opacity-50" : "opacity-100",
                   ].join(" ")}
                 >
                   <ListCard
