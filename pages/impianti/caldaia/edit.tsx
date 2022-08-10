@@ -116,17 +116,30 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
               defaultValue={item?.modello ?? ""}
             />
 
-            <ComboBox
-              className="sm:col-span-3"
-              aria="Seleziona Alimentazione"
-              label="Alimentazione"
-              value={powerTypeSelected}
-              elements={powerType}
-              name="Alimentazione"
-              onChange={(e: any) => {
-                setPowerTypeSelected(e.target.value);
-              }}
-            />
+            {type === "caldaia" ? (
+              <ComboBox
+                className="sm:col-span-3"
+                aria="Seleziona Alimentazione"
+                label="Alimentazione"
+                value={powerTypeSelected}
+                elements={powerType}
+                name="Alimentazione"
+                onChange={(e: any) => {
+                  setPowerTypeSelected(e.target.value);
+                }}
+              />
+            ) : (
+              <FormInput
+                className="sm:col-span-3"
+                {...register("alimentazione", { required: true })}
+                errorMessage={renderError(errors["alimentazione"])}
+                autoComplete="alimentazione"
+                aria="Inserisci la tipo di alimentazione"
+                label="Tipo di alimentazione"
+                defaultValue={item?.alimentazione}
+                type="text"
+              />
+            )}
 
             <FormInput
               className="sm:col-span-3"

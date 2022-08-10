@@ -19,7 +19,6 @@ const Combobox: FC<ComboboxProps> = ({
   selected,
   placeholder,
   selectedName,
-
   children,
   onSelectedChange,
   onFilterChange,
@@ -43,11 +42,7 @@ const Combobox: FC<ComboboxProps> = ({
 
           <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
             <ComboboxUI.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-              {loading ? (
-                <div className="text-center">
-                  <div className="text-gray-500">Loading...</div>
-                </div>
-              ) : listItems.length === 0 ? (
+              {listItems.length === 0 ? (
                 <div className="relative cursor-default select-none py-2 px-4 text-gray-700">Nessun risultato.</div>
               ) : (
                 listItems.map((item) => (

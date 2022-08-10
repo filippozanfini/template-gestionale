@@ -1,11 +1,10 @@
 import { useRouter } from "next/router";
-import { useState, useEffect, ReactElement, FC } from "react";
+import { useState, useEffect } from "react";
 import { useForm, SubmitHandler, Path, UseFormRegister, FieldErrorsImpl, DeepRequired } from "react-hook-form";
 import renderError from "../../../lib/errorMessages";
-import { mpApi } from "../../../lib/mpApi";
 import { SlugName } from "../../../models/types/SlugName";
 import FourOFour from "../../FourOFour";
-import { useNotify, useAlert } from "../../notifications";
+import { useAlert } from "../../notifications";
 
 interface EditPageProps<T> {
   children: (
