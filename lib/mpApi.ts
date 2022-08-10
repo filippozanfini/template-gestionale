@@ -205,7 +205,7 @@ export const mpApi = {
 
   customers: {
     routes: {
-      list: (page: number = 1, limit: number, query: string) => `/users?page=${page}&limit=${limit}&query=${query}`,
+      list: (page: number = 1, limit: number, query: string) => `/users?page=${page}&limit=${limit}&query=${query}&ruolo=cliente`,
     },
     actions: {
       listFetcher: (input: RequestInfo, init?: RequestInit) =>
@@ -243,7 +243,7 @@ export const mpApi = {
       save: async (item: any) => {
         const itemForSave = {
           ...item,
-          ruoli: [3],
+          ruoli: 3,
         };
         return fetchJson(`/users/${item.id > 0 ? item.id : ""}`, {
           method: item.id > 0 ? "PUT" : "POST",
@@ -437,7 +437,7 @@ export const mpApi = {
 
   collaborators: {
     routes: {
-      list: (page: number = 1, limit: number, query: string) => `/users/ruoli/2?page=${page}&limit=${limit}&query=${query}`,
+      list: (page: number = 1, limit: number, query: string) => `/users/?page=${page}&limit=${limit}&query=${query}&ruolo=gestore`,
       item: (id: number) => (id < 1 ? `` : `/users/${id}`),
     },
     actions: {
@@ -464,7 +464,7 @@ export const mpApi = {
       save: async (item: any) => {
         const itemForSave = {
           ...item,
-          ruoli: [2],
+          ruolo: 2,
         };
 
         return fetchJson(`/users/${item.id > 0 ? item.id : ""}`, {

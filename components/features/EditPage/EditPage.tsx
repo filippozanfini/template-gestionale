@@ -3,8 +3,10 @@ import { useState, useEffect } from "react";
 import { useForm, SubmitHandler, Path, UseFormRegister, FieldErrorsImpl, DeepRequired } from "react-hook-form";
 import renderError from "../../../lib/errorMessages";
 import { SlugName } from "../../../models/types/SlugName";
+import Loader from "../../core/Loader";
 import FourOFour from "../../FourOFour";
 import { useAlert } from "../../notifications";
+import Overlay from "../../shared/Overlay";
 
 interface EditPageProps<T> {
   children: (
@@ -21,6 +23,7 @@ interface EditPageProps<T> {
 const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children }: EditPageProps<T>) {
   const { push, query } = useRouter();
   const [item, setItem] = useState<T | null>(defaultValues);
+  const [loading, setLoading] = useState(false);
   const alert = useAlert();
 
   const {
@@ -52,6 +55,7 @@ const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children }
   const onSubmit: SubmitHandler<T> = async (formdata: T, e: any) => {
     e.preventDefault();
 
+    setLoading(true);
     mpApiAction.actions
       .save(formdata)
       .then((response: any) => {
@@ -63,6 +67,7 @@ const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children }
           read: false,
           isAlert: true,
         });
+        setLoading(false);
         const tempItem = item as any;
         push(`/${slugName}/edit/?id=` + (response.id | response.data?.id | tempItem.id | 0));
       })
@@ -75,7 +80,7 @@ const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children }
           read: false,
           isAlert: true,
         });
-
+        setLoading(false);
         if (reason && reason.data && reason.data.errors) {
           Object.keys(reason?.data?.errors).forEach((field: any) => {
             setError(field as Path<T>, {
@@ -97,30 +102,36 @@ const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children }
     }
   }, [query]);
 
-  return item ? (
-    <form className="space-y-8 divide-y divide-gray-200" onSubmit={handleSubmit(onSubmit)}>
-      <div className="space-y-8 divide-y divide-gray-200">{children(item, register, renderError, errors)}</div>
+  return (
+    <>
+      {item ? (
+        <form className="space-y-8 divide-y divide-gray-200" onSubmit={handleSubmit(onSubmit)}>
+          <div className="space-y-8 divide-y divide-gray-200">{children(item, register, renderError, errors)}</div>
 
-      <div className="pt-5">
-        <div className="flex justify-end">
-          <button
-            type="button"
-            className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-            onClick={() => reset()}
-          >
-            Annulla modifiche
-          </button>
-          <button
-            type="submit"
-            className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-primary-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-          >
-            Salva
-          </button>
-        </div>
-      </div>
-    </form>
-  ) : (
-    <FourOFour title="Risorsa non trovata" description="Il contenuto che hai richiesto è stato rimosso oppure non esiste." />
+          <div className="pt-5">
+            <div className="flex justify-end">
+              <button
+                type="button"
+                className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                onClick={() => reset()}
+              >
+                Annulla modifiche
+              </button>
+              <button
+                type="submit"
+                className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-primary-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+              >
+                Salva
+              </button>
+            </div>
+          </div>
+        </form>
+      ) : (
+        <FourOFour title="Risorsa non trovata" description="Il contenuto che hai richiesto è stato rimosso oppure non esiste." />
+      )}
+
+      <Overlay loading={loading} />
+    </>
   );
 };
 

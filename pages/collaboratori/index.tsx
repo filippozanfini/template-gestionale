@@ -19,7 +19,7 @@ const IndiceUsers: NextPageWithLayout = () => {
 };
 
 IndiceUsers.getLayout = function getLayout(page: ReactElement) {
-  return <SidebarLayout title="Clienti">{page}</SidebarLayout>;
+  return <SidebarLayout title="Collaboratori">{page}</SidebarLayout>;
 };
 
 export default IndiceUsers;

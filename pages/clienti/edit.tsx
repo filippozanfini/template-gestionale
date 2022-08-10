@@ -1,12 +1,13 @@
 import SidebarLayout from "../../layouts/SidebarLayout";
 import { NextPageWithLayout } from "../_app";
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { Customer } from "../../models/Customer";
 import EditPage from "../../components/features/EditPage/EditPage";
 import FormInput from "../../components/FormInput";
 import CheckboxInput from "../../components/core/Checkbox";
 import { mpApi } from "../../lib/mpApi";
 import FormPasswordInput from "../../components/Password";
+import { useRouter } from "next/router";
 
 const defaultValues: Customer = {
   id: 0,
@@ -19,10 +20,23 @@ const defaultValues: Customer = {
   latitudine: 0,
   longitudine: 0,
   privacyAccettata: false,
-  ruoli: ["3"],
+  ruoli: "3",
 };
 
 const EditClienti: NextPageWithLayout = () => {
+  const [type, setType] = useState<"Cliente" | "Collaboratore" | string>("");
+  const { pathname } = useRouter();
+
+  useEffect(() => {
+    const path = pathname.split("/");
+
+    if (path.includes("clienti")) {
+      setType("Cliente");
+    } else if (path.includes("collaboratori")) {
+      setType("Collaboratore");
+    }
+  }, [pathname]);
+
   return (
     <EditPage<Customer> defaultValues={defaultValues} mpApiAction={mpApi.customers} slugName="clienti">
       {(item: Customer, register, renderError, errors) => {
@@ -31,10 +45,10 @@ const EditClienti: NextPageWithLayout = () => {
             <div>
               <h3 className="text-4xl font-bold leading-6 text-gray-900">
                 {item.id === 0 ? (
-                  "Nuovo Cliente"
+                  `Nuovo ${type}`
                 ) : (
                   <div className="flex items-center gap-2">
-                    <span className=""> Cliente: </span>
+                    <span className=""> {type}: </span>
                     <span className="text-4xl font-semibold tracking-wide text-gray-900">{item.nome + " " + item.cognome}</span>
                   </div>
                 )}
@@ -152,6 +166,18 @@ const EditClienti: NextPageWithLayout = () => {
   );
 };
 EditClienti.getLayout = function getLayout(page: ReactElement) {
-  return <SidebarLayout title="Clienti">{page}</SidebarLayout>;
+  const [type, setType] = useState<"Clienti" | "Collaboratori" | string>("");
+  const { pathname } = useRouter();
+
+  useEffect(() => {
+    const path = pathname.split("/");
+
+    if (path.includes("clienti")) {
+      setType("Clienti");
+    } else if (path.includes("collaboratori")) {
+      setType("Collaboratori");
+    }
+  }, [pathname]);
+  return <SidebarLayout title={type}>{page}</SidebarLayout>;
 };
 export default EditClienti;

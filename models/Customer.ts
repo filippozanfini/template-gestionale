@@ -9,7 +9,7 @@ export interface ICustomer {
   longitudine?: number;
   numeroDiTelefono?: string;
   username?: string;
-  ruoli?: string[];
+  ruoli?: string;
   privacyAccettata?: boolean;
 }
 
@@ -23,7 +23,7 @@ export class Customer implements ICustomer {
   latitudine: number;
   longitudine: number;
   numeroDiTelefono: string;
-  ruoli: string[];
+  ruoli: string;
   privacyAccettata: boolean;
 
   constructor(data: ICustomer) {
@@ -36,7 +36,7 @@ export class Customer implements ICustomer {
     this.latitudine = data.latitudine ?? 0;
     this.longitudine = data.longitudine ?? 0;
     this.numeroDiTelefono = data.numeroDiTelefono ?? "";
-    this.ruoli = data.ruoli ?? [];
+    this.ruoli = data.ruoli ?? "";
     this.privacyAccettata = data.privacyAccettata ?? false;
   }
 

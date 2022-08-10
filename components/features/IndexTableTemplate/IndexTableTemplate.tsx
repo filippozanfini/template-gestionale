@@ -55,6 +55,7 @@ const IndexTableTemplate: FC<IndexTableTemplateProps> = ({
   };
 
   useEffect(() => {
+    console.log("data", data);
     if (data) {
       data.content ? setItems(data.content) : setItems([]);
       setTotalItems(data.totalItems);

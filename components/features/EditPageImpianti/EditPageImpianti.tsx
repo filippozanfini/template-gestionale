@@ -10,6 +10,8 @@ import FormInput from "../../FormInput";
 import { useAlert } from "../../notifications";
 import Combobox from "../../shared/ComboBox/Combobox";
 import { mpApi as api } from "../../../lib/mpApi";
+import Loader from "../../core/Loader";
+import Overlay from "../../shared/Overlay";
 
 interface EditPageImpiantiProps<T> {
   defaultValues: T;
@@ -106,7 +108,7 @@ const EditPageImpianti = function <T>({
         delete newFormData[key];
       }
     });
-
+    setLoading(true);
     mpApiAction(newFormData)
       .then((response: any) => {
         alert({
@@ -117,6 +119,7 @@ const EditPageImpianti = function <T>({
           read: false,
           isAlert: true,
         });
+        setLoading(false);
         const tempItem = item as any;
         push(`/impianti/${slugNameImpianti}/edit/?id=` + (response.id | response.data?.id | tempItem.id | 0));
       })
@@ -130,6 +133,7 @@ const EditPageImpianti = function <T>({
           isAlert: true,
         });
 
+        setLoading(false);
         if (reason && reason.data && reason.data.errors) {
           Object.keys(reason?.data?.errors).forEach((field: any) => {
             setError(field as Path<T>, {
@@ -186,114 +190,118 @@ const EditPageImpianti = function <T>({
   }, [setValue]);
 
   return (
-    <form className="space-y-8 divide-y divide-gray-200" onSubmit={handleSubmit(onSubmit)}>
-      <div className="space-y-8 divide-y divide-gray-200">
-        <div>
+    <>
+      <form className="space-y-8 divide-y divide-gray-200" onSubmit={handleSubmit(onSubmit)}>
+        <div className="space-y-8 divide-y divide-gray-200">
           <div>
-            <h3 className="text-4xl font-bold leading-6 text-gray-900">{item?.id > 0 ? "CODICE: " + item.id : "Nuovo impianto"}</h3>
-            <div className="mt-1 text-sm text-gray-500"></div>
-          </div>
+            <div>
+              <h3 className="text-4xl font-bold leading-6 text-gray-900">{item?.id > 0 ? "CODICE: " + item.id : "Nuovo impianto"}</h3>
+              <div className="mt-1 text-sm text-gray-500"></div>
+            </div>
 
-          <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-            {item.id > 0 ? <input type="hidden" value={item?.id} {...register("id" as Path<T>)} /> : null}
-            <div className="col-span-6 flex flex-col items-start">
-              {item.id == 0 ? (
-                <>
-                  <span className="block text-sm font-medium text-gray-700">Cerca Utente</span>
-                  <Combobox
-                    listItems={listCustomers}
-                    onFilterChange={(filters) => setFilter(filters)}
-                    onSelectedChange={(value) => setCustomer(value)}
-                    selectedName={customer ? customer?.nome + " " + customer?.cognome + ", " + customer?.indirizzo : filter}
-                    loading={loading}
-                    selected={customer}
-                  >
-                    {(item: Customer, selected, active) => (
-                      <div className="flex items-center gap-4">
-                        <span className={`block w-1/4 truncate ${selected ? "font-medium" : "font-normal"}`}>
-                          {item.nome + " " + item.cognome}
-                        </span>
-                        <span className="w-1/3">{item.indirizzo}</span>
-                        {selected ? (
-                          <span
-                            className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? "text-white" : "text-primary-600"}`}
-                          >
-                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
+            <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+              {item.id > 0 ? <input type="hidden" value={item?.id} {...register("id" as Path<T>)} /> : null}
+              <div className="col-span-6 flex flex-col items-start">
+                {item.id == 0 ? (
+                  <>
+                    <span className="block text-sm font-medium text-gray-700">Cerca Utente</span>
+                    <Combobox
+                      listItems={listCustomers}
+                      onFilterChange={(filters) => setFilter(filters)}
+                      onSelectedChange={(value) => setCustomer(value)}
+                      selectedName={customer ? customer?.nome + " " + customer?.cognome + ", " + customer?.indirizzo : filter}
+                      loading={loading}
+                      selected={customer}
+                    >
+                      {(item: Customer, selected, active) => (
+                        <div className="flex items-center gap-4">
+                          <span className={`block w-1/4 truncate ${selected ? "font-medium" : "font-normal"}`}>
+                            {item.nome + " " + item.cognome}
                           </span>
-                        ) : null}
-                      </div>
-                    )}
-                  </Combobox>
-                </>
-              ) : (
-                <FormInput
-                  label="Utente"
-                  type="text"
-                  value={customer ? customer?.nome + " " + customer?.cognome + ", " + customer?.indirizzo : ""}
-                  disabled={true}
-                  aria="utente"
-                  name="Utente"
-                />
-              )}
-            </div>
-            {customer?.id && <input type="hidden" value={customer?.id} {...register("idUtente" as Path<T>)} />}
-            <FormInput
-              className="sm:col-span-3"
-              {...register("dataInstallazione" as Path<T>, { required: true })}
-              errorMessage={renderError(errors["dataInstallazione" as Path<T>])}
-              autoComplete="dataInstallazione"
-              aria="Inserisci la Data di Installazione"
-              label="Data di Installazione"
-              value={date ?? ""}
-              onChange={(e: any) => {
-                setDate(e.target.value);
-              }}
-              type="date"
-            />
-            {children(item, errors, register, renderError)}
-
-            <div className="flex gap-4 sm:col-span-3">
+                          <span className="w-1/3">{item.indirizzo}</span>
+                          {selected ? (
+                            <span
+                              className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? "text-white" : "text-primary-600"}`}
+                            >
+                              <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                            </span>
+                          ) : null}
+                        </div>
+                      )}
+                    </Combobox>
+                  </>
+                ) : (
+                  <FormInput
+                    label="Utente"
+                    type="text"
+                    value={customer ? customer?.nome + " " + customer?.cognome + ", " + customer?.indirizzo : ""}
+                    disabled={true}
+                    aria="utente"
+                    name="Utente"
+                  />
+                )}
+              </div>
+              {customer?.id && <input type="hidden" value={customer?.id} {...register("idUtente" as Path<T>)} />}
               <FormInput
-                className="w-full"
-                {...register("dirittoFisso" as Path<T>, { required: true })}
-                errorMessage={renderError(errors["dirittoFisso" as Path<T>])}
-                autoComplete="dirittoFisso"
-                aria="Inserisci il Diritto Fisso di Chiamata"
-                label="Diritto Fisso di Chiamata"
-                value={item?.dirittoFisso ?? 0}
-                type="number"
-                disabled={autoComputation}
+                className="sm:col-span-3"
+                {...register("dataInstallazione" as Path<T>, { required: true })}
+                errorMessage={renderError(errors["dataInstallazione" as Path<T>])}
+                autoComplete="dataInstallazione"
+                aria="Inserisci la Data di Installazione"
+                label="Data di Installazione"
+                value={date ?? ""}
+                onChange={(e: any) => {
+                  setDate(e.target.value);
+                }}
+                type="date"
               />
-              <CheckboxInput
-                aria="Calcolo automatico"
-                label="Calcolo automatico"
-                name="calcolo-automatico"
-                defaultChecked={autoComputation}
-                onChange={(e) => setAutoComputation(e.target.checked)}
-                className="mt-5 flex items-center whitespace-nowrap"
-              />
+              {children(item, errors, register, renderError)}
+
+              <div className="flex gap-4 sm:col-span-3">
+                <FormInput
+                  className="w-full"
+                  {...register("dirittoFisso" as Path<T>, { required: true })}
+                  errorMessage={renderError(errors["dirittoFisso" as Path<T>])}
+                  autoComplete="dirittoFisso"
+                  aria="Inserisci il Diritto Fisso di Chiamata"
+                  label="Diritto Fisso di Chiamata"
+                  value={item?.dirittoFisso ?? 0}
+                  type="number"
+                  disabled={autoComputation}
+                />
+                <CheckboxInput
+                  aria="Calcolo automatico"
+                  label="Calcolo automatico"
+                  name="calcolo-automatico"
+                  defaultChecked={autoComputation}
+                  onChange={(e) => setAutoComputation(e.target.checked)}
+                  className="mt-5 flex items-center whitespace-nowrap"
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="pt-5">
-        <div className="flex justify-end">
-          <button
-            type="button"
-            className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-            onClick={() => reset()}
-          >
-            Annulla modifiche
-          </button>
-          <button
-            type="submit"
-            className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-primary-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-          >
-            Salva
-          </button>
+        <div className="pt-5">
+          <div className="flex justify-end">
+            <button
+              type="button"
+              className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+              onClick={() => reset()}
+            >
+              Annulla modifiche
+            </button>
+            <button
+              type="submit"
+              className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-primary-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+            >
+              Salva
+            </button>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+
+      <Overlay loading={loading} />
+    </>
   );
 };
 
