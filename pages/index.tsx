@@ -61,7 +61,7 @@ const Home: NextPageWithLayout = () => {
       <div className="mt-10 flex justify-between gap-5">
         <div
           onClick={() => push("/preventivi")}
-          className="group h-[500px] w-[35%] cursor-pointer flex-col justify-center rounded-xl bg-gray-800 p-10 shadow-2xl transition-all duration-500 hover:scale-105"
+          className="group h-[500px] w-[40%] cursor-pointer flex-col justify-center rounded-xl bg-gray-800 p-10 shadow-2xl transition-all duration-500 hover:scale-105"
         >
           <a href="#" className="text-bold inline-block text-2xl font-bold text-white transition duration-300">
             Ultimi preventivi
@@ -96,7 +96,7 @@ const Home: NextPageWithLayout = () => {
         </div>
         <div
           onClick={() => push("/ordini")}
-          className="group max-h-[500px] w-[65%] cursor-pointer flex-col justify-center rounded-xl bg-primary-700 p-10 shadow-2xl transition-all duration-500 hover:scale-105"
+          className="group max-h-[500px] w-[60%] cursor-pointer flex-col justify-center rounded-xl bg-primary-700 p-10 shadow-2xl transition-all duration-500 hover:scale-105"
         >
           <div className="flex w-full justify-end">
             <a href="#" className="text-bold inline-block text-right text-2xl font-bold text-white transition duration-300">

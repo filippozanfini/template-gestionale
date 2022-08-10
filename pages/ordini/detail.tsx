@@ -114,7 +114,7 @@ const DetailPage: NextPageWithLayout = () => {
           </div>
           <div className="mt-7 h-[1px] w-full bg-gray-200" />
           <div className="mt-4 flex justify-between gap-4">
-            <div className="h-[260px] w-1/2 flex-col justify-center rounded-md bg-gray-50 p-10">
+            <div className="h-[260px] w-1/2 flex-col justify-center rounded-xl bg-gray-50 p-10">
               <p className="text-bold text-xl font-bold">Dati pagamento</p>
               <div className="mt-5 flex flex-col gap-4">
                 <p className="text-gray-400">
@@ -129,7 +129,7 @@ const DetailPage: NextPageWithLayout = () => {
                 </p>
               </div>
             </div>
-            <div className="max-h-[400px] w-1/2 flex-col justify-center rounded-md bg-gray-50 p-10">
+            <div className="max-h-[400px] w-1/2 flex-col justify-center rounded-xl bg-gray-50 p-10">
               <p className="text-bold text-right text-xl font-bold">Storico stato</p>
               <div className="mt-5 flex max-h-[290px] flex-col gap-4 overflow-y-auto">
                 {item.listaStati.reverse().map((l: any) => {
