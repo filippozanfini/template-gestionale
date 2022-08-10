@@ -7,3 +7,5 @@ export type SlugName =
   | "clienti"
   | "collaboratori"
   | "ordini";
+
+export type SlugNameImpianti = "caldaia" | "condizionatore" | "fotovoltaico" | "pompa-di-calore" | "solare-termico";
