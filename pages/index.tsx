@@ -26,7 +26,7 @@ const MiniCard = (props: any) => {
   return (
     <div
       onClick={() => push(props.path)}
-      className="group h-[150px] w-[20%] cursor-pointer flex-col justify-center rounded-xl bg-zinc-500 p-6 shadow-2xl transition-all duration-500 hover:scale-105"
+      className="group h-[150px] w-[20%] cursor-pointer flex-col justify-center rounded-xl bg-zinc-600 p-6 shadow-2xl transition-all duration-500 hover:scale-105"
     >
       <div className="flex justify-between">
         <div>
