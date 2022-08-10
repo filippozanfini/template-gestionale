@@ -76,12 +76,20 @@ const Home: NextPageWithLayout = () => {
           <div className="flex flex-col gap-3">
             {quotes.data?.content.map((item: Quote, index: number) => {
               const last = quotes.data?.content.length - 1;
+              const penultimate = last - 1;
+              const thirdLast = penultimate - 1;
               return (
                 <div
                   key={item.id}
                   className={[
                     "shadow-2xl",
-                    index === last ? "opacity-20 shadow-none" : index === last - 1 ? "opacity-50" : "opacity-100",
+                    index === last
+                      ? "opacity-20 shadow-none"
+                      : index === penultimate
+                      ? "opacity-40"
+                      : index === thirdLast
+                      ? "opacity-70"
+                      : "opacity-100",
                   ].join(" ")}
                 >
                   <ListCard
@@ -123,12 +131,20 @@ const Home: NextPageWithLayout = () => {
           <div className="flex flex-col gap-3">
             {orders.data?.content.map((item: Order, index: number) => {
               const last = orders.data?.content.length - 1;
+              const penultimate = last - 1;
+              const thirdLast = penultimate - 1;
               return (
                 <div
                   key={item.id}
                   className={[
                     "shadow-2xl",
-                    index === last ? "opacity-20 shadow-none" : index === last - 1 ? "opacity-50" : "opacity-100",
+                    index === last
+                      ? "opacity-20 shadow-none"
+                      : index === penultimate
+                      ? "opacity-40"
+                      : index === thirdLast
+                      ? "opacity-70"
+                      : "opacity-100",
                   ].join(" ")}
                 >
                   <ListCard
