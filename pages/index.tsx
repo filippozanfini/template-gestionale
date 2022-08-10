@@ -19,7 +19,10 @@ const MiniCard = (props: any) => {
       className="group h-[150px] w-[20%] cursor-pointer flex-col justify-center rounded-xl bg-zinc-500 p-6 shadow-2xl transition-all duration-500 hover:scale-105"
     >
       <p className="text-bold text-2xl font-bold text-white/70">{props.count}</p>
-      <p className="text-bold text-2xl font-bold text-white">{props.title}</p>
+      <a href="#" className="text-bold inline-block text-2xl font-bold text-white transition duration-300">
+        {props.title}
+        <span className="block h-[3px] max-w-0 bg-white transition-all duration-500 group-hover:max-w-full"></span>
+      </a>
       <ArrowRightIcon
         width={25}
         height={25}
@@ -60,7 +63,10 @@ const Home: NextPageWithLayout = () => {
           onClick={() => push("/preventivi")}
           className="group h-[500px] w-[35%] cursor-pointer flex-col justify-center rounded-xl bg-gray-800 p-10 shadow-2xl transition-all duration-500 hover:scale-105"
         >
-          <p className="text-bold text-2xl font-bold text-white">Ultimi preventivi</p>
+          <a href="#" className="text-bold inline-block text-2xl font-bold text-white transition duration-300">
+            Ultimi preventivi
+            <span className="block h-[3px] max-w-0 bg-white transition-all duration-500 group-hover:max-w-full"></span>
+          </a>
           <div className="mt-5 flex items-center justify-between p-3  ">
             <p className={["font-semibold text-white"].join(" ")}>ID</p>
             <p className={["font-semibold text-white"].join(" ")}>Nome</p>
@@ -92,7 +98,12 @@ const Home: NextPageWithLayout = () => {
           onClick={() => push("/ordini")}
           className="group max-h-[500px] w-[65%] cursor-pointer flex-col justify-center rounded-xl bg-primary-700 p-10 shadow-2xl transition-all duration-500 hover:scale-105"
         >
-          <p className="text-bold text-right text-2xl font-bold text-white">Ultimi ordini</p>
+          <div className="flex w-full justify-end">
+            <a href="#" className="text-bold inline-block text-right text-2xl font-bold text-white transition duration-300">
+              Ultimi ordini
+              <span className="block h-[3px] max-w-0 bg-white transition-all duration-500 group-hover:max-w-full"></span>
+            </a>
+          </div>
           <div className="mt-5 flex items-center justify-between p-3  ">
             <p className={["font-semibold text-white"].join(" ")}>ID</p>
             <p className={["font-semibold text-white"].join(" ")}>Nome</p>
