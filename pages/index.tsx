@@ -86,7 +86,9 @@ const Home: NextPageWithLayout = () => {
                 <span className="block h-[3px] max-w-0 bg-white transition-all duration-500 group-hover:max-w-full"></span>
               </a>
             </div>
-            <CalculatorIcon width={50} height={50} color="white" />
+            <div className="flex h-[70px] w-[70px] items-center justify-center rounded-full text-white transition-colors group-hover:bg-white group-hover:text-gray-800">
+              <CalculatorIcon width={50} height={50} />
+            </div>
           </div>
           <div className="mt-5 flex items-center justify-between p-3  ">
             <p className={["font-semibold text-white"].join(" ")}>ID</p>
@@ -137,7 +139,9 @@ const Home: NextPageWithLayout = () => {
           className="group max-h-[500px] w-[60%] cursor-pointer flex-col justify-center rounded-xl bg-primary-700 p-10 shadow-2xl transition-all duration-500 hover:scale-105"
         >
           <div className="flex w-full justify-between">
-            <ShoppingCartIcon width={50} height={50} color="white" />
+            <div className="flex h-[70px] w-[70px] items-center justify-center rounded-full text-white transition-colors group-hover:bg-white group-hover:text-primary-700">
+              <ShoppingCartIcon width={50} height={50} />
+            </div>
             <div>
               <p className="text-bold text-right text-3xl font-bold text-white/70">{orders.data?.totalItems}</p>
               <a className="text-bold inline-block text-right text-3xl font-bold text-white transition duration-300">
