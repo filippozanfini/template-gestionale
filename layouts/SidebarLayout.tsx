@@ -6,33 +6,10 @@ import logo from "../app/logo-negativo.png";
 import Image from "next/image";
 
 import {
-  CameraIcon,
   ChevronDoubleLeftIcon,
-  ChevronDownIcon,
-  ColorSwatchIcon,
-  DocumentAddIcon,
-  DocumentIcon,
-  DownloadIcon,
-  LibraryIcon,
-  LocationMarkerIcon,
-  MapIcon,
-  NewspaperIcon,
-  OfficeBuildingIcon,
-  PencilIcon,
-  PhotographIcon,
-  StarIcon,
   TagIcon,
-  TicketIcon,
   UsersIcon,
   ViewListIcon,
-  BellIcon,
-  CalendarIcon,
-  ChartBarIcon,
-  FolderIcon,
-  HomeIcon,
-  InboxIcon,
-  MenuAlt2Icon,
-  XIcon,
   ChevronLeftIcon,
   UploadIcon,
   ShoppingCartIcon,
@@ -47,7 +24,6 @@ import { Menu, Transition } from "@headlessui/react";
 import NavigationMenu, { MenuItem } from "../components/NavigationMenu";
 import { useRouter } from "next/router";
 import Notifications from "../components/notifications/NotificationsCenter";
-import { ArrowLeftIcon } from "@heroicons/react/solid";
 import { mpApi } from "../lib/mpApi";
 import Dialog from "../components/shared/Dialog/Dialog";
 
@@ -59,7 +35,6 @@ function SidebarLayout({ title, children }: any) {
   const [current, setCurrent] = useState("");
   const [userNavigation, setUserNavigation] = useState([
     { name: "Profilo", href: "#" },
-    { name: "Impostazioni", href: "#" },
     {
       name: "Esci",
       href: "#",
@@ -177,7 +152,6 @@ function SidebarLayout({ title, children }: any) {
 
     setUserNavigation([
       { name: "Profilo", href: "/profilo" },
-      { name: "Impostazioni", href: "#" },
       {
         name: "Esci",
         href: "",
