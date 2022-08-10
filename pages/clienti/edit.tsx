@@ -134,7 +134,6 @@ const EditClienti: NextPageWithLayout = () => {
                 aria="Modifica la latitudine"
                 label="Latitudine"
                 defaultValue={item?.latitudine ?? ""}
-                type="number"
               />
               <FormInput
                 className="sm:col-span-3"
@@ -144,7 +143,6 @@ const EditClienti: NextPageWithLayout = () => {
                 aria="Modifica la longitudine"
                 label="Longitudine"
                 defaultValue={item?.longitudine ?? ""}
-                type="number"
               />
 
               {item.id !== 0 && (

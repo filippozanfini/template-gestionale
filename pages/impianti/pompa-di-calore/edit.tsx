@@ -66,7 +66,6 @@ const EditImpiantiPompaDiCalore: NextPageWithLayout = () => {
               autoComplete="potenza"
               aria="Inserisci la Potenza"
               label="Potenza"
-              type="number"
               defaultValue={item?.potenza ?? ""}
             />
             <FormInput
