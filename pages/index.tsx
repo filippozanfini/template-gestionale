@@ -63,8 +63,9 @@ const Home: NextPageWithLayout = () => {
           onClick={() => push("/preventivi")}
           className="group h-[500px] w-[40%] cursor-pointer flex-col justify-center rounded-xl bg-gray-800 p-10 shadow-2xl transition-all duration-500 hover:scale-105"
         >
-          <a href="#" className="text-bold inline-block text-2xl font-bold text-white transition duration-300">
-            Ultimi preventivi
+          <p className="text-bold text-3xl font-bold text-white/70">{quotes.data?.totalItems}</p>
+          <a href="#" className="text-bold inline-block text-3xl font-bold text-white transition duration-300">
+            Preventivi
             <span className="block h-[3px] max-w-0 bg-white transition-all duration-500 group-hover:max-w-full"></span>
           </a>
           <div className="mt-5 flex items-center justify-between p-3  ">
@@ -73,9 +74,16 @@ const Home: NextPageWithLayout = () => {
             <p className={["font-semibold text-white"].join(" ")}>Costo</p>
           </div>
           <div className="flex flex-col gap-3">
-            {quotes.data?.content.map((item: Quote) => {
+            {quotes.data?.content.map((item: Quote, index: number) => {
+              const last = quotes.data?.content.length - 1;
               return (
-                <div key={item.id}>
+                <div
+                  key={item.id}
+                  className={[
+                    "shadow-2xl",
+                    index === last ? "opacity-20 shadow-none" : index === last - 1 ? "opacity-50" : "opacity-100",
+                  ].join(" ")}
+                >
                   <ListCard
                     id={item.id}
                     name={item.utente.nome + " " + item.utente.cognome}
@@ -87,7 +95,7 @@ const Home: NextPageWithLayout = () => {
               );
             })}
           </div>
-          <div className="mt-10 flex w-full items-end justify-start">
+          <div className="mt-7 flex w-full items-end justify-start">
             <div className="flex items-center gap-3 opacity-0 transition-opacity group-hover:animate-pulse group-hover:opacity-100">
               <p className="text-lg font-semibold text-white">Vedi tutti i preventivi</p>
               <ArrowRightIcon width={25} height={25} className="flex text-transparent transition-colors group-hover:text-white" />
@@ -99,10 +107,13 @@ const Home: NextPageWithLayout = () => {
           className="group max-h-[500px] w-[60%] cursor-pointer flex-col justify-center rounded-xl bg-primary-700 p-10 shadow-2xl transition-all duration-500 hover:scale-105"
         >
           <div className="flex w-full justify-end">
-            <a href="#" className="text-bold inline-block text-right text-2xl font-bold text-white transition duration-300">
-              Ultimi ordini
-              <span className="block h-[3px] max-w-0 bg-white transition-all duration-500 group-hover:max-w-full"></span>
-            </a>
+            <div>
+              <p className="text-bold text-right text-3xl font-bold text-white/70">{orders.data?.totalItems}</p>
+              <a href="#" className="text-bold inline-block text-right text-3xl font-bold text-white transition duration-300">
+                Ordini
+                <span className="block h-[3px] max-w-0 bg-white transition-all duration-500 group-hover:max-w-full"></span>
+              </a>
+            </div>
           </div>
           <div className="mt-5 flex items-center justify-between p-3  ">
             <p className={["font-semibold text-white"].join(" ")}>ID</p>
@@ -110,9 +121,16 @@ const Home: NextPageWithLayout = () => {
             <p className={["font-semibold text-white"].join(" ")}>Totale</p>
           </div>
           <div className="flex flex-col gap-3">
-            {orders.data?.content.map((item: Order) => {
+            {orders.data?.content.map((item: Order, index: number) => {
+              const last = orders.data?.content.length - 1;
               return (
-                <div key={item.id}>
+                <div
+                  key={item.id}
+                  className={[
+                    "shadow-2xl",
+                    index === last ? "opacity-20 shadow-none" : index === last - 1 ? "opacity-50" : "opacity-100",
+                  ].join(" ")}
+                >
                   <ListCard
                     id={item.id}
                     name={item.utente.nome + " " + item.utente.cognome}
@@ -124,7 +142,7 @@ const Home: NextPageWithLayout = () => {
               );
             })}
           </div>
-          <div className="mt-10 flex w-full items-end justify-end">
+          <div className="mt-7 flex w-full items-end justify-end">
             <div className="flex items-center gap-3 opacity-0 transition-opacity group-hover:animate-pulse group-hover:opacity-100">
               <p className="text-lg font-semibold text-white">Vedi tutti gli ordini</p>
               <ArrowRightIcon width={25} height={25} className="flex text-transparent transition-colors group-hover:text-white" />
