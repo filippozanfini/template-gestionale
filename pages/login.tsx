@@ -18,7 +18,7 @@ const Login: NextPage = () => {
     redirectIfFound: true,
   });
 
-   const alert = useAlert();
+  const alert = useAlert();
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
@@ -28,22 +28,22 @@ const Login: NextPage = () => {
     } catch (error) {
       if (error instanceof FetchError) {
         alert({
-          id: "err-"+ (Math.random() * 1000000),
+          id: "err-" + Math.random() * 1000000,
           type: "error",
           title: "Errore nel login",
           message: error.data.message,
           isAlert: true,
-          read: false
+          read: false,
         });
       } else {
         const err = error as Error;
         alert({
-          id: "err-"+ (Math.random() * 1000000),
+          id: "err-" + Math.random() * 1000000,
           type: "error",
           title: err.name,
           message: err.message,
           isAlert: true,
-          read: false
+          read: false,
         });
       }
     }
@@ -58,7 +58,7 @@ const Login: NextPage = () => {
             Area riservata
           </p>
 
-          <Input type="text" name="username" aria="inserisci la username" label="Username" />
+          <Input type="text" name="email" aria="inserisci l'email" label="Email" />
           <FormPasswordInput name="password" aria="inserisci la password" label="Password" className="mt-6  w-full" />
 
           <div className="mt-8">
