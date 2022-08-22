@@ -24,7 +24,7 @@ const Login: NextPage = () => {
     event.preventDefault();
 
     try {
-      mutateUser((await mpApi.user.actions.login(event.currentTarget.username.value, event.currentTarget.password.value)) as User);
+      mutateUser((await mpApi.user.actions.login(event.currentTarget.email.value, event.currentTarget.password.value)) as User);
     } catch (error) {
       if (error instanceof FetchError) {
         alert({
