@@ -25,7 +25,19 @@ const defaultValues: Customer = {
 
 const EditClienti: NextPageWithLayout = () => {
   const [type, setType] = useState<"Cliente" | "Collaboratore" | string>("");
+  const [password, setPassword] = useState("");
+  const [passwordRepeat, setPasswordRepeat] = useState("");
+  const [errorPassword, setErrorPassword] = useState(false);
   const { pathname } = useRouter();
+
+  const handleMatchPassword = (value: string, pass: string) => {
+    if (value === password) {
+      return true;
+    } else {
+      setErrorPassword(true);
+      return false;
+    }
+  };
 
   useEffect(() => {
     const path = pathname.split("/");
@@ -35,6 +47,9 @@ const EditClienti: NextPageWithLayout = () => {
     } else if (path.includes("collaboratori")) {
       setType("Collaboratore");
     }
+
+    setPassword("");
+    setErrorPassword(false);
   }, [pathname]);
 
   return (
@@ -96,16 +111,36 @@ const EditClienti: NextPageWithLayout = () => {
                 defaultValue={item?.codiceFiscale ?? ""}
               />
               {item.id === 0 && (
-                <FormPasswordInput
-                  className="sm:col-span-3"
-                  {...register("password", { required: true })}
-                  errorMessage={renderError(errors["password"])}
-                  autoComplete="password"
-                  aria="Modifica la password"
-                  label="Password"
-                  defaultValue={""}
-                  type="password"
-                />
+                <>
+                  <FormPasswordInput
+                    className="sm:col-span-3"
+                    {...register("password", { required: true, validate: (value) => handleMatchPassword(value, passwordRepeat) })}
+                    errorMessage={renderError(errors["password"])}
+                    autoComplete="password"
+                    aria="Inserisci la password"
+                    label="Password"
+                    defaultValue={""}
+                    type="password"
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <div className="relative sm:col-span-3">
+                    <FormPasswordInput
+                      className="border-none"
+                      {...register("password_repeat", { required: true, validate: (value) => handleMatchPassword(value, password) })}
+                      errorMessage={renderError(errors["password_repeat"]) || errorPassword ? "Le password non coincidono." : undefined}
+                      autoComplete="password"
+                      aria="conferma password"
+                      label="Conferma Password"
+                      defaultValue={""}
+                      type="password"
+                      onChange={(e) => {
+                        setPasswordRepeat(e.target.value);
+                        setErrorPassword(false);
+                      }}
+                    />
+                    {/* {errorPassword && <p className="mt-2 text-sm text-red-600"></p>} */}
+                  </div>
+                </>
               )}
               <FormInput
                 className="sm:col-span-3"

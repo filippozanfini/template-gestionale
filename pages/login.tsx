@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import logo from "../app/logo.png";
 import Button from "../components/core/Button";
@@ -54,13 +55,17 @@ const Login: NextPage = () => {
       <div className="flex flex-col items-center justify-center">
         <div className="mt-16 w-full rounded bg-white  p-10 shadow md:w-1/2 lg:w-1/3">
           <Image src={logo} />
-          <p tabIndex={0} role="heading" aria-label="Area riservata" className="mb-4 text-2xl font-extrabold leading-6 text-gray-800">
+          <p tabIndex={0} role="heading" aria-label="Area riservata" className="my-4 text-2xl font-extrabold leading-6 text-gray-800">
             Area riservata
           </p>
-
           <Input type="text" name="email" aria="inserisci l'email" label="Email" />
           <FormPasswordInput name="password" aria="inserisci la password" label="Password" className="mt-6  w-full" />
 
+          <div className="mt-4">
+            <Link href="/recupera_password">
+              <a className="text-sm font-medium text-primary-600 hover:text-primary-400">Password dimenticata?</a>
+            </Link>
+          </div>
           <div className="mt-8">
             <Button className="w-full py-4" title="Login" aria="Premi per effettuare il login" type="submit" />
           </div>
