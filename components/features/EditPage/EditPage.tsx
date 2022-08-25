@@ -1,9 +1,8 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import { useForm, SubmitHandler, Path, UseFormRegister, FieldErrorsImpl, DeepRequired } from "react-hook-form";
+import { useForm, SubmitHandler, Path, UseFormRegister, FieldErrorsImpl, DeepRequired, UseFormSetValue } from "react-hook-form";
 import renderError from "../../../lib/errorMessages";
 import { SlugName } from "../../../models/types/SlugName";
-import Loader from "../../core/Loader";
 import FourOFour from "../../FourOFour";
 import { useAlert } from "../../notifications";
 import Overlay from "../../shared/Overlay";
@@ -18,9 +17,11 @@ interface EditPageProps<T> {
   defaultValues: T;
   slugName: SlugName;
   mpApiAction: any;
+  onItemFromApi?: (item: T) => void;
+  setValueForm?: (setValue: UseFormSetValue<T>) => void;
 }
 
-const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children }: EditPageProps<T>) {
+const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children, onItemFromApi, setValueForm }: EditPageProps<T>) {
   const { push, query } = useRouter();
   const [item, setItem] = useState<T | null>(defaultValues);
   const [loading, setLoading] = useState(false);
@@ -31,6 +32,7 @@ const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children }
     handleSubmit,
     reset,
     setError,
+    setValue,
     formState: { errors },
   } = useForm<T>();
 
@@ -101,6 +103,18 @@ const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children }
       setItem(defaultValues);
     }
   }, [query]);
+
+  useEffect(() => {
+    if (onItemFromApi && item) {
+      onItemFromApi(item);
+    }
+  }, [item]);
+
+  useEffect(() => {
+    if (setValueForm) {
+      setValueForm(setValue);
+    }
+  }, [setValue]);
 
   return (
     <>
