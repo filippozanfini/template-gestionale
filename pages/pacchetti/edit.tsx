@@ -233,7 +233,7 @@ const EditPacchetti: NextPageWithLayout = () => {
                       errorMessage={renderError(errors["costo"])}
                       autoComplete="costo"
                       aria="costo"
-                      label="Costo"
+                      label="Costo (iva inclusa €)"
                       defaultValue={item?.costo ?? ""}
                     />
 

@@ -94,7 +94,6 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
       onItemFromApi={handleFormItemChange}
     >
       {(item: ImpiantoCaldaia, errors, register, renderError) => {
-        console.log("item", item);
         return item ? (
           <>
             <FormInput

@@ -120,7 +120,7 @@ const EditPreventivi: NextPageWithLayout = () => {
                 errorMessage={renderError(errors["costo"])}
                 autoComplete="costo"
                 aria="Modifica il Costo"
-                label="Costo"
+                label="Costo (iva inclusa €)"
                 defaultValue={item?.costo ?? ""}
                 type="number"
               />

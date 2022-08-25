@@ -139,7 +139,7 @@ const EditServizi: NextPageWithLayout = () => {
                   errorMessage={renderError(errors["costo"])}
                   autoComplete="costo"
                   aria="costo"
-                  label="costo"
+                  label="Costo (iva inclusa €)"
                   defaultValue={item?.costo ?? ""}
                 />
                 <Textarea

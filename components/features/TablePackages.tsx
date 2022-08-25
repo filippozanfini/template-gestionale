@@ -19,7 +19,7 @@ const itemsHeadTable: HeadCell[] = [
     align: "left",
   },
   {
-    title: "Costo",
+    title: "Costo (iva inclusa €)",
     align: "left",
   },
   {

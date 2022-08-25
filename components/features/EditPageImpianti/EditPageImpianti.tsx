@@ -98,8 +98,6 @@ const EditPageImpianti = function <T>({
       dataInstallazione: formdata.dataInstallazione.split("-").reverse().join("/"),
       idUtente: customer?.id || 0,
       dirittoFisso: autoComputation ? -1 : formdata.dirittoFisso,
-      latitudine: defaultCoords ? null : formdata.latitudine,
-      longitudine: defaultCoords ? null : formdata.longitudine,
     };
 
     if (newFormData.id === 0) {
@@ -268,7 +266,7 @@ const EditPageImpianti = function <T>({
                   autoComplete="latitudine"
                   aria="Inserisci la Latitudine"
                   label="Latitudine"
-                  defaultValue={item?.latitudine}
+                  defaultValue={item.id === 0 && defaultCoords ? customer?.latitudine : item?.latitudine}
                   disabled={defaultCoords}
                 />
                 <FormInput
@@ -278,7 +276,7 @@ const EditPageImpianti = function <T>({
                   autoComplete="longitudine"
                   aria="Inserisci la Longitudine"
                   label="Longitudine"
-                  defaultValue={item?.longitudine}
+                  defaultValue={item.id === 0 && defaultCoords ? customer?.longitudine : item?.longitudine}
                   disabled={defaultCoords}
                 />
                 <CheckboxInput
@@ -298,7 +296,7 @@ const EditPageImpianti = function <T>({
                   errorMessage={renderError(errors["dirittoFisso" as Path<T>])}
                   autoComplete="dirittoFisso"
                   aria="Inserisci il Diritto Fisso di Chiamata"
-                  label="Diritto Fisso di Chiamata"
+                  label="Diritto Fisso di Chiamata (€)"
                   defaultValue={item?.dirittoFisso ?? 0}
                   type="number"
                   disabled={autoComputation}
