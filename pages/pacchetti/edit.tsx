@@ -268,6 +268,11 @@ const EditPacchetti: NextPageWithLayout = () => {
                         aria="Inserisci la Potenza minima"
                         label="Potenza minima"
                         defaultValue={item?.potenzaMin ?? ""}
+                        onKeyPress={(event) => {
+                          if (!/[0-9]/.test(event.key)) {
+                            event.preventDefault();
+                          }
+                        }}
                       />
                     )}
                     {tabIndex === 1 && (

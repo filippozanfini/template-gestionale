@@ -48,8 +48,8 @@ const EditPageImpianti = function <T>({
   const [listCustomers, setListCustomers] = useState<Customer[]>([]);
 
   const [date, setDate] = useState<string>("");
-  const [autoComputation, setAutoComputation] = useState(false);
-  const [defaultCoords, setDefaultCoords] = useState(false);
+  const [autoComputation, setAutoComputation] = useState(true);
+  const [defaultCoords, setDefaultCoords] = useState(true);
 
   /* FILTER */
   const [filter, setFilter] = useState<string>("");
@@ -242,7 +242,9 @@ const EditPageImpianti = function <T>({
                   />
                 )}
               </div>
+
               {customer?.id && <input type="hidden" value={customer?.id} {...register("idUtente" as Path<T>)} />}
+
               <FormInput
                 className="sm:col-span-3"
                 {...register("dataInstallazione" as Path<T>, { required: true })}
@@ -256,6 +258,7 @@ const EditPageImpianti = function <T>({
                 }}
                 type="date"
               />
+
               {children(item, errors, register, renderError)}
 
               <div className="flex gap-4 sm:col-span-6">
@@ -297,7 +300,7 @@ const EditPageImpianti = function <T>({
                   autoComplete="dirittoFisso"
                   aria="Inserisci il Diritto Fisso di Chiamata"
                   label="Diritto Fisso di Chiamata (€)"
-                  defaultValue={item?.dirittoFisso ?? 0}
+                  defaultValue={item?.dirittoFisso ?? ""}
                   type="number"
                   disabled={autoComputation}
                 />

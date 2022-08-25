@@ -67,6 +67,11 @@ const EditImpiantiPompaDiCalore: NextPageWithLayout = () => {
               aria="Inserisci la Potenza"
               label="Potenza (kWp)"
               defaultValue={item?.potenza ?? ""}
+              onKeyPress={(event) => {
+                if (!/[0-9]/.test(event.key)) {
+                  event.preventDefault();
+                }
+              }}
             />
           </>
         ) : (

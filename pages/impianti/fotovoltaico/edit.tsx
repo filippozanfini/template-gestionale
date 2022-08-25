@@ -58,7 +58,6 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (setValueForm) {
-      console.log("tensionValueSelected", tensionValueSelected);
       setValueForm("tensione", tensionValueSelected);
     }
   }, [tensionValueSelected, setValueForm]);
@@ -92,6 +91,13 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
               label="Potenza (kWp)"
               type="number"
               defaultValue={item?.potenza ?? ""}
+              min={0}
+              step={1}
+              onKeyPress={(event) => {
+                if (!/[0-9]/.test(event.key)) {
+                  event.preventDefault();
+                }
+              }}
             />
 
             <ComboBox
