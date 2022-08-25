@@ -273,6 +273,7 @@ const EditPacchetti: NextPageWithLayout = () => {
                             event.preventDefault();
                           }
                         }}
+                        type="number"
                       />
                     )}
                     {tabIndex === 1 && (
@@ -284,6 +285,12 @@ const EditPacchetti: NextPageWithLayout = () => {
                         aria="Inserisci la Potenza massima"
                         label="Potenza massima"
                         defaultValue={item?.potenzaMax ?? ""}
+                        type="number"
+                        onKeyPress={(event) => {
+                          if (!/[0-9]/.test(event.key)) {
+                            event.preventDefault();
+                          }
+                        }}
                       />
                     )}
                     <Textarea
