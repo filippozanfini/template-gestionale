@@ -289,7 +289,7 @@ const EditPacchetti: NextPageWithLayout = () => {
                         errorMessage={renderError(errors["potenzaMin"])}
                         autoComplete="potenzaMin"
                         aria="Inserisci la Potenza minima"
-                        label="Potenza minima"
+                        label="Potenza minima (kWp)"
                         defaultValue={item?.potenzaMin ?? ""}
                         onKeyPress={(event) => {
                           if (!/[0-9]/.test(event.key)) {
@@ -306,7 +306,7 @@ const EditPacchetti: NextPageWithLayout = () => {
                         errorMessage={renderError(errors["potenzaMax"])}
                         autoComplete="potenzaMax"
                         aria="Inserisci la Potenza massima"
-                        label="Potenza massima"
+                        label="Potenza massima (kWp)"
                         defaultValue={item?.potenzaMax ?? ""}
                         type="number"
                         onKeyPress={(event) => {
