@@ -20,6 +20,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import dynamic from "next/dynamic";
 import { UseFormSetValue } from "react-hook-form";
 import Button from "../../components/core/Button";
+import { useRouter } from "next/router";
 
 const Editor = dynamic<EditorProps>(() => import("react-draft-wysiwyg").then((mod) => mod.Editor), { ssr: false });
 
@@ -65,6 +66,8 @@ const EditPreventivi: NextPageWithLayout = () => {
   /* UTILS */
   const [loading, setLoading] = useState<boolean>(false);
 
+  const { pathname } = useRouter();
+
   const handleSetValueFormChange = (setValue: UseFormSetValue<IQuote>) => {
     if (setValueFormState !== setValue) {
       setValueFormState(() => setValue);
@@ -77,7 +80,6 @@ const EditPreventivi: NextPageWithLayout = () => {
 
   const handleEditorContentChange = (content: any) => {
     // setEditorContent(content);
-    console.log("content", content);
     const contentWithHtml = draftToHtml(content);
     setDraftToHtmlContent(contentWithHtml);
   };
@@ -105,7 +107,6 @@ const EditPreventivi: NextPageWithLayout = () => {
       setShowEditor(false);
 
       const contentBlocks = convertFromHTML(itemFromApi.descrizione);
-      console.log("contentBlocks", contentBlocks);
       const contentState = ContentState.createFromBlockArray(contentBlocks as any);
       const raw = convertToRaw(contentState);
       setEditorContent(raw);
@@ -121,6 +122,14 @@ const EditPreventivi: NextPageWithLayout = () => {
       setValueForm("descrizione", draftToHtmlContent);
     }
   }, [draftToHtmlContent, setValueForm]);
+
+  useEffect(() => {
+    if (pathname.includes("new")) {
+      setCustomer(null);
+      setEditorContent(null);
+      setDraftToHtmlContent("");
+    }
+  }, [pathname]);
 
   if (typeof window === "undefined") {
     return null;
