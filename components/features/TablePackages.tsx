@@ -19,7 +19,7 @@ const itemsHeadTable: HeadCell[] = [
     align: "left",
   },
   {
-    title: "Costo (iva inclusa €)",
+    title: "Costo annuale (iva inclusa)",
     align: "center",
   },
   {
@@ -53,7 +53,7 @@ const TablePackages = ({ items, onDeleteAction, onEditAction }: TableListProps) 
             </Table.Cell>
 
             <Table.Cell align="center">
-              <p className="text-xs text-gray-900 ">{item.costo}</p>
+              <p className="text-xs text-gray-900 ">{item.costo} €</p>
             </Table.Cell>
 
             <Table.Cell align="center">
