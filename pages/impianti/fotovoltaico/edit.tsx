@@ -89,7 +89,7 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
               errorMessage={renderError(errors["potenza"])}
               autoComplete="potenza"
               aria="Inserisci la Potenza"
-              label="Potenza"
+              label="Potenza (kWp)"
               type="number"
               defaultValue={item?.potenza ?? ""}
             />
@@ -132,25 +132,6 @@ const EditImpiantiFotovoltaici: NextPageWithLayout = () => {
               aria="Inserisci Inverter"
               label="Inverter"
               defaultValue={item?.inverter ?? ""}
-            />
-
-            <FormInput
-              className="sm:col-span-3"
-              {...register("longitudine")}
-              errorMessage={renderError(errors["longitudine"])}
-              autoComplete="longitudine"
-              aria="Inserisci la Longitudine"
-              label="Longitudine"
-              defaultValue={item?.longitudine}
-            />
-            <FormInput
-              className="sm:col-span-3"
-              {...register("latitudine")}
-              errorMessage={renderError(errors["latitudine"])}
-              autoComplete="latitudine"
-              aria="Inserisci la Latitudine"
-              label="Latitudine"
-              defaultValue={item?.latitudine}
             />
           </>
         ) : (

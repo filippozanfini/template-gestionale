@@ -141,28 +141,6 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
                 type="text"
               />
             )}
-
-            <FormInput
-              className="sm:col-span-3"
-              {...register("longitudine")}
-              errorMessage={renderError(errors["longitudine"])}
-              autoComplete="longitudine"
-              aria="Inserisci la Longitudine"
-              label="Longitudine"
-              defaultValue={item?.longitudine}
-              type="number"
-            />
-
-            <FormInput
-              className="sm:col-span-3"
-              {...register("latitudine")}
-              errorMessage={renderError(errors["latitudine"])}
-              autoComplete="latitudine"
-              aria="Inserisci la Latitudine"
-              label="Latitudine"
-              defaultValue={item?.latitudine}
-              type="number"
-            />
           </>
         ) : (
           <FourOFour title="Risorsa non trovata" description="Il contenuto che hai richiesto è stato rimosso oppure non esiste." />

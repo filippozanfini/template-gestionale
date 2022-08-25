@@ -73,25 +73,6 @@ const EditImpiantiSolareTermico: NextPageWithLayout = () => {
 
             <FormInput
               className="sm:col-span-3"
-              {...register("longitudine")}
-              errorMessage={renderError(errors["longitudine"])}
-              autoComplete="longitudine"
-              aria="Inserisci la Longitudine"
-              label="Longitudine"
-              defaultValue={item?.longitudine ?? ""}
-            />
-            <FormInput
-              className="sm:col-span-3"
-              {...register("latitudine")}
-              errorMessage={renderError(errors["latitudine"])}
-              autoComplete="latitudine"
-              aria="Inserisci la Latitudine"
-              label="Latitudine"
-              defaultValue={item?.latitudine}
-            />
-
-            <FormInput
-              className="sm:col-span-3"
               {...register("tipologiaCircolazione", { required: true })}
               errorMessage={renderError(errors["tipologiaCircolazione"])}
               autoComplete="tipologiaCircolazione"

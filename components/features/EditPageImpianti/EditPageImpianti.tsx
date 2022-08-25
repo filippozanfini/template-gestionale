@@ -49,6 +49,7 @@ const EditPageImpianti = function <T>({
 
   const [date, setDate] = useState<string>("");
   const [autoComputation, setAutoComputation] = useState(false);
+  const [defaultCoords, setDefaultCoords] = useState(false);
 
   /* FILTER */
   const [filter, setFilter] = useState<string>("");
@@ -97,6 +98,8 @@ const EditPageImpianti = function <T>({
       dataInstallazione: formdata.dataInstallazione.split("-").reverse().join("/"),
       idUtente: customer?.id || 0,
       dirittoFisso: autoComputation ? -1 : formdata.dirittoFisso,
+      latitudine: defaultCoords ? null : formdata.latitudine,
+      longitudine: defaultCoords ? null : formdata.longitudine,
     };
 
     if (newFormData.id === 0) {
@@ -257,6 +260,37 @@ const EditPageImpianti = function <T>({
               />
               {children(item, errors, register, renderError)}
 
+              <div className="flex gap-4 sm:col-span-6">
+                <FormInput
+                  className="sm:col-span-2"
+                  {...register("latitudine" as Path<T>)}
+                  errorMessage={renderError(errors["latitudine" as Path<T>])}
+                  autoComplete="latitudine"
+                  aria="Inserisci la Latitudine"
+                  label="Latitudine"
+                  defaultValue={item?.latitudine}
+                  disabled={defaultCoords}
+                />
+                <FormInput
+                  className="sm:col-span-2"
+                  {...register("longitudine" as Path<T>)}
+                  errorMessage={renderError(errors["longitudine" as Path<T>])}
+                  autoComplete="longitudine"
+                  aria="Inserisci la Longitudine"
+                  label="Longitudine"
+                  defaultValue={item?.longitudine}
+                  disabled={defaultCoords}
+                />
+                <CheckboxInput
+                  aria="Coordinate dell'utente"
+                  label="Usa coordinate utente"
+                  name="calcolo-automatico"
+                  defaultChecked={defaultCoords}
+                  onChange={(e) => setDefaultCoords(e.target.checked)}
+                  className="mt-5 flex items-center whitespace-nowrap"
+                />
+              </div>
+
               <div className="flex gap-4 sm:col-span-3">
                 <FormInput
                   className="w-full"
@@ -265,7 +299,7 @@ const EditPageImpianti = function <T>({
                   autoComplete="dirittoFisso"
                   aria="Inserisci il Diritto Fisso di Chiamata"
                   label="Diritto Fisso di Chiamata"
-                  value={item?.dirittoFisso ?? 0}
+                  defaultValue={item?.dirittoFisso ?? 0}
                   type="number"
                   disabled={autoComputation}
                 />
