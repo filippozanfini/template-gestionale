@@ -65,26 +65,13 @@ const EditImpiantiPompaDiCalore: NextPageWithLayout = () => {
               errorMessage={renderError(errors["potenza"])}
               autoComplete="potenza"
               aria="Inserisci la Potenza"
-              label="Potenza"
+              label="Potenza (kWp)"
               defaultValue={item?.potenza ?? ""}
-            />
-            <FormInput
-              className="sm:col-span-3"
-              {...register("longitudine")}
-              errorMessage={renderError(errors["longitudine"])}
-              autoComplete="longitudine"
-              aria="Inserisci la Longitudine"
-              label="Longitudine"
-              defaultValue={item?.longitudine}
-            />
-            <FormInput
-              className="sm:col-span-3"
-              {...register("latitudine")}
-              errorMessage={renderError(errors["latitudine"])}
-              autoComplete="latitudine"
-              aria="Inserisci la Latitudine"
-              label="Latitudine"
-              defaultValue={item?.latitudine}
+              onKeyPress={(event) => {
+                if (!/[0-9]/.test(event.key)) {
+                  event.preventDefault();
+                }
+              }}
             />
           </>
         ) : (

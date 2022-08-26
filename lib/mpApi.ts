@@ -264,6 +264,10 @@ export const mpApi = {
           body: formData,
         });
       },
+
+      resetPassword: async (id: number) => {
+        return fetchJson(`/users/genera/${id}`);
+      },
     },
   },
 

@@ -8,6 +8,9 @@ import CheckboxInput from "../../components/core/Checkbox";
 import { mpApi } from "../../lib/mpApi";
 import FormPasswordInput from "../../components/Password";
 import { useRouter } from "next/router";
+import Button from "../../components/core/Button";
+import Dialog from "../../components/shared/Dialog/Dialog";
+import Overlay from "../../components/shared/Overlay";
 
 const defaultValues: Customer = {
   id: 0,
@@ -25,7 +28,44 @@ const defaultValues: Customer = {
 
 const EditClienti: NextPageWithLayout = () => {
   const [type, setType] = useState<"Cliente" | "Collaboratore" | string>("");
-  const { pathname } = useRouter();
+
+  const [password, setPassword] = useState("");
+  const [passwordRepeat, setPasswordRepeat] = useState("");
+  const [errorPassword, setErrorPassword] = useState(false);
+
+  const [openConfirmResetPassword, setOpenConfirmResetPassword] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { pathname, query } = useRouter();
+
+  const handleMatchPassword = (value: string, pass: string) => {
+    if (value == password) {
+      return true;
+    } else {
+      setErrorPassword(true);
+      return false;
+    }
+  };
+
+  const handleResetPassword = async () => {
+    const id = query.id;
+    if (id) {
+      setIsLoading(true);
+      setOpenConfirmResetPassword(false);
+      mpApi.customers.actions
+        .resetPassword(Number(id))
+        .then((res: any) => {
+          setMessage(res.message);
+          setIsLoading(false);
+        })
+        .catch((err: any) => {
+          setMessage(err.message);
+          setIsLoading(false);
+        });
+    }
+  };
 
   useEffect(() => {
     const path = pathname.split("/");
@@ -35,6 +75,9 @@ const EditClienti: NextPageWithLayout = () => {
     } else if (path.includes("collaboratori")) {
       setType("Collaboratore");
     }
+
+    setPassword("");
+    setErrorPassword(false);
   }, [pathname]);
 
   return (
@@ -96,16 +139,36 @@ const EditClienti: NextPageWithLayout = () => {
                 defaultValue={item?.codiceFiscale ?? ""}
               />
               {item.id === 0 && (
-                <FormPasswordInput
-                  className="sm:col-span-3"
-                  {...register("password", { required: true })}
-                  errorMessage={renderError(errors["password"])}
-                  autoComplete="password"
-                  aria="Modifica la password"
-                  label="Password"
-                  defaultValue={""}
-                  type="password"
-                />
+                <>
+                  <FormPasswordInput
+                    className="sm:col-span-3"
+                    {...register("password", { required: true, validate: (value) => handleMatchPassword(value, passwordRepeat) })}
+                    errorMessage={renderError(errors["password"])}
+                    autoComplete="password"
+                    aria="Inserisci la password"
+                    label="Password"
+                    defaultValue={""}
+                    type="password"
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <div className="relative sm:col-span-3">
+                    <FormPasswordInput
+                      className="border-none"
+                      {...register("password_repeat", { required: true, validate: (value) => handleMatchPassword(value, password) })}
+                      errorMessage={renderError(errors["password_repeat"]) || errorPassword ? "Le password non coincidono." : undefined}
+                      autoComplete="password"
+                      aria="conferma password"
+                      label="Conferma Password"
+                      defaultValue={""}
+                      type="password"
+                      onChange={(e) => {
+                        setPasswordRepeat(e.target.value);
+                        setErrorPassword(false);
+                      }}
+                    />
+                    {/* {errorPassword && <p className="mt-2 text-sm text-red-600"></p>} */}
+                  </div>
+                </>
               )}
               <FormInput
                 className="sm:col-span-3"
@@ -155,6 +218,34 @@ const EditClienti: NextPageWithLayout = () => {
                 />
               )}
             </div>
+
+            {item.id !== 0 && (
+              <div className="mt-4 flex w-full justify-end">
+                <Button
+                  aria=""
+                  title="Reset Password"
+                  className="w-fit rounded-md px-4 py-3"
+                  onClick={() => setOpenConfirmResetPassword(true)}
+                />
+              </div>
+            )}
+
+            <Dialog isOpen={Boolean(message)} onClose={() => setMessage("")} title="">
+              <div className="">{message}</div>
+            </Dialog>
+
+            <Dialog
+              isOpen={openConfirmResetPassword}
+              onClose={() => setOpenConfirmResetPassword(false)}
+              title="Conferma il rispristino della password?"
+            >
+              <div className="mt-4 flex gap-4">
+                <Button title="Annulla" aria="" onClick={() => setOpenConfirmResetPassword(false)} />
+                <Button title="Conferma" aria="" onClick={() => handleResetPassword()} />
+              </div>
+            </Dialog>
+
+            <Overlay loading={isLoading} text="" />
           </div>
         ) : (
           <></>

@@ -6,7 +6,7 @@ import Input from "../components/FormInput";
 import { mpApi } from "../lib/mpApi";
 import Dialog from "../components/shared/Dialog/Dialog";
 import Loader from "../components/core/Loader";
-import { CheckIcon } from "@heroicons/react/outline";
+import { CheckIcon, XIcon } from "@heroicons/react/outline";
 
 const RecuperaPassword = () => {
   const [email, setEmail] = useState("");
@@ -14,6 +14,7 @@ const RecuperaPassword = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,23 +22,28 @@ const RecuperaPassword = () => {
     mpApi.resetPassword.actions
       .sendEmail(email)
       .then((res: any) => {
-        console.log("res", res);
         setLoading(false);
         setIsSent(true);
         setMessage(res.message);
       })
       .catch((err) => {
+        setError(true);
+        setMessage(err.message);
         setLoading(false);
       });
   };
 
-  // alessio.spingola@altrama.com
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setError(false);
+    setMessage("");
+  };
 
   useEffect(() => {
-    if (isSent) {
+    if (isSent || error) {
       setOpenDialog(true);
     }
-  }, [isSent]);
+  }, [isSent, error]);
 
   return (
     <div className=" flex flex-col items-center justify-center">
@@ -64,10 +70,11 @@ const RecuperaPassword = () => {
 
         <div className="absolute top-5 right-5 h-10 w-10">
           {loading && <Loader className="h-full w-full" />} {isSent && <CheckIcon className="h-full w-full text-green-600" />}
+          {error && <XIcon className="h-full w-full text-red-600" />}
         </div>
       </div>
 
-      <Dialog title={""} onClose={() => setOpenDialog(false)} isOpen={openDialog}>
+      <Dialog title={""} onClose={() => handleCloseDialog()} isOpen={openDialog}>
         <p className="font-medium text-gray-800">{message}</p>
       </Dialog>
     </div>

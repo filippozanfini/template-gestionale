@@ -1,6 +1,6 @@
 import SidebarLayout from "../../layouts/SidebarLayout";
 import { NextPageWithLayout } from "../_app";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, SetStateAction, useEffect, useState } from "react";
 
 import { eQuoteStatus, IQuote, Quote } from "../../models/Quote";
 import EditPage from "../../components/features/EditPage/EditPage";
@@ -12,6 +12,17 @@ import Combobox from "../../components/shared/ComboBox/Combobox";
 import { CheckIcon } from "@heroicons/react/solid";
 import moment from "moment";
 import { OrderStatusMapper } from "../../utils/OrderStatusMapper";
+
+import { EditorProps } from "react-draft-wysiwyg";
+import { convertToRaw, EditorState, ContentState, convertFromHTML } from "draft-js";
+import draftToHtml from "draftjs-to-html";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import dynamic from "next/dynamic";
+import { UseFormSetValue } from "react-hook-form";
+import Button from "../../components/core/Button";
+import { useRouter } from "next/router";
+
+const Editor = dynamic<EditorProps>(() => import("react-draft-wysiwyg").then((mod) => mod.Editor), { ssr: false });
 
 const defaultValues: IQuote = {
   id: 0,
@@ -35,14 +46,47 @@ const defaultValues: IQuote = {
 
 const EditPreventivi: NextPageWithLayout = () => {
   /* ITEM */
+  const [itemFromApi, setItemFromApi] = useState<IQuote>({});
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [listCustomers, setListCustomers] = useState<Customer[]>([]);
+
+  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+  const [editorContent, setEditorContent] = useState<any>(null);
+  const [draftToHtmlContent, setDraftToHtmlContent] = useState("");
+
+  const [descriptionForInnerHtml, setDescriptionForInnerHtml] = useState("");
+
+  const [setValueForm, setValueFormState] = useState<UseFormSetValue<Quote>>(() => {});
+
+  const [showEditor, setShowEditor] = useState(false);
 
   /* FILTER */
   const [filter, setFilter] = useState<string>("");
 
   /* UTILS */
   const [loading, setLoading] = useState<boolean>(false);
+
+  const { pathname } = useRouter();
+
+  const handleSetValueFormChange = (setValue: UseFormSetValue<IQuote>) => {
+    if (setValueFormState !== setValue) {
+      setValueFormState(() => setValue);
+    }
+  };
+
+  const handleFormItemChange = (item: IQuote) => {
+    setItemFromApi(item);
+  };
+
+  const handleEditorContentChange = (content: any) => {
+    // setEditorContent(content);
+    const contentWithHtml = draftToHtml(content);
+    setDraftToHtmlContent(contentWithHtml);
+  };
+
+  const handleEditorStateChange = (state: EditorState) => {
+    setEditorState(state);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,8 +102,47 @@ const EditPreventivi: NextPageWithLayout = () => {
     fetchData();
   }, [filter]);
 
+  useEffect(() => {
+    if (itemFromApi.descrizione) {
+      setShowEditor(false);
+
+      const contentBlocks = convertFromHTML(itemFromApi.descrizione);
+      const contentState = ContentState.createFromBlockArray(contentBlocks as any);
+      const raw = convertToRaw(contentState);
+      setEditorContent(raw);
+
+      setDescriptionForInnerHtml(itemFromApi.descrizione);
+    } else {
+      setShowEditor(true);
+    }
+  }, [itemFromApi]);
+
+  useEffect(() => {
+    if (setValueForm) {
+      setValueForm("descrizione", draftToHtmlContent);
+    }
+  }, [draftToHtmlContent, setValueForm]);
+
+  useEffect(() => {
+    if (pathname.includes("new")) {
+      setCustomer(null);
+      setEditorContent(null);
+      setDraftToHtmlContent("");
+    }
+  }, [pathname]);
+
+  if (typeof window === "undefined") {
+    return null;
+  }
+
   return (
-    <EditPage<IQuote> defaultValues={defaultValues} mpApiAction={mpApi.quotes} slugName="preventivi">
+    <EditPage<IQuote>
+      defaultValues={defaultValues}
+      mpApiAction={mpApi.quotes}
+      slugName="preventivi"
+      setValueForm={handleSetValueFormChange}
+      onItemFromApi={handleFormItemChange}
+    >
       {(item: Quote, register, renderError, errors) => {
         return item ? (
           <div>
@@ -120,7 +203,7 @@ const EditPreventivi: NextPageWithLayout = () => {
                 errorMessage={renderError(errors["costo"])}
                 autoComplete="costo"
                 aria="Modifica il Costo"
-                label="Costo"
+                label="Costo (iva inclusa €)"
                 defaultValue={item?.costo ?? ""}
                 type="number"
               />
@@ -148,18 +231,39 @@ const EditPreventivi: NextPageWithLayout = () => {
               )}
             </div>
 
-            <div className="mt-3 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+            <div className="mb-10 mt-10 flex h-fit min-h-[300px] flex-col gap-1">
               <input type="hidden" value={item?.id} {...register("id")} />
-
-              <Textarea
-                className="sm:col-span-6"
-                {...register("descrizione", { required: true })}
-                errorMessage={renderError(errors["descrizione"])}
-                autoComplete="descrizione"
-                aria="Modifica la Descrizione"
-                label="Descrizione"
-                defaultValue={item?.descrizione ?? ""}
+              <h2 className="block text-sm font-medium text-gray-700">Descrizione</h2>
+              <Editor
+                editorState={editorState}
+                toolbarClassName="w-full rounded-xl shadow"
+                wrapperClassName="w-full col-span-6 rounded-md"
+                editorClassName="w-full border border-gray-100 rounded-md shadow-md bg-white min-h-[280px] px-5 py-1"
+                onEditorStateChange={(state) => handleEditorStateChange(state)}
+                onContentStateChange={(content) => handleEditorContentChange(content)}
+                spellCheck
+                contentState={editorContent}
               />
+
+              {/* {descriptionForInnerHtml && !showEditor ? (
+                <>
+                  <div className="h-full w-full flex-grow">
+                    <h2 className="my-1 block text-sm font-medium text-gray-700">Descrizione</h2>
+                    <div className="h-full rounded-md border border-gray-200 bg-white p-3">
+                      <div dangerouslySetInnerHTML={{ __html: descriptionForInnerHtml }} />
+                    </div>
+                  </div>
+
+                  <div className="flex w-full justify-end">
+                    <Button
+                      title="Modifica descrizione"
+                      className="w-fit rounded-md px-4 py-3"
+                      aria="modifica descrizione"
+                      onClick={() => setShowEditor(true)}
+                    />
+                  </div>
+                </>
+              ) : null} */}
             </div>
           </div>
         ) : null;

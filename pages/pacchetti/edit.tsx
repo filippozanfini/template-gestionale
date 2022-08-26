@@ -16,6 +16,7 @@ import ComboBoxInput from "../../components/ComboBoxInput";
 import { Tab } from "@headlessui/react";
 import Loader from "../../components/core/Loader";
 import Overlay from "../../components/shared/Overlay";
+import ComboBox, { ComboBoxElement } from "../../components/ComboBox";
 
 const defaultValues: Package = {
   id: 0,
@@ -29,12 +30,20 @@ const defaultValues: Package = {
   potenzaMax: 0.0,
 };
 
+const tensionValues: ComboBoxElement[] = [
+  { label: "media", value: "media" },
+  { label: "bassa", value: "bassa" },
+];
+
 const EditPacchetti: NextPageWithLayout = () => {
   const { push, query } = useRouter();
   const [item, setItem] = useState<Package | null>(defaultValues);
   const [itemCategory, setItemCategory] = useState<string[]>([]);
   const [tabIndex, setTabIndex] = useState(0);
   const [loading, setLoading] = useState(false);
+
+  const [tensionValueSelected, setTensionValueSelected] = useState<string>(String(tensionValues[0].value));
+
   const alert = useAlert();
 
   const categories: any[] = [
@@ -143,6 +152,11 @@ const EditPacchetti: NextPageWithLayout = () => {
     }
   };
 
+  const selectCategoryHandler = (categorySelected: any[]) => {
+    setItemCategory(categorySelected);
+    setValue("categorie", categorySelected);
+  };
+
   useEffect(() => {
     if (query.id) {
       const ItemId: number = Number(query.id);
@@ -173,10 +187,17 @@ const EditPacchetti: NextPageWithLayout = () => {
     }
   }, [tabIndex]);
 
-  const selectCategoryHandler = (categorySelected: any[]) => {
-    setItemCategory(categorySelected);
-    setValue("categorie", categorySelected);
-  };
+  useEffect(() => {
+    setValue("tensione", tensionValueSelected);
+  }, [tensionValueSelected]);
+
+  useEffect(() => {
+    if (item && item?.tensione) {
+      setTensionValueSelected(item.tensione);
+    } else {
+      setTensionValueSelected(String(tensionValues[0].value));
+    }
+  }, [item]);
 
   return (
     <>
@@ -233,7 +254,7 @@ const EditPacchetti: NextPageWithLayout = () => {
                       errorMessage={renderError(errors["costo"])}
                       autoComplete="costo"
                       aria="costo"
-                      label="Costo"
+                      label="Costo (iva inclusa €)"
                       defaultValue={item?.costo ?? ""}
                     />
 
@@ -249,14 +270,16 @@ const EditPacchetti: NextPageWithLayout = () => {
                         onChange={selectCategoryHandler}
                       />
                     ) : (
-                      <FormInput
+                      <ComboBox
                         className="sm:col-span-2"
-                        {...register("tensione", { required: true })}
-                        errorMessage={renderError(errors["tensione"])}
-                        autoComplete="tensione"
                         aria="Inserisci la Tensione"
                         label="Tensione"
-                        defaultValue={item?.tensione ?? ""}
+                        value={tensionValueSelected}
+                        elements={tensionValues}
+                        name="Tensione"
+                        onChange={(e: any) => {
+                          setTensionValueSelected(e.target.value);
+                        }}
                       />
                     )}
                     {tabIndex === 1 && (
@@ -266,8 +289,14 @@ const EditPacchetti: NextPageWithLayout = () => {
                         errorMessage={renderError(errors["potenzaMin"])}
                         autoComplete="potenzaMin"
                         aria="Inserisci la Potenza minima"
-                        label="Potenza minima"
+                        label="Potenza minima (kWp)"
                         defaultValue={item?.potenzaMin ?? ""}
+                        onKeyPress={(event) => {
+                          if (!/[0-9]/.test(event.key)) {
+                            event.preventDefault();
+                          }
+                        }}
+                        type="number"
                       />
                     )}
                     {tabIndex === 1 && (
@@ -277,8 +306,14 @@ const EditPacchetti: NextPageWithLayout = () => {
                         errorMessage={renderError(errors["potenzaMax"])}
                         autoComplete="potenzaMax"
                         aria="Inserisci la Potenza massima"
-                        label="Potenza massima"
+                        label="Potenza massima (kWp)"
                         defaultValue={item?.potenzaMax ?? ""}
+                        type="number"
+                        onKeyPress={(event) => {
+                          if (!/[0-9]/.test(event.key)) {
+                            event.preventDefault();
+                          }
+                        }}
                       />
                     )}
                     <Textarea

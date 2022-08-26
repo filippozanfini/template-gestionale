@@ -110,7 +110,6 @@ const EditServizi: NextPageWithLayout = () => {
 
   return (
     <>
-      {" "}
       {item ? (
         <form className="space-y-8 divide-y divide-gray-200" onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-8 divide-y divide-gray-200">
@@ -139,7 +138,7 @@ const EditServizi: NextPageWithLayout = () => {
                   errorMessage={renderError(errors["costo"])}
                   autoComplete="costo"
                   aria="costo"
-                  label="costo"
+                  label="Costo (iva inclusa €)"
                   defaultValue={item?.costo ?? ""}
                 />
                 <Textarea

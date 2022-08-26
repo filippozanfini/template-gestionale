@@ -48,7 +48,8 @@ const EditPageImpianti = function <T>({
   const [listCustomers, setListCustomers] = useState<Customer[]>([]);
 
   const [date, setDate] = useState<string>("");
-  const [autoComputation, setAutoComputation] = useState(false);
+  const [autoComputation, setAutoComputation] = useState(true);
+  const [defaultCoords, setDefaultCoords] = useState(true);
 
   /* FILTER */
   const [filter, setFilter] = useState<string>("");
@@ -241,7 +242,9 @@ const EditPageImpianti = function <T>({
                   />
                 )}
               </div>
+
               {customer?.id && <input type="hidden" value={customer?.id} {...register("idUtente" as Path<T>)} />}
+
               <FormInput
                 className="sm:col-span-3"
                 {...register("dataInstallazione" as Path<T>, { required: true })}
@@ -255,7 +258,39 @@ const EditPageImpianti = function <T>({
                 }}
                 type="date"
               />
+
               {children(item, errors, register, renderError)}
+
+              <div className="flex gap-4 sm:col-span-6">
+                <FormInput
+                  className="sm:col-span-2"
+                  {...register("latitudine" as Path<T>)}
+                  errorMessage={renderError(errors["latitudine" as Path<T>])}
+                  autoComplete="latitudine"
+                  aria="Inserisci la Latitudine"
+                  label="Latitudine"
+                  defaultValue={item.id === 0 && defaultCoords ? customer?.latitudine : item?.latitudine}
+                  disabled={defaultCoords}
+                />
+                <FormInput
+                  className="sm:col-span-2"
+                  {...register("longitudine" as Path<T>)}
+                  errorMessage={renderError(errors["longitudine" as Path<T>])}
+                  autoComplete="longitudine"
+                  aria="Inserisci la Longitudine"
+                  label="Longitudine"
+                  defaultValue={item.id === 0 && defaultCoords ? customer?.longitudine : item?.longitudine}
+                  disabled={defaultCoords}
+                />
+                <CheckboxInput
+                  aria="Coordinate dell'utente"
+                  label="Usa coordinate utente"
+                  name="calcolo-automatico"
+                  defaultChecked={defaultCoords}
+                  onChange={(e) => setDefaultCoords(e.target.checked)}
+                  className="mt-5 flex items-center whitespace-nowrap"
+                />
+              </div>
 
               <div className="flex gap-4 sm:col-span-3">
                 <FormInput
@@ -264,8 +299,8 @@ const EditPageImpianti = function <T>({
                   errorMessage={renderError(errors["dirittoFisso" as Path<T>])}
                   autoComplete="dirittoFisso"
                   aria="Inserisci il Diritto Fisso di Chiamata"
-                  label="Diritto Fisso di Chiamata"
-                  value={item?.dirittoFisso ?? 0}
+                  label="Diritto Fisso di Chiamata (€)"
+                  defaultValue={item?.dirittoFisso ?? ""}
                   type="number"
                   disabled={autoComputation}
                 />
