@@ -69,6 +69,8 @@ const Home: NextPageWithLayout = () => {
   const collaborators = useCollaborators({ page: 1, limit: 1, query: "" });
   const customers = useCustomers({ page: 1, limit: 1, query: "" });
 
+  console.log("ERROR", orders.error);
+
   return (
     <div className="mt-5 flex flex-col gap-4 rounded-xl bg-white p-20">
       <h3 className="text-5xl font-bold leading-6 text-gray-900">Dashboard</h3>

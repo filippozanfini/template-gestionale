@@ -134,7 +134,7 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
                 {...register("alimentazione", { required: true })}
                 errorMessage={renderError(errors["alimentazione"])}
                 autoComplete="alimentazione"
-                aria="Inserisci la tipo di alimentazione"
+                aria="Inserisci il tipo di alimentazione"
                 label="Tipo di alimentazione"
                 defaultValue={item?.alimentazione ?? ""}
                 type="text"
