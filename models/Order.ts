@@ -15,7 +15,7 @@ export interface IOrder {
   id?: number;
   stato?: string;
   utente?: ICustomer;
-  dataAcquisto?: string;
+  dataDiAcquisto?: string;
   importo?: number;
   preventivo?: IQuote;
   pacchetto?: IPackage;
@@ -32,7 +32,7 @@ export class Order implements IOrder {
   id: number;
   stato: string;
   utente: ICustomer;
-  dataAcquisto: string;
+  dataDiAcquisto: string;
   importo: number;
   preventivo: IQuote;
   pacchetto: IPackage;
@@ -48,7 +48,7 @@ export class Order implements IOrder {
     this.id = data.id ?? 0;
     this.stato = data.stato ?? "none";
     this.utente = data.utente ?? new Customer({});
-    this.dataAcquisto = data.dataAcquisto ?? "";
+    this.dataDiAcquisto = data.dataDiAcquisto ?? "";
     this.importo = data.importo ?? 0;
     this.preventivo = data.preventivo ?? new Quote({});
     this.pacchetto = data.pacchetto ?? new Package({});
@@ -66,7 +66,7 @@ export class Order implements IOrder {
       id: data.id,
       stato: data.stato,
       utente: Customer.factory(new Customer(data.utente)),
-      dataAcquisto: data.dataAcquisto,
+      dataDiAcquisto: data.dataDiAcquisto,
       importo: data.importo,
       preventivo: Quote.factory(new Quote(data.preventivo)),
       pacchetto: Package.factory(new Package(data.pacchetto)),
