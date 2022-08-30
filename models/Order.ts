@@ -15,7 +15,7 @@ export interface IOrder {
   id?: number;
   stato?: string;
   utente?: ICustomer;
-  dataDiAcquisto?: string;
+  dataDiAcquisto?: string | Date;
   importo?: number;
   preventivo?: IQuote;
   pacchetto?: IPackage;
@@ -32,7 +32,7 @@ export class Order implements IOrder {
   id: number;
   stato: string;
   utente: ICustomer;
-  dataDiAcquisto: string;
+  dataDiAcquisto: string | Date;
   importo: number;
   preventivo: IQuote;
   pacchetto: IPackage;

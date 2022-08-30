@@ -73,7 +73,8 @@ const DetailPage: NextPageWithLayout = () => {
           <div className="mt-3 flex items-center justify-between">
             <div className="flex flex-col gap-2">
               <p className="text-gray-400">
-                Data di acquisto: <span className="font-semibold text-black">{item.dataDiAcquisto}</span>
+                Data di acquisto:{" "}
+                <span className="font-semibold text-black">{item.dataDiAcquisto ? Order.dateToString(item.dataDiAcquisto) : ""}</span>
               </p>
               <p className="text-gray-400">
                 Acquirente: <span className="font-semibold text-black">{item.utente.nome + " " + item.utente.cognome}</span>
