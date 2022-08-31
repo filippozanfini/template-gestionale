@@ -114,7 +114,7 @@ const EditClienti: NextPageWithLayout = () => {
               </h3>
               <div className="mt-1 text-sm text-gray-500"></div>
             </div>
-            {type !== "Collaboratore" && (
+            {type !== "Collaboratore" && item.id !== 0 && (
               <div className="mt-7 flex justify-between gap-8">
                 <div className="max-h-[500px] w-1/2 flex-col justify-center overflow-y-scroll rounded-xl bg-white p-10">
                   <p className="text-bold text-left text-xl font-bold">Servizi attivi</p>
@@ -148,7 +148,7 @@ const EditClienti: NextPageWithLayout = () => {
                 </div>
               </div>
             )}
-            {type !== "Collaboratore" && <div className="mt-10 h-[1px] w-full bg-gray-200" />}
+            {type !== "Collaboratore" && item.id !== 0 && <div className="mt-10 h-[1px] w-full bg-gray-200" />}
             <div className="mt-10 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
               <input type="hidden" value={item?.id} {...register("id")} />
               <FormInput
