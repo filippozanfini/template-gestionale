@@ -13,7 +13,6 @@ import { mpApi as api } from "../../../lib/mpApi";
 import Loader from "../../core/Loader";
 import Overlay from "../../shared/Overlay";
 import AutocompleteInput from "../../core/AutocompleteInput";
-import AutocompletePlaces from "../../shared/AutocompletePlaces/AutocompletePlaces";
 import { LatLng } from "react-google-places-autocomplete/build/GooglePlacesAutocomplete.types";
 
 interface EditPageImpiantiProps<T> {
