@@ -14,10 +14,6 @@ import {
 import { useRouter } from "next/router";
 import { Quote } from "../models/Quote";
 import { Order } from "../models/Order";
-import { Service } from "../models/Service";
-import { Installation } from "../models/Installation";
-import { Package } from "../models/Package";
-import { Customer } from "../models/Customer";
 import { useCollaborators, useCustomers, useInstallations, useOrders, usePackages, useQuotes, useServices } from "../lib/mpApi";
 
 const MiniCard = (props: any) => {

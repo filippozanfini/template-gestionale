@@ -240,6 +240,14 @@ export const mpApi = {
         });
       },
 
+      serviziAttivi: async (id: number) => {
+        return fetchJson(`/servizi/utente/validi/${id}`);
+      },
+
+      pacchettiAttivi: async (id: number) => {
+        return fetchJson(`/pacchetti/utente/validi/${id}`);
+      },
+
       save: async (item: any) => {
         const itemForSave = {
           ...item,

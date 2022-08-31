@@ -157,7 +157,7 @@ const EditPreventivi: NextPageWithLayout = () => {
                       <span className="text-4xl font-semibold tracking-wide text-gray-900">
                         {item.utente?.nome + " " + item.utente?.cognome}
                       </span>
-                      <span className="text-xl font-semibold tracking-wide text-gray-500">{item.dataScadenza.toString()}</span>
+                      <span className="mt-1 text-xl font-semibold tracking-wide text-gray-500">{item.dataScadenza.toString()}</span>
                     </div>
                   </>
                 )}

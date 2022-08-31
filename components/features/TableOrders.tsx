@@ -86,7 +86,7 @@ const TableOrders = ({ items, onDeleteAction, onEditAction }: TableListProps) =>
             </Table.Cell>
 
             <Table.Cell>
-              <p className="text-xs text-gray-900 ">{item.dataAcquisto ? Order.dateToString(item.dataAcquisto) : ""}</p>
+              <p className="text-xs text-gray-900 ">{item.dataDiAcquisto ? Order.dateToString(item.dataDiAcquisto) : ""}</p>
             </Table.Cell>
 
             <Table.Cell>

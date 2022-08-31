@@ -73,7 +73,8 @@ const DetailPage: NextPageWithLayout = () => {
           <div className="mt-3 flex items-center justify-between">
             <div className="flex flex-col gap-2">
               <p className="text-gray-400">
-                Data di acquisto: <span className="font-semibold text-black">{item.dataAcquisto}</span>
+                Data di acquisto:{" "}
+                <span className="font-semibold text-black">{item.dataDiAcquisto ? Order.dateToString(item.dataDiAcquisto) : ""}</span>
               </p>
               <p className="text-gray-400">
                 Acquirente: <span className="font-semibold text-black">{item.utente.nome + " " + item.utente.cognome}</span>
@@ -114,21 +115,25 @@ const DetailPage: NextPageWithLayout = () => {
           </div>
           <div className="mt-7 h-[1px] w-full bg-gray-200" />
           <div className="mt-4 flex justify-between gap-4">
-            <div className="h-[260px] w-1/2 flex-col justify-center rounded-xl bg-gray-50 p-10">
-              <p className="text-bold text-xl font-bold">Dati pagamento</p>
-              <div className="mt-5 flex flex-col gap-4">
-                <p className="text-gray-400">
-                  ID Transazione: <span className="font-semibold text-black">{item.paypalDetails.orderID}</span>
-                </p>
-                <p className="text-gray-400">
-                  Nome acquirente:{" "}
-                  <span className="font-semibold text-black">{item.paypalDetails.payer.name + " " + item.paypalDetails.payer.surname}</span>
-                </p>
-                <p className="text-gray-400">
-                  Email acquirente: <span className="font-semibold text-black">{item.paypalDetails.payer.email}</span>
-                </p>
+            {item.paypalDetails && (
+              <div className="h-[260px] w-1/2 flex-col justify-center rounded-xl bg-gray-50 p-10">
+                <p className="text-bold text-xl font-bold">Dati pagamento</p>
+                <div className="mt-5 flex flex-col gap-4">
+                  <p className="text-gray-400">
+                    ID Transazione: <span className="font-semibold text-black">{item.paypalDetails.orderID}</span>
+                  </p>
+                  <p className="text-gray-400">
+                    Nome acquirente:{" "}
+                    <span className="font-semibold text-black">
+                      {item.paypalDetails.payer.name + " " + item.paypalDetails.payer.surname}
+                    </span>
+                  </p>
+                  <p className="text-gray-400">
+                    Email acquirente: <span className="font-semibold text-black">{item.paypalDetails.payer.email}</span>
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
             <div className="max-h-[400px] w-1/2 flex-col justify-center rounded-xl bg-gray-50 p-10">
               <p className="text-bold text-right text-xl font-bold">Storico stato</p>
               <div className="mt-5 flex max-h-[290px] flex-col gap-4 overflow-y-auto">

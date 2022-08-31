@@ -5,12 +5,14 @@ import { Customer } from "../../models/Customer";
 import EditPage from "../../components/features/EditPage/EditPage";
 import FormInput from "../../components/FormInput";
 import CheckboxInput from "../../components/core/Checkbox";
-import { mpApi } from "../../lib/mpApi";
+import { mpApi, useCustomers } from "../../lib/mpApi";
 import FormPasswordInput from "../../components/Password";
 import { useRouter } from "next/router";
 import Button from "../../components/core/Button";
 import Dialog from "../../components/shared/Dialog/Dialog";
 import Overlay from "../../components/shared/Overlay";
+import { Service } from "../../models/Service";
+import { Package } from "../../models/Package";
 
 const defaultValues: Customer = {
   id: 0,
@@ -37,6 +39,8 @@ const EditClienti: NextPageWithLayout = () => {
   const [message, setMessage] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
+  const [serviziAttivi, setServiziAttivi] = useState([]);
+  const [pacchettiAttivi, setPacchettiAttivi] = useState([]);
 
   const { pathname, query } = useRouter();
 
@@ -80,6 +84,18 @@ const EditClienti: NextPageWithLayout = () => {
     setErrorPassword(false);
   }, [pathname]);
 
+  useEffect(() => {
+    mpApi.customers.actions
+      .serviziAttivi(Number(query.id))
+      .then((resp: any) => setServiziAttivi(resp.content))
+      .catch((err) => console.log(err));
+
+    mpApi.customers.actions
+      .pacchettiAttivi(Number(query.id))
+      .then((resp: any) => setPacchettiAttivi(resp.content))
+      .catch((err) => console.log(err));
+  }, []);
+
   return (
     <EditPage<Customer> defaultValues={defaultValues} mpApiAction={mpApi.customers} slugName="clienti">
       {(item: Customer, register, renderError, errors) => {
@@ -98,8 +114,42 @@ const EditClienti: NextPageWithLayout = () => {
               </h3>
               <div className="mt-1 text-sm text-gray-500"></div>
             </div>
-
-            <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+            {type !== "Collaboratore" && (
+              <div className="mt-7 flex justify-between gap-8">
+                <div className="max-h-[500px] w-1/2 flex-col justify-center overflow-y-scroll rounded-xl bg-white p-10">
+                  <p className="text-bold text-left text-xl font-bold">Servizi attivi</p>
+                  <div className="mt-5 flex max-h-[290px] flex-col gap-4 overflow-y-auto">
+                    {serviziAttivi.map((s: any) => {
+                      return (
+                        <div key={s.id} className="flex items-center justify-between rounded-md bg-gray-50 p-4">
+                          <p>{s.id}</p>
+                          <p className="font-bold">{s.nome}</p>
+                          <p>{s.costo}€</p>
+                        </div>
+                      );
+                    })}
+                    {serviziAttivi.length === 0 && <p className="text-center">Nessun servizio attivo.</p>}
+                  </div>
+                </div>
+                <div className="max-h-[500px] w-1/2 flex-col justify-center overflow-y-scroll rounded-xl bg-white p-10">
+                  <p className="text-bold text-left text-xl font-bold">Pacchetti attivi</p>
+                  <div className="mt-5 flex max-h-[290px] flex-col gap-4 overflow-y-auto">
+                    {pacchettiAttivi.map((p: any) => {
+                      return (
+                        <div key={p.id} className="flex items-center justify-between rounded-md bg-gray-50 p-4">
+                          <p>{p.id}</p>
+                          <p className="font-bold">{p.nome}</p>
+                          <p>{p.costo}€</p>
+                        </div>
+                      );
+                    })}
+                    {pacchettiAttivi.length === 0 && <p className="text-center">Nessun pacchetto attivo.</p>}
+                  </div>
+                </div>
+              </div>
+            )}
+            {type !== "Collaboratore" && <div className="mt-10 h-[1px] w-full bg-gray-200" />}
+            <div className="mt-10 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
               <input type="hidden" value={item?.id} {...register("id")} />
               <FormInput
                 className="sm:col-span-3"
