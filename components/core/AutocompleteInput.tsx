@@ -1,49 +1,63 @@
+import { ClipboardCopyIcon } from "@heroicons/react/outline";
 import React, { useEffect, useRef, useState } from "react";
-import GooglePlacesAutocomplete, { geocodeByAddress, geocodeByLatLng } from "react-google-places-autocomplete";
+import GooglePlacesAutocomplete, { geocodeByAddress, geocodeByLatLng, geocodeByPlaceId, getLatLng } from "react-google-places-autocomplete";
+import { LatLng } from "react-google-places-autocomplete/build/GooglePlacesAutocomplete.types";
 
+const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+
+console.log(apiKey);
 interface AutocompleteInputProps {
-  latLng: { lat: number; lng: number } | null;
-  onChangeLatLng: (location: google.maps.LatLng) => void;
+  // apiKey: string;
+  latLng?: LatLng;
+  disabled?: boolean;
+  onChangeLatLng: (place: LatLng) => void;
+  onChangeAddress: (place: string) => void;
 }
 
-const AutocompleteInput = ({ latLng, onChangeLatLng }: AutocompleteInputProps) => {
-  const [place, setPlace] = useState<any>(null);
+const AutocompleteInput = ({ latLng, disabled, onChangeLatLng, onChangeAddress }: AutocompleteInputProps) => {
+  const [selectedPlace, setSelectedPlace] = useState<any>(null);
+  const [defaultAddress, setDefaultAddress] = useState<string>("");
+  const mapRef = useRef<any>(null);
 
   useEffect(() => {
-    if (place?.label) {
-      geocodeByAddress(place?.label)
-        .then((res) => {
-          onChangeLatLng(res[0].geometry.location);
+    if (selectedPlace) {
+      geocodeByPlaceId(selectedPlace?.value?.place_id)
+        .then((results) => getLatLng(results[0]))
+        .then(({ lat, lng }) => {
+          onChangeLatLng({ lat, lng });
         })
-        .catch((err) => {
-          console.log(err);
+        .catch((error) => {
+          console.error(error);
         });
     }
-  }, [place]);
+  }, [selectedPlace]);
 
   useEffect(() => {
-    if (latLng) {
+    if (latLng && mapRef.current) {
       geocodeByLatLng(latLng)
-        .then((res) => {
-          // setPlace(res[0]);
-          console.log(res[0]);
+        .then((results) => {
+          onChangeAddress(results[0]?.formatted_address);
+          setDefaultAddress(results[0]?.formatted_address);
         })
-        .catch((err) => {
-          console.log(err);
+        .catch((error) => {
+          console.error(error);
         });
     }
-  }, [latLng]);
+  }, [latLng, mapRef]);
+
+  useEffect(() => {
+    console.log("defaultAddress", defaultAddress);
+  }, [defaultAddress]);
 
   return (
-    <div className="w-full">
-      <span className="mb-1 block text-sm font-medium text-gray-700">Indirizzo</span>
-
+    <div className="relative w-full">
       <GooglePlacesAutocomplete
-        apiKey="AIzaSyC62jJtoxOaAFu5umwjg-CCuimMOwklm20"
+        ref={mapRef}
+        apiKey={"AIzaSyC62jJtoxOaAFu5umwjg-CCuimMOwklm20"}
         debounce={700}
         selectProps={{
-          place,
-          onChange: setPlace,
+          selectedPlace,
+          onChange: setSelectedPlace,
           styles: {
             input: (provided: any) => ({
               ...provided,
@@ -74,10 +88,12 @@ const AutocompleteInput = ({ latLng, onChangeLatLng }: AutocompleteInputProps) =
               ...provided,
             }),
           },
-          placeholder: "",
+          placeholder: defaultAddress,
         }}
         onLoadFailed={(error) => console.error("Could not inject Google script", error)}
       />
+
+      {disabled && <div className="absolute inset-0 rounded-md bg-gray-500/10" />}
     </div>
   );
 };

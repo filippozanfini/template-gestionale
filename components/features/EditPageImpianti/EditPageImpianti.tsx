@@ -1,4 +1,4 @@
-import { CheckIcon } from "@heroicons/react/outline";
+import { CheckIcon, ClipboardCopyIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { DeepRequired, FieldErrorsImpl, Path, SubmitHandler, useForm, UseFormRegister, UseFormSetValue } from "react-hook-form";
@@ -13,6 +13,8 @@ import { mpApi as api } from "../../../lib/mpApi";
 import Loader from "../../core/Loader";
 import Overlay from "../../shared/Overlay";
 import AutocompleteInput from "../../core/AutocompleteInput";
+import AutocompletePlaces from "../../shared/AutocompletePlaces/AutocompletePlaces";
+import { LatLng } from "react-google-places-autocomplete/build/GooglePlacesAutocomplete.types";
 
 interface EditPageImpiantiProps<T> {
   defaultValues: T;
@@ -50,13 +52,17 @@ const EditPageImpianti = function <T>({
 
   const [date, setDate] = useState<string>("");
   const [autoComputation, setAutoComputation] = useState(true);
-  const [latLng, setLanLng] = useState<{ lat: number; lng: number } | null>(null);
+
+  const [latLng, setLanLng] = useState<LatLng | null>(null);
+  const [address, setAddress] = useState<string>("");
+  const [defaultCoords, setDefaultCoords] = useState<boolean>(false);
 
   /* FILTER */
   const [filter, setFilter] = useState<string>("");
 
   /* UTILS */
   const [loading, setLoading] = useState<boolean>(false);
+  const [copyAddressClipBoardActive, setCopyAddressClipBoardActive] = useState<boolean>(false);
 
   const alert = useAlert();
 
@@ -77,10 +83,10 @@ const EditPageImpianti = function <T>({
       return mpApi.actions
         .item(String(ItemId))
         .then((data: any) => {
+          console.log("data", data);
           setItem(data);
           setCustomer(new Customer(data.utente));
           setDate(data.dataInstallazione.split("/").reverse().join("-"));
-
           setLanLng({ lat: data.latitudine, lng: data.longitudine });
 
           reset(data);
@@ -151,6 +157,28 @@ const EditPageImpianti = function <T>({
       });
   };
 
+  const onChangeLatLng = (latLng: LatLng) => {
+    setLanLng(latLng);
+  };
+
+  const onChangeAddress = (address: string) => {
+    setAddress(address);
+  };
+
+  const onCopyAddressToClipBoard = () => {
+    setCopyAddressClipBoardActive(true);
+
+    if (defaultCoords) {
+      navigator.clipboard.writeText(customer?.indirizzo || "");
+    } else {
+      navigator.clipboard.writeText(address);
+    }
+
+    setTimeout(() => {
+      setCopyAddressClipBoardActive(false);
+    }, 4000);
+  };
+
   useEffect(() => {
     if (query.id) {
       const ItemId: number = Number(query.id);
@@ -188,6 +216,27 @@ const EditPageImpianti = function <T>({
       onItemFromApi(item);
     }
   }, [date, item]);
+
+  useEffect(() => {
+    if (customer && defaultCoords) {
+      setValue("latitudine" as Path<T>, customer.latitudine as any);
+      setValue("longitudine" as Path<T>, customer.longitudine as any);
+    }
+  }, [customer, defaultCoords]);
+
+  useEffect(() => {
+    if (customer && item) {
+      const value = matchCoords({ lat: item.latitudine, lng: item.longitudine }, customer);
+      setDefaultCoords(value);
+    }
+  }, [customer, item]);
+
+  useEffect(() => {
+    if (latLng?.lat && latLng?.lng) {
+      setValue("latitudine" as Path<T>, latLng.lat as any);
+      setValue("longitudine" as Path<T>, latLng.lng as any);
+    }
+  }, [latLng]);
 
   useEffect(() => {
     if (setValueForm) {
@@ -298,14 +347,47 @@ const EditPageImpianti = function <T>({
               </div> */}
 
               <div className="flex w-full gap-4 sm:col-span-6">
-                <AutocompleteInput latLng={latLng} onChangeLatLng={() => {}} />
+                <div className="w-full">
+                  <span className="mb-1 block text-sm font-medium text-gray-700">Indirizzo</span>
+                  <div className="flex w-full items-center gap-2">
+                    {defaultCoords ? (
+                      <input
+                        type={"text"}
+                        className="my-auto h-[38px] w-full rounded-md border border-gray-300"
+                        value={customer?.indirizzo}
+                        disabled
+                      />
+                    ) : (
+                      <AutocompleteInput
+                        latLng={latLng ? latLng : undefined}
+                        onChangeLatLng={(value) => onChangeLatLng(value)}
+                        onChangeAddress={(value) => onChangeAddress(value)}
+                        disabled={defaultCoords}
+                      />
+                    )}
+
+                    <button
+                      type="button"
+                      className="h-7 w-7 transition-all duration-100 "
+                      title="copia indirizzo"
+                      onClick={() => onCopyAddressToClipBoard()}
+                      disabled={copyAddressClipBoardActive}
+                    >
+                      {!copyAddressClipBoardActive ? (
+                        <ClipboardCopyIcon className="text-gray-500 hover:opacity-70 active:scale-95" />
+                      ) : (
+                        <CheckIcon className="text-green-700" />
+                      )}
+                    </button>
+                  </div>
+                </div>
 
                 <CheckboxInput
-                  aria="Calcolo automatico"
-                  label="Calcolo automatico"
+                  aria="Coordinate dell'utente"
+                  label="Usa coordinate utente"
                   name="calcolo-automatico"
-                  defaultChecked={autoComputation}
-                  onChange={(e) => setAutoComputation(e.target.checked)}
+                  checked={defaultCoords}
+                  onChange={(e) => setDefaultCoords(e.target.checked)}
                   className="mt-5 flex items-center whitespace-nowrap"
                 />
               </div>
@@ -356,6 +438,16 @@ const EditPageImpianti = function <T>({
       <Overlay loading={loading} />
     </>
   );
+};
+
+const matchCoords = (latLng: any, customer: Customer) => {
+  console.log("latLng", latLng);
+  console.log("customer", customer);
+
+  if (latLng && customer) {
+    return latLng.lat === customer.latitudine && latLng.lng === customer.longitudine;
+  }
+  return false;
 };
 
 export default EditPageImpianti;
