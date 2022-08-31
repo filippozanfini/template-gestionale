@@ -12,6 +12,7 @@ import Combobox from "../../shared/ComboBox/Combobox";
 import { mpApi as api } from "../../../lib/mpApi";
 import Loader from "../../core/Loader";
 import Overlay from "../../shared/Overlay";
+import AutocompleteInput from "../../core/AutocompleteInput";
 
 interface EditPageImpiantiProps<T> {
   defaultValues: T;
@@ -49,7 +50,7 @@ const EditPageImpianti = function <T>({
 
   const [date, setDate] = useState<string>("");
   const [autoComputation, setAutoComputation] = useState(true);
-  const [defaultCoords, setDefaultCoords] = useState(true);
+  const [latLng, setLanLng] = useState<{ lat: number; lng: number } | null>(null);
 
   /* FILTER */
   const [filter, setFilter] = useState<string>("");
@@ -79,12 +80,16 @@ const EditPageImpianti = function <T>({
           setItem(data);
           setCustomer(new Customer(data.utente));
           setDate(data.dataInstallazione.split("/").reverse().join("-"));
+
+          setLanLng({ lat: data.latitudine, lng: data.longitudine });
+
           reset(data);
         })
         .catch((data: any) => {
           setItem(null);
           setCustomer(null);
           setDate("");
+          setLanLng(null);
           reset(defaultValues);
         });
     }
@@ -261,7 +266,7 @@ const EditPageImpianti = function <T>({
 
               {children(item, errors, register, renderError)}
 
-              <div className="flex gap-4 sm:col-span-6">
+              {/* <div className="flex gap-4 sm:col-span-6">
                 <FormInput
                   className="sm:col-span-2"
                   {...register("latitudine" as Path<T>)}
@@ -288,6 +293,19 @@ const EditPageImpianti = function <T>({
                   name="calcolo-automatico"
                   defaultChecked={defaultCoords}
                   onChange={(e) => setDefaultCoords(e.target.checked)}
+                  className="mt-5 flex items-center whitespace-nowrap"
+                />
+              </div> */}
+
+              <div className="flex w-full gap-4 sm:col-span-6">
+                <AutocompleteInput latLng={latLng} onChangeLatLng={() => {}} />
+
+                <CheckboxInput
+                  aria="Calcolo automatico"
+                  label="Calcolo automatico"
+                  name="calcolo-automatico"
+                  defaultChecked={autoComputation}
+                  onChange={(e) => setAutoComputation(e.target.checked)}
                   className="mt-5 flex items-center whitespace-nowrap"
                 />
               </div>
