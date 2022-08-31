@@ -230,7 +230,7 @@ function SidebarLayout({ title, children }: any) {
           style={sidebar ? { marginLeft: "240px" } : { marginLeft: "70px" }}
           className={"relative h-full w-full transition-all duration-500 ease-in-out"}
         >
-          <div className="sticky top-0 z-10 flex h-16 flex-shrink-0 bg-white shadow">
+          <div className="sticky top-0 z-[100] flex h-16 flex-shrink-0 bg-white shadow">
             <div className="flex flex-1 items-center justify-between px-4">
               <div className="flex items-center gap-2">
                 <button
