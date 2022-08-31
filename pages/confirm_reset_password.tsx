@@ -6,35 +6,52 @@ import logo from "../app/logo.png";
 import Button from "../components/core/Button";
 import Loader from "../components/core/Loader";
 import Input from "../components/FormInput";
+import { useAlert } from "../components/notifications";
 import FormPasswordInput from "../components/Password";
 import Dialog from "../components/shared/Dialog/Dialog";
 import { mpApi } from "../lib/mpApi";
 
 const ConfermaRecuperaPassword = () => {
   const [password, setPassword] = useState("");
+  const [confermaPassword, setConfermaPassword] = useState("");
   const [token, setToken] = useState("");
 
   const [isSent, setIsSent] = useState(false);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const alert = useAlert();
+
+  console.log("TOKEN", token);
+  console.log("CONFERMA PWD", confermaPassword);
 
   const router = useRouter();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
-    mpApi.resetPassword.actions
-      .resetPassword(token, password)
-      .then((res: any) => {
-        console.log("res", res);
-        setLoading(false);
-        setIsSent(true);
-        setMessage(res.message);
-      })
-      .catch((err) => {
-        setLoading(false);
+    if (password === confermaPassword) {
+      setLoading(true);
+      mpApi.resetPassword.actions
+        .resetPassword(token, password)
+        .then((res: any) => {
+          console.log("res", res);
+          setLoading(false);
+          setIsSent(true);
+          setMessage(res.message);
+        })
+        .catch((err) => {
+          setLoading(false);
+        });
+    } else {
+      alert({
+        id: new Date().toISOString(),
+        type: "error",
+        title: "Attenzione",
+        message: "Le password non corrispondono",
+        read: false,
+        isAlert: true,
       });
+    }
   };
 
   useEffect(() => {
@@ -64,6 +81,13 @@ const ConfermaRecuperaPassword = () => {
             label="Nuova Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+          />
+          <FormPasswordInput
+            name="conferma_password"
+            aria="conferma password"
+            label="Conferma Password"
+            value={confermaPassword}
+            onChange={(e) => setConfermaPassword(e.target.value)}
           />
 
           <Button className="w-full py-4" title={"Invia"} aria="invia recupera password" type="submit" disabled={isSent} />
