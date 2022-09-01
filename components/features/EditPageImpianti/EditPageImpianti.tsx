@@ -82,7 +82,6 @@ const EditPageImpianti = function <T>({
       return mpApi.actions
         .item(String(ItemId))
         .then((data: any) => {
-          console.log("data", data);
           setItem(data);
           setCustomer(new Customer(data.utente));
           setDate(data.dataInstallazione.split("/").reverse().join("-"));
@@ -218,16 +217,14 @@ const EditPageImpianti = function <T>({
 
   useEffect(() => {
     if (customer && defaultCoords) {
-      setValue("latitudine" as Path<T>, customer.latitudine as any);
-      setValue("longitudine" as Path<T>, customer.longitudine as any);
+      setLanLng({ lat: customer.latitudine, lng: customer.longitudine });
+    } else if (!defaultCoords) {
+      matchCoords(latLng, item) ? setLanLng(null) : setLanLng({ lat: item?.latitudine, lng: item?.longitudine });
     }
   }, [customer, defaultCoords]);
 
   useEffect(() => {
-    if (customer && item) {
-      const value = matchCoords({ lat: item.latitudine, lng: item.longitudine }, customer);
-      setDefaultCoords(value);
-    }
+    customer && item && setDefaultCoords(matchCoords({ lat: item.latitudine, lng: item.longitudine }, customer));
   }, [customer, item]);
 
   useEffect(() => {
@@ -352,17 +349,19 @@ const EditPageImpianti = function <T>({
                     {defaultCoords ? (
                       <input
                         type={"text"}
-                        className="my-auto h-[38px] w-full rounded-md border border-gray-300"
+                        className={["my-auto h-[38px] w-full rounded-md border border-gray-300", !defaultCoords ? "hidden" : ""].join(" ")}
                         value={customer?.indirizzo}
                         disabled
                       />
                     ) : (
-                      <AutocompleteInput
-                        latLng={latLng ? latLng : undefined}
-                        onChangeLatLng={(value) => onChangeLatLng(value)}
-                        onChangeAddress={(value) => onChangeAddress(value)}
-                        disabled={defaultCoords}
-                      />
+                      <div className={["w-full", defaultCoords ? "hidden" : ""].join(" ")}>
+                        <AutocompleteInput
+                          latLng={latLng ? latLng : undefined}
+                          onChangeLatLng={(value) => onChangeLatLng(value)}
+                          onChangeAddress={(value) => onChangeAddress(value)}
+                          disabled={defaultCoords}
+                        />
+                      </div>
                     )}
 
                     <button
@@ -439,12 +438,9 @@ const EditPageImpianti = function <T>({
   );
 };
 
-const matchCoords = (latLng: any, customer: Customer) => {
-  console.log("latLng", latLng);
-  console.log("customer", customer);
-
-  if (latLng && customer) {
-    return latLng.lat === customer.latitudine && latLng.lng === customer.longitudine;
+const matchCoords = (latLng: any, item: any) => {
+  if (latLng && item) {
+    return latLng.lat === item.latitudine && latLng.lng === item.longitudine;
   }
   return false;
 };

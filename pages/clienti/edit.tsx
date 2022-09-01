@@ -1,7 +1,7 @@
 import SidebarLayout from "../../layouts/SidebarLayout";
 import { NextPageWithLayout } from "../_app";
 import { ReactElement, useEffect, useState } from "react";
-import { Customer } from "../../models/Customer";
+import { Customer, ICustomer } from "../../models/Customer";
 import EditPage from "../../components/features/EditPage/EditPage";
 import FormInput from "../../components/FormInput";
 import CheckboxInput from "../../components/core/Checkbox";
@@ -13,6 +13,8 @@ import Dialog from "../../components/shared/Dialog/Dialog";
 import Overlay from "../../components/shared/Overlay";
 import { Service } from "../../models/Service";
 import { Package } from "../../models/Package";
+import AutocompleteInput from "../../components/core/AutocompleteInput";
+import { UseFormSetValue } from "react-hook-form";
 
 const defaultValues: Customer = {
   id: 0,
@@ -42,7 +44,20 @@ const EditClienti: NextPageWithLayout = () => {
   const [serviziAttivi, setServiziAttivi] = useState([]);
   const [pacchettiAttivi, setPacchettiAttivi] = useState([]);
 
+  const [itemFromApi, setItemFromApi] = useState<ICustomer>({});
+  const [setValueForm, setValueFormState] = useState<UseFormSetValue<Customer>>(() => {});
+
   const { pathname, query } = useRouter();
+
+  const handleSetValueFormChange = (setValue: UseFormSetValue<Customer>) => {
+    if (setValueFormState !== setValue) {
+      setValueFormState(() => setValue);
+    }
+  };
+
+  const handleFormItemChange = (item: ICustomer) => {
+    setItemFromApi(item);
+  };
 
   const handleMatchPassword = (value: string, pass: string) => {
     if (value == password) {
@@ -72,11 +87,9 @@ const EditClienti: NextPageWithLayout = () => {
   };
 
   useEffect(() => {
-    const path = pathname.split("/");
-
-    if (path.includes("clienti")) {
+    if (pathname.includes("clienti")) {
       setType("Cliente");
-    } else if (path.includes("collaboratori")) {
+    } else if (pathname.includes("collaboratori")) {
       setType("Collaboratore");
     }
 
@@ -97,7 +110,13 @@ const EditClienti: NextPageWithLayout = () => {
   }, []);
 
   return (
-    <EditPage<Customer> defaultValues={defaultValues} mpApiAction={mpApi.customers} slugName="clienti">
+    <EditPage<Customer>
+      defaultValues={defaultValues}
+      mpApiAction={mpApi.customers}
+      slugName="clienti"
+      setValueForm={handleSetValueFormChange}
+      onItemFromApi={handleFormItemChange}
+    >
       {(item: Customer, register, renderError, errors) => {
         return item ? (
           <div>
@@ -230,7 +249,7 @@ const EditClienti: NextPageWithLayout = () => {
                 defaultValue={item?.numeroDiTelefono ?? ""}
                 type="tel"
               />
-              <FormInput
+              {/* <FormInput
                 className="sm:col-span-3"
                 {...register("indirizzo", { required: true })}
                 errorMessage={renderError(errors["indirizzo"])}
@@ -238,25 +257,12 @@ const EditClienti: NextPageWithLayout = () => {
                 aria="Modifica l'indirizzo"
                 label="Indirizzo"
                 defaultValue={item?.indirizzo ?? ""}
-              />
-              <FormInput
-                className="sm:col-span-3"
-                {...register("latitudine", { required: true })}
-                errorMessage={renderError(errors["lat"])}
-                autoComplete="lat"
-                aria="Modifica la latitudine"
-                label="Latitudine"
-                defaultValue={item?.latitudine ?? ""}
-              />
-              <FormInput
-                className="sm:col-span-3"
-                {...register("longitudine", { required: true })}
-                errorMessage={renderError(errors["lon"])}
-                autoComplete="lon"
-                aria="Modifica la longitudine"
-                label="Longitudine"
-                defaultValue={item?.longitudine ?? ""}
-              />
+              /> */}
+
+              <div className="flex h-full flex-col items-start justify-evenly sm:col-span-3">
+                <span className="block text-sm font-medium text-gray-700">Indirizzo</span>
+                <AutocompleteInput />
+              </div>
 
               {item.id !== 0 && (
                 <CheckboxInput

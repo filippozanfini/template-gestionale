@@ -10,11 +10,12 @@ interface AutocompleteInputProps {
   // apiKey: string;
   latLng?: LatLng;
   disabled?: boolean;
-  onChangeLatLng: (place: LatLng) => void;
-  onChangeAddress: (place: string) => void;
+  placeholder?: string;
+  onChangeLatLng?: (place: LatLng) => void;
+  onChangeAddress?: (place: string) => void;
 }
 
-const AutocompleteInput = ({ latLng, disabled, onChangeLatLng, onChangeAddress }: AutocompleteInputProps) => {
+const AutocompleteInput = ({ latLng, disabled, placeholder, onChangeLatLng, onChangeAddress }: AutocompleteInputProps) => {
   const [selectedPlace, setSelectedPlace] = useState<any>(null);
   const [defaultAddress, setDefaultAddress] = useState<string>("");
   const mapRef = useRef<any>(null);
@@ -24,7 +25,7 @@ const AutocompleteInput = ({ latLng, disabled, onChangeLatLng, onChangeAddress }
       geocodeByPlaceId(selectedPlace?.value?.place_id)
         .then((results) => getLatLng(results[0]))
         .then(({ lat, lng }) => {
-          onChangeLatLng({ lat, lng });
+          onChangeLatLng && onChangeLatLng({ lat, lng });
         })
         .catch((error) => {
           console.error(error);
@@ -33,10 +34,10 @@ const AutocompleteInput = ({ latLng, disabled, onChangeLatLng, onChangeAddress }
   }, [selectedPlace]);
 
   useEffect(() => {
-    if (latLng && mapRef.current) {
+    if (latLng && mapRef.current.getSessionToken()) {
       geocodeByLatLng(latLng)
         .then((results) => {
-          onChangeAddress(results[0]?.formatted_address);
+          onChangeAddress && onChangeAddress(results[0]?.formatted_address);
           setDefaultAddress(results[0]?.formatted_address);
         })
         .catch((error) => {
@@ -46,8 +47,11 @@ const AutocompleteInput = ({ latLng, disabled, onChangeLatLng, onChangeAddress }
   }, [latLng, mapRef]);
 
   useEffect(() => {
-    console.log("defaultAddress", defaultAddress);
-  }, [defaultAddress]);
+    if (disabled) {
+      console.log("disabled", disabled);
+      setDefaultAddress("");
+    }
+  }, [disabled]);
 
   return (
     <div className="relative w-full">
@@ -88,7 +92,7 @@ const AutocompleteInput = ({ latLng, disabled, onChangeLatLng, onChangeAddress }
               ...provided,
             }),
           },
-          placeholder: defaultAddress,
+          placeholder: defaultAddress || placeholder || "Cerca un indirizzo",
         }}
         onLoadFailed={(error) => console.error("Could not inject Google script", error)}
       />
