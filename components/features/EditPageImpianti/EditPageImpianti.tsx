@@ -14,6 +14,7 @@ import Loader from "../../core/Loader";
 import Overlay from "../../shared/Overlay";
 import AutocompleteInput from "../../core/AutocompleteInput";
 import { LatLng } from "react-google-places-autocomplete/build/GooglePlacesAutocomplete.types";
+import AutocompleteAdvanced from "../../shared/AutocompleteAdvanced/AutocompleteAdvanced";
 
 interface EditPageImpiantiProps<T> {
   defaultValues: T;
@@ -52,16 +53,11 @@ const EditPageImpianti = function <T>({
   const [date, setDate] = useState<string>("");
   const [autoComputation, setAutoComputation] = useState(true);
 
-  const [latLng, setLanLng] = useState<LatLng | null>(null);
-  const [address, setAddress] = useState<string>("");
-  const [defaultCoords, setDefaultCoords] = useState<boolean>(false);
-
   /* FILTER */
   const [filter, setFilter] = useState<string>("");
 
   /* UTILS */
   const [loading, setLoading] = useState<boolean>(false);
-  const [copyAddressClipBoardActive, setCopyAddressClipBoardActive] = useState<boolean>(false);
 
   const alert = useAlert();
 
@@ -85,7 +81,6 @@ const EditPageImpianti = function <T>({
           setItem(data);
           setCustomer(new Customer(data.utente));
           setDate(data.dataInstallazione.split("/").reverse().join("-"));
-          setLanLng({ lat: data.latitudine, lng: data.longitudine });
 
           reset(data);
         })
@@ -93,7 +88,6 @@ const EditPageImpianti = function <T>({
           setItem(null);
           setCustomer(null);
           setDate("");
-          setLanLng(null);
           reset(defaultValues);
         });
     }
@@ -155,28 +149,6 @@ const EditPageImpianti = function <T>({
       });
   };
 
-  const onChangeLatLng = (latLng: LatLng) => {
-    setLanLng(latLng);
-  };
-
-  const onChangeAddress = (address: string) => {
-    setAddress(address);
-  };
-
-  const onCopyAddressToClipBoard = () => {
-    setCopyAddressClipBoardActive(true);
-
-    if (defaultCoords) {
-      navigator.clipboard.writeText(customer?.indirizzo || "");
-    } else {
-      navigator.clipboard.writeText(address);
-    }
-
-    setTimeout(() => {
-      setCopyAddressClipBoardActive(false);
-    }, 4000);
-  };
-
   useEffect(() => {
     if (query.id) {
       const ItemId: number = Number(query.id);
@@ -214,25 +186,6 @@ const EditPageImpianti = function <T>({
       onItemFromApi(item);
     }
   }, [date, item]);
-
-  useEffect(() => {
-    if (customer && defaultCoords) {
-      setLanLng({ lat: customer.latitudine, lng: customer.longitudine });
-    } else if (!defaultCoords) {
-      matchCoords(latLng, item) ? setLanLng(null) : setLanLng({ lat: item?.latitudine, lng: item?.longitudine });
-    }
-  }, [customer, defaultCoords]);
-
-  useEffect(() => {
-    customer && item && setDefaultCoords(matchCoords({ lat: item.latitudine, lng: item.longitudine }, customer));
-  }, [customer, item]);
-
-  useEffect(() => {
-    if (latLng?.lat && latLng?.lng) {
-      setValue("latitudine" as Path<T>, latLng.lat as any);
-      setValue("longitudine" as Path<T>, latLng.lng as any);
-    }
-  }, [latLng]);
 
   useEffect(() => {
     if (setValueForm) {
@@ -311,83 +264,8 @@ const EditPageImpianti = function <T>({
 
               {children(item, errors, register, renderError)}
 
-              {/* <div className="flex gap-4 sm:col-span-6">
-                <FormInput
-                  className="sm:col-span-2"
-                  {...register("latitudine" as Path<T>)}
-                  errorMessage={renderError(errors["latitudine" as Path<T>])}
-                  autoComplete="latitudine"
-                  aria="Inserisci la Latitudine"
-                  label="Latitudine"
-                  defaultValue={item.id === 0 && defaultCoords ? customer?.latitudine : item?.latitudine}
-                  disabled={defaultCoords}
-                />
-                <FormInput
-                  className="sm:col-span-2"
-                  {...register("longitudine" as Path<T>)}
-                  errorMessage={renderError(errors["longitudine" as Path<T>])}
-                  autoComplete="longitudine"
-                  aria="Inserisci la Longitudine"
-                  label="Longitudine"
-                  defaultValue={item.id === 0 && defaultCoords ? customer?.longitudine : item?.longitudine}
-                  disabled={defaultCoords}
-                />
-                <CheckboxInput
-                  aria="Coordinate dell'utente"
-                  label="Usa coordinate utente"
-                  name="calcolo-automatico"
-                  defaultChecked={defaultCoords}
-                  onChange={(e) => setDefaultCoords(e.target.checked)}
-                  className="mt-5 flex items-center whitespace-nowrap"
-                />
-              </div> */}
-
               <div className="flex w-full gap-4 sm:col-span-6">
-                <div className="w-full">
-                  <span className="mb-1 block text-sm font-medium text-gray-700">Indirizzo</span>
-                  <div className="flex w-full items-center gap-2">
-                    {defaultCoords ? (
-                      <input
-                        type={"text"}
-                        className={["my-auto h-[38px] w-full rounded-md border border-gray-300", !defaultCoords ? "hidden" : ""].join(" ")}
-                        value={customer?.indirizzo}
-                        disabled
-                      />
-                    ) : (
-                      <div className={["w-full", defaultCoords ? "hidden" : ""].join(" ")}>
-                        <AutocompleteInput
-                          latLng={latLng ? latLng : undefined}
-                          onChangeLatLng={(value) => onChangeLatLng(value)}
-                          onChangeAddress={(value) => onChangeAddress(value)}
-                          disabled={defaultCoords}
-                        />
-                      </div>
-                    )}
-
-                    <button
-                      type="button"
-                      className="h-7 w-7 transition-all duration-100 "
-                      title="copia indirizzo"
-                      onClick={() => onCopyAddressToClipBoard()}
-                      disabled={copyAddressClipBoardActive}
-                    >
-                      {!copyAddressClipBoardActive ? (
-                        <ClipboardCopyIcon className="text-gray-500 hover:opacity-70 active:scale-95" />
-                      ) : (
-                        <CheckIcon className="text-green-700" />
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                <CheckboxInput
-                  aria="Coordinate dell'utente"
-                  label="Usa coordinate utente"
-                  name="calcolo-automatico"
-                  checked={defaultCoords}
-                  onChange={(e) => setDefaultCoords(e.target.checked)}
-                  className="mt-5 flex items-center whitespace-nowrap"
-                />
+                <AutocompleteAdvanced item={item} customer={customer} setValue={setValue} />
               </div>
 
               <div className="flex gap-4 sm:col-span-3">
@@ -436,13 +314,6 @@ const EditPageImpianti = function <T>({
       <Overlay loading={loading} />
     </>
   );
-};
-
-const matchCoords = (latLng: any, item: any) => {
-  if (latLng && item) {
-    return latLng.lat === item.latitudine && latLng.lng === item.longitudine;
-  }
-  return false;
 };
 
 export default EditPageImpianti;
