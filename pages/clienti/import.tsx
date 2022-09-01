@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React, { ReactElement, useEffect } from "react";
 import Button from "../../components/core/Button";
 import Loader from "../../components/core/Loader";
@@ -14,6 +15,8 @@ const ImportClienti: NextPageWithLayout = () => {
   const [emptyFile, setEmptyFile] = React.useState(false);
 
   const [res, setRes] = React.useState<any>();
+
+  const router = useRouter();
 
   const alert = useAlert();
 
@@ -54,6 +57,11 @@ const ImportClienti: NextPageWithLayout = () => {
     }
   };
 
+  const onCloseDialog = () => {
+    router.reload();
+    setRes(null);
+  };
+
   useEffect(() => {
     if (emptyFile) {
       setFile(null);
@@ -88,7 +96,7 @@ const ImportClienti: NextPageWithLayout = () => {
         </div>
       </div>
 
-      <Dialog isOpen={Boolean(res)} onClose={() => setRes(null)} title={res?.message}>
+      <Dialog isOpen={Boolean(res)} onClose={() => onCloseDialog()} title={res?.message}>
         <div className="mt-4 space-y-1">
           <p>Utenti caricati con successo: {res?.utentiCaricatiCorrettamente}</p>
           <p>Utenti non caricati: {res?.utentiCaricamentoFallito}</p>
