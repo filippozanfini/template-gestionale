@@ -13,6 +13,7 @@ export const OrderStatusMapper: OrderStatusMapperType = {
   pagato: eOrderStatus.pagato,
   concluso: eOrderStatus.concluso,
   annullato: eOrderStatus.annullato,
+  accettato: eOrderStatus.accettato,
   none: eOrderStatus.none,
 };
 

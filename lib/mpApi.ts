@@ -205,7 +205,8 @@ export const mpApi = {
 
   customers: {
     routes: {
-      list: (page: number = 1, limit: number, query: string) => `/users?page=${page}&limit=${limit}&query=${query}&ruolo=cliente`,
+      list: (page: number = 1, limit: number, query: string) =>
+        `/users?page=${page}&limit=${limit}&query=${query}&ruolo=cliente&orderBy=ID`,
     },
     actions: {
       listFetcher: (input: RequestInfo, init?: RequestInit) =>
@@ -449,7 +450,8 @@ export const mpApi = {
 
   collaborators: {
     routes: {
-      list: (page: number = 1, limit: number, query: string) => `/users/?page=${page}&limit=${limit}&query=${query}&ruolo=gestore`,
+      list: (page: number = 1, limit: number, query: string) =>
+        `/users/?page=${page}&limit=${limit}&query=${query}&ruolo=gestore&orderBy=ID`,
       item: (id: number) => (id < 1 ? `` : `/users/${id}`),
     },
     actions: {
@@ -588,6 +590,7 @@ export const useService = (id: number) => {
 
 export const useCustomers = ({ page, limit, query }: PageLimitQuery) => {
   const { data, error } = useSWR(mpApi.customers.routes.list(page, limit, query), mpApi.customers.actions.listFetcher);
+  console.log("DATA", data);
   return { data, error };
 };
 

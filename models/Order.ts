@@ -9,6 +9,7 @@ export enum eOrderStatus {
   "concluso" = "CONCLUSO",
   "annullato" = "ANNULLATO",
   "none" = "NONE",
+  "accettato" = "ACCETTATO",
 }
 
 export interface IOrder {
