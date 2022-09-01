@@ -46,13 +46,6 @@ const AutocompleteInput = ({ latLng, disabled, placeholder, onChangeLatLng, onCh
     }
   }, [latLng, mapRef]);
 
-  useEffect(() => {
-    if (disabled) {
-      console.log("disabled", disabled);
-      setDefaultAddress("");
-    }
-  }, [disabled]);
-
   return (
     <div className="relative w-full">
       <GooglePlacesAutocomplete
@@ -97,7 +90,7 @@ const AutocompleteInput = ({ latLng, disabled, placeholder, onChangeLatLng, onCh
         onLoadFailed={(error) => console.error("Could not inject Google script", error)}
       />
 
-      {disabled && <div className="absolute inset-0 rounded-md bg-gray-500/10" />}
+      {/* {disabled && <div className="absolute inset-0 rounded-md bg-gray-500/10" />} */}
     </div>
   );
 };

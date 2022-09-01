@@ -9,10 +9,20 @@ import CheckboxInput from "../../core/Checkbox";
 interface AutocompleteAdvancedProps<T> {
   customer: Customer | null;
   item?: any;
+  showCheckbox?: boolean;
+  showCopyButton?: boolean;
+  saveAddress?: boolean;
   setValue: UseFormSetValue<T>;
 }
 
-const AutocompleteAdvanced = function <T>({ customer, item, setValue }: AutocompleteAdvancedProps<T>) {
+const AutocompleteAdvanced = function <T>({
+  customer,
+  item,
+  showCheckbox,
+  showCopyButton,
+  saveAddress,
+  setValue,
+}: AutocompleteAdvancedProps<T>) {
   const [latLng, setLanLng] = useState<LatLng | null>(null);
   const [address, setAddress] = useState<string>("");
 
@@ -24,6 +34,7 @@ const AutocompleteAdvanced = function <T>({ customer, item, setValue }: Autocomp
   }, []);
 
   const onChangeAddress = useCallback((address: string) => {
+    console.log("address", address);
     setAddress(address);
   }, []);
 
@@ -61,11 +72,12 @@ const AutocompleteAdvanced = function <T>({ customer, item, setValue }: Autocomp
   }, [customer, item]);
 
   useEffect(() => {
-    if (latLng?.lat && latLng?.lng) {
+    if (latLng?.lat && latLng?.lng && address) {
       setValue("latitudine" as Path<T>, latLng.lat as any);
       setValue("longitudine" as Path<T>, latLng.lng as any);
+      saveAddress && setValue("indirizzo" as Path<T>, address as any);
     }
-  }, [latLng]);
+  }, [latLng, address]);
 
   return (
     <>
@@ -90,30 +102,34 @@ const AutocompleteAdvanced = function <T>({ customer, item, setValue }: Autocomp
             </div>
           )}
 
-          <button
-            type="button"
-            className="h-7 w-7 transition-all duration-100 "
-            title="copia indirizzo"
-            onClick={() => onCopyAddressToClipBoard()}
-            disabled={copyAddressClipBoardActive}
-          >
-            {!copyAddressClipBoardActive ? (
-              <ClipboardCopyIcon className="text-gray-500 hover:opacity-70 active:scale-95" />
-            ) : (
-              <CheckIcon className="text-green-700" />
-            )}
-          </button>
+          {showCopyButton ? (
+            <button
+              type="button"
+              className="h-7 w-7 transition-all duration-100 "
+              title="copia indirizzo"
+              onClick={() => onCopyAddressToClipBoard()}
+              disabled={copyAddressClipBoardActive}
+            >
+              {!copyAddressClipBoardActive ? (
+                <ClipboardCopyIcon className="text-gray-500 hover:opacity-70 active:scale-95" />
+              ) : (
+                <CheckIcon className="text-green-700" />
+              )}
+            </button>
+          ) : null}
         </div>
       </div>
 
-      <CheckboxInput
-        aria="Coordinate dell'utente"
-        label="Usa coordinate utente"
-        name="calcolo-automatico"
-        checked={defaultCoords}
-        onChange={(e) => setDefaultCoords(e.target.checked)}
-        className="mt-5 flex items-center whitespace-nowrap"
-      />
+      {showCheckbox ? (
+        <CheckboxInput
+          aria="Coordinate dell'utente"
+          label="Usa coordinate utente"
+          name="calcolo-automatico"
+          checked={defaultCoords}
+          onChange={(e) => setDefaultCoords(e.target.checked)}
+          className="mt-5 flex items-center whitespace-nowrap"
+        />
+      ) : null}
     </>
   );
 };

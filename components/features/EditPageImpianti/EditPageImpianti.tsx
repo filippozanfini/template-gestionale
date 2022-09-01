@@ -67,6 +67,7 @@ const EditPageImpianti = function <T>({
     reset,
     setError,
     setValue,
+    clearErrors,
     formState: { errors },
   } = useForm<T>();
 
@@ -195,7 +196,13 @@ const EditPageImpianti = function <T>({
 
   return (
     <>
-      <form className="space-y-8 divide-y divide-gray-200" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className="space-y-8 divide-y divide-gray-200"
+        onSubmit={(e) => {
+          clearErrors();
+          handleSubmit(onSubmit)(e);
+        }}
+      >
         <div className="space-y-8 divide-y divide-gray-200">
           <div>
             <div>
@@ -265,7 +272,7 @@ const EditPageImpianti = function <T>({
               {children(item, errors, register, renderError)}
 
               <div className="flex w-full gap-4 sm:col-span-6">
-                <AutocompleteAdvanced item={item} customer={customer} setValue={setValue} />
+                <AutocompleteAdvanced item={item} customer={customer} setValue={setValue} showCheckbox showCopyButton />
               </div>
 
               <div className="flex gap-4 sm:col-span-3">

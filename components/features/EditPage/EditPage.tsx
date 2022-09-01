@@ -33,6 +33,7 @@ const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children, 
     reset,
     setError,
     setValue,
+    clearErrors,
     formState: { errors },
   } = useForm<T>();
 
@@ -119,7 +120,13 @@ const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children, 
   return (
     <>
       {item ? (
-        <form className="space-y-8 divide-y divide-gray-200" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          className="space-y-8 divide-y divide-gray-200"
+          onSubmit={(e) => {
+            clearErrors();
+            handleSubmit(onSubmit)(e);
+          }}
+        >
           <div className="space-y-8 divide-y divide-gray-200">{children(item, register, renderError, errors)}</div>
 
           <div className="pt-5">

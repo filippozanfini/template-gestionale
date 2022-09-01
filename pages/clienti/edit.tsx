@@ -5,16 +5,14 @@ import { Customer, ICustomer } from "../../models/Customer";
 import EditPage from "../../components/features/EditPage/EditPage";
 import FormInput from "../../components/FormInput";
 import CheckboxInput from "../../components/core/Checkbox";
-import { mpApi, useCustomers } from "../../lib/mpApi";
+import { mpApi } from "../../lib/mpApi";
 import FormPasswordInput from "../../components/Password";
 import { useRouter } from "next/router";
 import Button from "../../components/core/Button";
 import Dialog from "../../components/shared/Dialog/Dialog";
 import Overlay from "../../components/shared/Overlay";
-import { Service } from "../../models/Service";
-import { Package } from "../../models/Package";
-import AutocompleteInput from "../../components/core/AutocompleteInput";
 import { UseFormSetValue } from "react-hook-form";
+import AutocompleteAdvanced from "../../components/shared/AutocompleteAdvanced/AutocompleteAdvanced";
 
 const defaultValues: Customer = {
   id: 0,
@@ -98,15 +96,17 @@ const EditClienti: NextPageWithLayout = () => {
   }, [pathname]);
 
   useEffect(() => {
-    mpApi.customers.actions
-      .serviziAttivi(Number(query.id))
-      .then((resp: any) => setServiziAttivi(resp.content))
-      .catch((err) => console.log(err));
+    if (query.id) {
+      mpApi.customers.actions
+        .serviziAttivi(Number(query.id))
+        .then((resp: any) => setServiziAttivi(resp.content))
+        .catch((err) => console.log(err));
 
-    mpApi.customers.actions
-      .pacchettiAttivi(Number(query.id))
-      .then((resp: any) => setPacchettiAttivi(resp.content))
-      .catch((err) => console.log(err));
+      mpApi.customers.actions
+        .pacchettiAttivi(Number(query.id))
+        .then((resp: any) => setPacchettiAttivi(resp.content))
+        .catch((err) => console.log(err));
+    }
   }, []);
 
   return (
@@ -135,7 +135,7 @@ const EditClienti: NextPageWithLayout = () => {
             </div>
             {type !== "Collaboratore" && item.id !== 0 && (
               <div className="mt-7 flex justify-between gap-8">
-                <div className="max-h-[500px] w-1/2 flex-col justify-center overflow-y-scroll rounded-xl bg-white p-10">
+                <div className="max-h-[500px] w-1/2 flex-col justify-center overflow-y-auto rounded-xl bg-white p-10">
                   <p className="text-bold text-left text-xl font-bold">Servizi attivi</p>
                   <div className="mt-5 flex max-h-[290px] flex-col gap-4 overflow-y-auto">
                     {serviziAttivi.map((s: any) => {
@@ -150,7 +150,7 @@ const EditClienti: NextPageWithLayout = () => {
                     {serviziAttivi.length === 0 && <p className="text-center">Nessun servizio attivo.</p>}
                   </div>
                 </div>
-                <div className="max-h-[500px] w-1/2 flex-col justify-center overflow-y-scroll rounded-xl bg-white p-10">
+                <div className="max-h-[500px] w-1/2 flex-col justify-center overflow-y-auto rounded-xl bg-white p-10">
                   <p className="text-bold text-left text-xl font-bold">Pacchetti attivi</p>
                   <div className="mt-5 flex max-h-[290px] flex-col gap-4 overflow-y-auto">
                     {pacchettiAttivi.map((p: any) => {
@@ -249,19 +249,9 @@ const EditClienti: NextPageWithLayout = () => {
                 defaultValue={item?.numeroDiTelefono ?? ""}
                 type="tel"
               />
-              {/* <FormInput
-                className="sm:col-span-3"
-                {...register("indirizzo", { required: true })}
-                errorMessage={renderError(errors["indirizzo"])}
-                autoComplete="indirizzo"
-                aria="Modifica l'indirizzo"
-                label="Indirizzo"
-                defaultValue={item?.indirizzo ?? ""}
-              /> */}
 
               <div className="flex h-full flex-col items-start justify-evenly sm:col-span-3">
-                <span className="block text-sm font-medium text-gray-700">Indirizzo</span>
-                <AutocompleteInput />
+                <AutocompleteAdvanced<Customer> setValue={setValueForm} customer={null} saveAddress />
               </div>
 
               {item.id !== 0 && (
