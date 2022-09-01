@@ -13,6 +13,7 @@ import Dialog from "../../components/shared/Dialog/Dialog";
 import Overlay from "../../components/shared/Overlay";
 import { UseFormSetValue } from "react-hook-form";
 import AutocompleteAdvanced from "../../components/shared/AutocompleteAdvanced/AutocompleteAdvanced";
+import { SlugName } from "../../models/types/SlugName";
 
 const defaultValues: Customer = {
   id: 0,
@@ -113,7 +114,12 @@ const EditClienti: NextPageWithLayout = () => {
     <EditPage<Customer>
       defaultValues={defaultValues}
       mpApiAction={mpApi.customers}
-      slugName="clienti"
+      slugName={
+        type
+          .toLowerCase()
+          .substring(0, type.length - 1)
+          .concat("i") as SlugName
+      }
       setValueForm={handleSetValueFormChange}
       onItemFromApi={handleFormItemChange}
     >

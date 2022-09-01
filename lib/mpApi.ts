@@ -250,14 +250,10 @@ export const mpApi = {
       },
 
       save: async (item: any) => {
-        const itemForSave = {
-          ...item,
-          ruoli: 3,
-        };
         return fetchJson(`/users/${item.id > 0 ? item.id : ""}`, {
           method: item.id > 0 ? "PUT" : "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...itemForSave, ruolo: "3" }),
+          body: JSON.stringify({ ...item, ruolo: "3" }),
         });
       },
 
@@ -476,15 +472,10 @@ export const mpApi = {
         }),
 
       save: async (item: any) => {
-        const itemForSave = {
-          ...item,
-          ruolo: 2,
-        };
-
         return fetchJson(`/users/${item.id > 0 ? item.id : ""}`, {
           method: item.id > 0 ? "PUT" : "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...itemForSave, ruolo: "2" }),
+          body: JSON.stringify({ ...item, ruolo: "2" }),
         });
       },
 
