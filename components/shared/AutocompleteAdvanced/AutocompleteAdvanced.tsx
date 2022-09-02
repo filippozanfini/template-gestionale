@@ -1,12 +1,12 @@
 import { CheckIcon, ClipboardCopyIcon } from "@heroicons/react/outline";
 import React, { useCallback, useEffect, useState } from "react";
 import { LatLng } from "react-google-places-autocomplete/build/GooglePlacesAutocomplete.types";
-import { Path, UseFormSetValue } from "react-hook-form";
+import { FieldValues, Path, UseFormSetValue } from "react-hook-form";
 import { Customer } from "../../../models/Customer";
 import AutocompleteInput from "../../core/AutocompleteInput";
 import CheckboxInput from "../../core/Checkbox";
 
-interface AutocompleteAdvancedProps<T> {
+interface AutocompleteAdvancedProps<T extends FieldValues> {
   customer: Customer | null;
   item?: any;
   showCheckbox?: boolean;
@@ -15,7 +15,7 @@ interface AutocompleteAdvancedProps<T> {
   setValue: UseFormSetValue<T>;
 }
 
-const AutocompleteAdvanced = function <T>({
+const AutocompleteAdvanced = function <T extends FieldValues>({
   customer,
   item,
   showCheckbox,

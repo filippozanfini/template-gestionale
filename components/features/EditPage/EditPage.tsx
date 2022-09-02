@@ -1,13 +1,22 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import { useForm, SubmitHandler, Path, UseFormRegister, FieldErrorsImpl, DeepRequired, UseFormSetValue } from "react-hook-form";
+import {
+  useForm,
+  SubmitHandler,
+  Path,
+  UseFormRegister,
+  FieldErrorsImpl,
+  DeepRequired,
+  UseFormSetValue,
+  FieldValues,
+} from "react-hook-form";
 import renderError from "../../../lib/errorMessages";
 import { SlugName } from "../../../models/types/SlugName";
 import FourOFour from "../../FourOFour";
 import { useAlert } from "../../notifications";
 import Overlay from "../../shared/Overlay";
 
-interface EditPageProps<T> {
+interface EditPageProps<T extends FieldValues> {
   children: (
     items: any,
     register: UseFormRegister<any>,
@@ -21,7 +30,14 @@ interface EditPageProps<T> {
   setValueForm?: (setValue: UseFormSetValue<T>) => void;
 }
 
-const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children, onItemFromApi, setValueForm }: EditPageProps<T>) {
+const EditPage = function <T extends FieldValues>({
+  defaultValues,
+  mpApiAction,
+  slugName,
+  children,
+  onItemFromApi,
+  setValueForm,
+}: EditPageProps<T>) {
   const { push, query } = useRouter();
   const [item, setItem] = useState<T | null>(defaultValues);
   const [loading, setLoading] = useState(false);

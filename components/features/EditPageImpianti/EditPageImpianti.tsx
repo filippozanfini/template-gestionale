@@ -1,7 +1,16 @@
 import { CheckIcon, ClipboardCopyIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { DeepRequired, FieldErrorsImpl, Path, SubmitHandler, useForm, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import {
+  DeepRequired,
+  FieldErrorsImpl,
+  FieldValues,
+  Path,
+  SubmitHandler,
+  useForm,
+  UseFormRegister,
+  UseFormSetValue,
+} from "react-hook-form";
 import renderError from "../../../lib/errorMessages";
 import { Customer } from "../../../models/Customer";
 import { SlugNameImpianti } from "../../../models/types/SlugName";
@@ -16,7 +25,7 @@ import AutocompleteInput from "../../core/AutocompleteInput";
 import { LatLng } from "react-google-places-autocomplete/build/GooglePlacesAutocomplete.types";
 import AutocompleteAdvanced from "../../shared/AutocompleteAdvanced/AutocompleteAdvanced";
 
-interface EditPageImpiantiProps<T> {
+interface EditPageImpiantiProps<T extends FieldValues> {
   defaultValues: T;
   slugNameImpianti: SlugNameImpianti;
   mpApi: any;
@@ -36,7 +45,7 @@ interface EditPageImpiantiProps<T> {
  * @param mpApi es. api.installations
  * @param mpApiAction es. api.installations.actions.save
  */
-const EditPageImpianti = function <T>({
+const EditPageImpianti = function <T extends FieldValues>({
   children,
   setValueForm,
   onItemFromApi,
