@@ -14,7 +14,7 @@ type ImpiantoCaldaia = {
   idUtente: number;
   marca: string;
   modello: string;
-  alimentazione: number;
+  alimentazione: number | string;
   dataInstallazione: string;
   dirittoFisso: number | string;
   longitudine: number | undefined;
@@ -26,7 +26,7 @@ const defaultValues: ImpiantoCaldaia = {
   idUtente: 0,
   marca: "",
   modello: "",
-  alimentazione: 0,
+  alimentazione: "",
   dataInstallazione: "",
   dirittoFisso: 0,
   longitudine: undefined,
@@ -58,7 +58,7 @@ const EditImpiantiCaldaia: NextPageWithLayout = () => {
   };
 
   useEffect(() => {
-    if (setValueForm) {
+    if (setValueForm && type === "caldaia") {
       setValueForm("alimentazione", Number(powerTypeSelected));
     }
   }, [powerTypeSelected, setValueForm]);
