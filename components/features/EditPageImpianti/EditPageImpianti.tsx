@@ -281,7 +281,15 @@ const EditPageImpianti = function <T extends FieldValues>({
               {children(item, errors, register, renderError)}
 
               <div className="flex w-full gap-4 sm:col-span-6">
-                <AutocompleteAdvanced item={item} customer={customer} setValue={setValue} showCheckbox showCopyButton />
+                <AutocompleteAdvanced
+                  item={item}
+                  customer={customer}
+                  setValue={setValue}
+                  saveAddress
+                  showCheckbox
+                  showCopyButton
+                  indirizzo={item.indirizzo}
+                />
               </div>
 
               <div className="flex gap-4 sm:col-span-3">

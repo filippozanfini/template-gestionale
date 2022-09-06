@@ -7,7 +7,8 @@ import AutocompleteInput from "../../core/AutocompleteInput";
 import CheckboxInput from "../../core/Checkbox";
 
 interface AutocompleteAdvancedProps<T extends FieldValues> {
-  customer: Customer | null;
+  customer?: Customer | null;
+  indirizzo?: string;
   item?: any;
   showCheckbox?: boolean;
   showCopyButton?: boolean;
@@ -19,12 +20,13 @@ const AutocompleteAdvanced = function <T extends FieldValues>({
   customer,
   item,
   showCheckbox,
+  indirizzo,
   showCopyButton,
   saveAddress,
   setValue,
 }: AutocompleteAdvancedProps<T>) {
   const [latLng, setLanLng] = useState<LatLng | null>(null);
-  const [address, setAddress] = useState<string>("");
+  const [address, setAddress] = useState<string>(indirizzo || "");
 
   const [defaultCoords, setDefaultCoords] = useState<boolean>(false);
   const [copyAddressClipBoardActive, setCopyAddressClipBoardActive] = useState<boolean>(false);
@@ -34,7 +36,6 @@ const AutocompleteAdvanced = function <T extends FieldValues>({
   }, []);
 
   const onChangeAddress = useCallback((address: string) => {
-    console.log("address", address);
     setAddress(address);
   }, []);
 
@@ -44,7 +45,7 @@ const AutocompleteAdvanced = function <T extends FieldValues>({
     if (defaultCoords) {
       navigator.clipboard.writeText(customer?.indirizzo || "");
     } else {
-      navigator.clipboard.writeText(address);
+      navigator.clipboard.writeText(indirizzo ?? "");
     }
 
     setTimeout(() => {
@@ -64,6 +65,10 @@ const AutocompleteAdvanced = function <T extends FieldValues>({
       setLanLng({ lat: customer.latitudine, lng: customer.longitudine });
     } else if (!defaultCoords) {
       matchCoords(latLng, item) ? setLanLng(null) : setLanLng({ lat: item?.latitudine, lng: item?.longitudine });
+    }
+
+    if (customer) {
+      setAddress(customer.indirizzo);
     }
   }, [customer, defaultCoords]);
 
@@ -88,7 +93,7 @@ const AutocompleteAdvanced = function <T extends FieldValues>({
             <input
               type={"text"}
               className={["my-auto h-[38px] w-full rounded-md border border-gray-300", !defaultCoords ? "hidden" : ""].join(" ")}
-              value={customer?.indirizzo}
+              value={indirizzo}
               disabled
             />
           ) : (
@@ -98,6 +103,7 @@ const AutocompleteAdvanced = function <T extends FieldValues>({
                 onChangeLatLng={(value) => onChangeLatLng(value)}
                 onChangeAddress={(value) => onChangeAddress(value)}
                 disabled={defaultCoords}
+                placeholder={indirizzo}
               />
             </div>
           )}

@@ -113,8 +113,6 @@ const EditClienti: NextPageWithLayout = () => {
     }
   }, []);
 
-  console.log("api", api);
-
   return api ? (
     <EditPage<Customer>
       defaultValues={{ ...defaultValues, ruolo: type === "Cliente" ? "2" : "3" }}
@@ -262,7 +260,13 @@ const EditClienti: NextPageWithLayout = () => {
               />
 
               <div className="flex h-full flex-col items-start justify-evenly sm:col-span-3">
-                <AutocompleteAdvanced<Customer> setValue={setValueForm} customer={null} saveAddress />
+                <AutocompleteAdvanced<Customer>
+                  setValue={setValueForm}
+                  customer={item}
+                  saveAddress
+                  showCopyButton
+                  indirizzo={item.indirizzo}
+                />
               </div>
 
               {item.id !== 0 && (
