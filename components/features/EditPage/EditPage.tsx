@@ -147,13 +147,13 @@ const EditPage = function <T extends FieldValues>({
 
           <div className="pt-5">
             <div className="flex justify-end">
-              <button
+              {/* <button
                 type="button"
                 className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                 onClick={() => reset()}
               >
                 Svuota campi
-              </button>
+              </button> */}
               <button
                 type="submit"
                 className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-primary-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
