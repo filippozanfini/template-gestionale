@@ -63,12 +63,10 @@ const AutocompleteAdvanced = function <T extends FieldValues>({
   useEffect(() => {
     if (customer && defaultCoords) {
       setLanLng({ lat: customer.latitudine, lng: customer.longitudine });
+      setAddress(customer.indirizzo);
     } else if (!defaultCoords) {
       matchCoords(latLng, item) ? setLanLng(null) : setLanLng({ lat: item?.latitudine, lng: item?.longitudine });
-    }
-
-    if (customer) {
-      setAddress(customer.indirizzo);
+      setAddress(indirizzo ?? "");
     }
   }, [customer, defaultCoords]);
 
@@ -93,7 +91,7 @@ const AutocompleteAdvanced = function <T extends FieldValues>({
             <input
               type={"text"}
               className={["my-auto h-[38px] w-full rounded-md border border-gray-300", !defaultCoords ? "hidden" : ""].join(" ")}
-              value={indirizzo}
+              value={address}
               disabled
             />
           ) : (
