@@ -298,7 +298,7 @@ const EditClienti: NextPageWithLayout = () => {
             <Dialog
               isOpen={openConfirmResetPassword}
               onClose={() => setOpenConfirmResetPassword(false)}
-              title="Conferma il rispristino della password?"
+              title="Conferma il ripristino della password?"
             >
               <div className="mt-4 flex gap-4">
                 <Button title="Annulla" aria="" onClick={() => setOpenConfirmResetPassword(false)} />
