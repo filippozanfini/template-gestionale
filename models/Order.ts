@@ -10,6 +10,8 @@ export enum eOrderStatus {
   "annullato" = "ANNULLATO",
   "none" = "NONE",
   "accettato" = "ACCETTATO",
+  "nonAccettato" = "NON ACCETTATO",
+  "scaduto" = "SCADUTO",
 }
 
 export interface IOrder {
@@ -101,6 +103,7 @@ export class Order implements IOrder {
       pagato: "PAGATO",
       concluso: "CONCLUSO",
       annullato: "ANNULLATO",
+      nonAccettato: "NON ACCETTATO",
     };
   }
 

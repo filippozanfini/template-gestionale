@@ -14,6 +14,8 @@ export const OrderStatusMapper: OrderStatusMapperType = {
   concluso: eOrderStatus.concluso,
   annullato: eOrderStatus.annullato,
   accettato: eOrderStatus.accettato,
+  nonAccettato: eOrderStatus.nonAccettato,
+  scaduto: eOrderStatus.scaduto,
   none: eOrderStatus.none,
 };
 
@@ -22,5 +24,7 @@ export const InverterOrderStatusMapper: InverterOrderStatusMapper = {
   PAGATO: "pagato",
   CONCLUSO: "concluso",
   ANNULLATO: "annullato",
+  "NON ACCETTATO": "nonAccettato",
+  SCADUTO: "scaduto",
   NONE: "none",
 };
