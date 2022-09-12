@@ -1,11 +1,78 @@
-import React, { ReactElement } from "react";
-import { useForm } from "react-hook-form";
+import { RadioGroup, Tab } from "@headlessui/react";
+import React, { ReactElement, useEffect, useState } from "react";
+import { Path, SubmitHandler, useForm } from "react-hook-form";
 import SidebarLayout from "../../layouts/SidebarLayout";
-import { Order } from "../../models/Order";
+import { mpApi } from "../../lib/mpApi";
+import { useRouter } from "next/router";
+import { Customer } from "../../models/Customer";
+import Combobox from "../../components/shared/ComboBox/Combobox";
+import { CheckIcon, CashIcon, LibraryIcon } from "@heroicons/react/solid";
+import { Quote } from "../../models/Quote";
+import Overlay from "../../components/shared/Overlay";
+import TableQuotes from "../../components/features/TableQuotes";
+import { useAlert } from "../../components/notifications";
 
-interface INewOrder {}
+interface INewOrderQuote {
+  idUtente: number;
+  idItem: number;
+}
+interface INewOrderService {
+  idUtente: number;
+  idItem: number;
+}
+
+interface INewOrderPackage {
+  idUtente: number;
+  idItem: number;
+  idImpianto: number;
+}
+
+interface INewOrderMaintenance {
+  idUtente: number;
+  idImpianto: number;
+}
+
+type KeyApi = {
+  [key: number]: any;
+};
+
+const paymentMethodsItems = [
+  {
+    name: "Contanti",
+    value: "contanti",
+    description: "Pagamento in contanti",
+    icon: CashIcon,
+  },
+  {
+    name: "Bonifico",
+    value: "bonifico",
+    description: "Pagamento tramite bonifico bancario",
+    icon: LibraryIcon,
+  },
+];
 
 const NewOrdine = () => {
+  const [item, setItem] = useState<any>();
+  const [tabIndex, setTabIndex] = useState(0);
+  const [customer, setCustomer] = useState<Customer | null>(null);
+  const [listCustomers, setListCustomers] = useState<Customer[]>([]);
+  const [filter, setFilter] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<"contanti" | "bonifico">("contanti");
+  const [quotes, setQuotes] = useState<Quote[] | null>(null);
+  const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { push } = useRouter();
+  const alert = useAlert();
+
+  const apiAction: KeyApi = {
+    0: mpApi.orders.actions.newOrderQuote,
+    1: mpApi.orders.actions.newOrderService,
+    2: mpApi.orders.actions.newOrderPackage,
+    3: mpApi.orders.actions.newOrderMaintenance,
+  };
+
   const {
     register,
     handleSubmit,
@@ -13,9 +80,233 @@ const NewOrdine = () => {
     reset,
     setError,
     formState: { errors },
-  } = useForm<INewOrder>();
+  } = useForm<INewOrderQuote | INewOrderMaintenance | INewOrderService | INewOrderPackage>();
 
-  return <div>NewOrdine</div>;
+  const onSubmit: SubmitHandler<any> = async (formdata: any, e: any) => {
+    e.preventDefault();
+
+    console.log("formdata", formdata);
+
+    setIsLoading(true);
+
+    apiAction[tabIndex](formdata, paymentMethod)
+      .then((response: any) => {
+        alert({
+          id: new Date().toISOString(),
+          type: "success",
+          title: "Salvataggio Risorsa",
+          message: response.message,
+          read: false,
+          isAlert: true,
+        });
+        setIsLoading(false);
+        push("/ordini/detail/?id=" + response.data.id);
+      })
+      .catch((reason: any) => {
+        alert({
+          id: new Date().toISOString(),
+          type: "error",
+          title: "Salvataggio Risorsa",
+          message: reason.message,
+          read: false,
+          isAlert: true,
+        });
+        setIsLoading(false);
+        Object.keys(reason.data.errors).forEach((field: string) => {
+          setError(field as Path<INewOrderMaintenance> | Path<INewOrderPackage> | Path<INewOrderQuote> | Path<INewOrderService>, {
+            type: "custom",
+            message: reason.data.errors[field],
+          });
+        });
+      });
+  };
+
+  const onSelectedQuote = (quote: Quote) => {
+    setSelectedQuote(quote);
+  };
+
+  const onValuePaymentMethodChange = (value: "contanti" | "bonifico") => {
+    setPaymentMethod(value);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      const res: any = await mpApi.customers.actions.autocomplete(1, 25, filter);
+
+      const resCustomer = res.content;
+
+      setListCustomers(resCustomer);
+      setIsLoading(false);
+    };
+
+    if (filter) {
+      const timeout = setTimeout(() => fetchData(), 400);
+
+      return () => clearTimeout(timeout);
+    } else {
+      setListCustomers([]);
+      setCustomer(null);
+    }
+  }, [filter]);
+
+  useEffect(() => {
+    if (customer) {
+      setValue("idUtente", customer.id);
+      (async () => {
+        setIsLoading(true);
+        const res: any = await mpApi.quotes.actions.currentQuotesPerUser(customer?.id);
+
+        const resQuotes = res.content;
+        setQuotes(resQuotes);
+        setIsLoading(false);
+      })();
+    }
+  }, [customer]);
+
+  useEffect(() => {
+    if (selectedQuote) {
+      setValue("idItem", selectedQuote.id);
+    }
+  }, [selectedQuote]);
+
+  return (
+    <div>
+      <h3 className="text-4xl font-bold leading-6 text-gray-900">{"Nuovo Ordine"}</h3>
+      <div className="mt-10">
+        <Tab.Group selectedIndex={tabIndex} onChange={(index: number) => setTabIndex(index)}>
+          <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
+            <Tab
+              className={({ selected }) =>
+                `w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-primary-700 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-900/20 focus:outline-none ${
+                  selected ? "bg-white shadow" : "text-gray-50 hover:bg-white/[0.12] hover:text-white"
+                }`
+              }
+            >
+              Preventivo
+            </Tab>
+            <Tab
+              className={({ selected }) =>
+                `w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-primary-700 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-900/20 focus:outline-none ${
+                  selected ? "bg-white shadow" : "text-gray-50 hover:bg-white/[0.12] hover:text-white"
+                }`
+              }
+            >
+              Servizio
+            </Tab>
+            <Tab
+              className={({ selected }) =>
+                `w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-primary-700 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-900/20 focus:outline-none ${
+                  selected ? "bg-white shadow" : "text-gray-50 hover:bg-white/[0.12] hover:text-white"
+                }`
+              }
+            >
+              Pacchetto
+            </Tab>
+            <Tab
+              className={({ selected }) =>
+                `w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-primary-700 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-900/20 focus:outline-none ${
+                  selected ? "bg-white shadow" : "text-gray-50 hover:bg-white/[0.12] hover:text-white"
+                }`
+              }
+            >
+              Intervento
+            </Tab>
+          </Tab.List>
+        </Tab.Group>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 divide-y divide-gray-200 py-4 ">
+          <div className="flex flex-col gap-8 py-4">
+            <div>
+              <span className="block text-sm font-medium text-gray-700">Cerca Utente</span>
+              <Combobox
+                listItems={listCustomers}
+                onFilterChange={(filters: any) => setFilter(filters)}
+                onSelectedChange={(value: any) => setCustomer(value)}
+                selectedName={customer ? customer?.nome + " " + customer?.cognome + ", " + customer?.indirizzo : filter}
+                loading={isLoading}
+                selected={customer}
+              >
+                {(item: Customer, selected, active) => (
+                  <div className="flex items-center gap-4">
+                    <span className={`block w-1/4 truncate ${selected ? "font-medium" : "font-normal"}`}>
+                      {item.nome + " " + item.cognome}
+                    </span>
+                    <span className="w-1/3">{item.indirizzo}</span>
+                    {selected ? (
+                      <span className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? "text-white" : "text-primary-600"}`}>
+                        <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                      </span>
+                    ) : null}
+                  </div>
+                )}
+              </Combobox>
+            </div>
+
+            <RadioGroup value={paymentMethod} onChange={onValuePaymentMethodChange} className="space-y-3">
+              <RadioGroup.Label>Pagamento</RadioGroup.Label>
+              <div className="flex gap-2">
+                {paymentMethodsItems.map((item) => (
+                  <RadioGroup.Option value={item.value} key={item.name}>
+                    {({ checked }) => (
+                      <button
+                        type="button"
+                        title={item.description}
+                        aria-label={item.description}
+                        className={[
+                          "flex items-center gap-2 rounded-md border border-gray-200 bg-white px-4 py-2 font-medium shadow",
+                          checked ? "text-primary-600 shadow-inner" : "text-gray-500 shadow",
+                        ].join(" ")}
+                      >
+                        <item.icon className="h-6 w-6 " /> {item.name}
+                      </button>
+                    )}
+                  </RadioGroup.Option>
+                ))}
+              </div>
+            </RadioGroup>
+
+            <div className="space-y-3 ">
+              {quotes &&
+                (quotes.length > 0 ? (
+                  <>
+                    <span className="font-medium">Preventivi IN CORSO per l'utente selezionato</span>
+
+                    <TableQuotes
+                      items={quotes}
+                      onSelectedQuote={(quote: Quote) => onSelectedQuote(quote)}
+                      selectedQuote={selectedQuote ? selectedQuote : null}
+                    />
+                  </>
+                ) : (
+                  <span className="font-medium">Nessun preventivo in corso per l'utente selezionato</span>
+                ))}
+            </div>
+          </div>
+
+          <div className="pt-5">
+            <div className="flex justify-end">
+              {/* <button
+                type="button"
+                className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                onClick={() => reset()}
+              >
+                Svuota campi
+              </button> */}
+              <button
+                type="submit"
+                className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-primary-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+              >
+                Salva
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <Overlay loading={isLoading} />
+    </div>
+  );
 };
 
 NewOrdine.getLayout = function getLayout(page: ReactElement) {

@@ -1,5 +1,5 @@
 import { CheckCircleIcon, PencilIcon, TrashIcon, XCircleIcon } from "@heroicons/react/solid";
-import React, { FC, ReactNode, useEffect } from "react";
+import React, { FC, ReactElement, ReactNode, useEffect } from "react";
 import Button from "./core/Button";
 import Dialog from "./shared/Dialog/Dialog";
 import Pagination from "./shared/Pagination/Pagination";
@@ -13,6 +13,7 @@ export interface TableListProps {
   children?: (listItems: any, openModalTrashItem: (item: any) => void) => JSX.Element | React.ReactNode;
   onEditAction?: (item: any) => void;
   onDeleteAction?: (item: any) => void;
+  onSelectedQuote?: (item: any) => void;
 }
 
 /**

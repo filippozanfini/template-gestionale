@@ -310,6 +310,10 @@ export const mpApi = {
         return fetchJson(`/preventivi/${id}`);
       },
 
+      currentQuotesPerUser: async (idUser: number) => {
+        return fetchJson(`/preventivi/utente/validi/${idUser}`);
+      },
+
       save: async (item: any) => {
         const itemMap = Quote.factoryResponse(item);
 
@@ -525,16 +529,50 @@ export const mpApi = {
         }
         return fetchJson(`/ordini/${id}`);
       },
+
       save: async (item: any, status: string) => {
         return fetchJson(`/ordini/stato/${item.id > 0 ? item.id : ""}?nome=${status}`, {
           method: item.id > 0 ? "PUT" : "POST",
           headers: { "Content-Type": "application/json" },
         });
       },
+
       delete: async (id: number) => {
         let data: any = await fetchJson(`/ordini/${id}`, {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
+        });
+      },
+
+      newOrderQuote: async (item: any, pagamento: string) => {
+        return fetchJson(`/ordini/nuovo/preventivo?pagamento=${pagamento}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(item),
+        });
+      },
+
+      newOrderService: async (item: any, pagamento: string) => {
+        return fetchJson(`/ordini/nuovo/servizio?pagamento=${pagamento}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(item),
+        });
+      },
+
+      newOrderPackage: async (item: any, pagamento: string) => {
+        return fetchJson(`/ordini/nuovo/pacchetto?pagamento=${pagamento}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(item),
+        });
+      },
+
+      newOrderMaintenance: async (item: any, pagamento: string) => {
+        return fetchJson(`/ordini/nuovo/intervento?pagamento=${pagamento}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(item),
         });
       },
     },
