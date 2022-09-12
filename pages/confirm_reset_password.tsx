@@ -22,9 +22,6 @@ const ConfermaRecuperaPassword = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const alert = useAlert();
 
-  console.log("TOKEN", token);
-  console.log("CONFERMA PWD", confermaPassword);
-
   const router = useRouter();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -54,6 +51,11 @@ const ConfermaRecuperaPassword = () => {
     }
   };
 
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    router.push("/login");
+  };
+
   useEffect(() => {
     if (isSent) {
       setOpenDialog(true);
@@ -64,7 +66,7 @@ const ConfermaRecuperaPassword = () => {
     if (router.query.token) {
       setToken(router.query.token as string);
     }
-  }, [router.query]);
+  }, [router.query, router.query.token]);
 
   return (
     <div className=" flex flex-col items-center justify-center">
@@ -98,7 +100,7 @@ const ConfermaRecuperaPassword = () => {
         </div>
       </div>
 
-      <Dialog title={""} onClose={() => setOpenDialog(false)} isOpen={openDialog}>
+      <Dialog title={""} onClose={() => handleCloseDialog()} isOpen={openDialog}>
         <p className="font-medium text-gray-800">{message}</p>
       </Dialog>
     </div>

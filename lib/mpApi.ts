@@ -471,6 +471,10 @@ export const mpApi = {
           };
         }),
 
+      item: async (id: string) => {
+        return fetchJson(`/users/${id}`);
+      },
+
       save: async (item: any) => {
         return fetchJson(`/users/${item.id > 0 ? item.id : ""}`, {
           method: item.id > 0 ? "PUT" : "POST",

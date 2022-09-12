@@ -1,13 +1,22 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import { useForm, SubmitHandler, Path, UseFormRegister, FieldErrorsImpl, DeepRequired, UseFormSetValue } from "react-hook-form";
+import {
+  useForm,
+  SubmitHandler,
+  Path,
+  UseFormRegister,
+  FieldErrorsImpl,
+  DeepRequired,
+  UseFormSetValue,
+  FieldValues,
+} from "react-hook-form";
 import renderError from "../../../lib/errorMessages";
 import { SlugName } from "../../../models/types/SlugName";
 import FourOFour from "../../FourOFour";
 import { useAlert } from "../../notifications";
 import Overlay from "../../shared/Overlay";
 
-interface EditPageProps<T> {
+interface EditPageProps<T extends FieldValues> {
   children: (
     items: any,
     register: UseFormRegister<any>,
@@ -21,7 +30,14 @@ interface EditPageProps<T> {
   setValueForm?: (setValue: UseFormSetValue<T>) => void;
 }
 
-const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children, onItemFromApi, setValueForm }: EditPageProps<T>) {
+const EditPage = function <T extends FieldValues>({
+  defaultValues,
+  mpApiAction,
+  slugName,
+  children,
+  onItemFromApi,
+  setValueForm,
+}: EditPageProps<T>) {
   const { push, query } = useRouter();
   const [item, setItem] = useState<T | null>(defaultValues);
   const [loading, setLoading] = useState(false);
@@ -131,13 +147,13 @@ const EditPage = function <T>({ defaultValues, mpApiAction, slugName, children, 
 
           <div className="pt-5">
             <div className="flex justify-end">
-              <button
+              {/* <button
                 type="button"
                 className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                 onClick={() => reset()}
               >
                 Svuota campi
-              </button>
+              </button> */}
               <button
                 type="submit"
                 className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-primary-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"

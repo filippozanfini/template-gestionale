@@ -1,7 +1,16 @@
 import { CheckIcon, ClipboardCopyIcon } from "@heroicons/react/outline";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { DeepRequired, FieldErrorsImpl, Path, SubmitHandler, useForm, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import {
+  DeepRequired,
+  FieldErrorsImpl,
+  FieldValues,
+  Path,
+  SubmitHandler,
+  useForm,
+  UseFormRegister,
+  UseFormSetValue,
+} from "react-hook-form";
 import renderError from "../../../lib/errorMessages";
 import { Customer } from "../../../models/Customer";
 import { SlugNameImpianti } from "../../../models/types/SlugName";
@@ -16,7 +25,7 @@ import AutocompleteInput from "../../core/AutocompleteInput";
 import { LatLng } from "react-google-places-autocomplete/build/GooglePlacesAutocomplete.types";
 import AutocompleteAdvanced from "../../shared/AutocompleteAdvanced/AutocompleteAdvanced";
 
-interface EditPageImpiantiProps<T> {
+interface EditPageImpiantiProps<T extends FieldValues> {
   defaultValues: T;
   slugNameImpianti: SlugNameImpianti;
   mpApi: any;
@@ -36,7 +45,7 @@ interface EditPageImpiantiProps<T> {
  * @param mpApi es. api.installations
  * @param mpApiAction es. api.installations.actions.save
  */
-const EditPageImpianti = function <T>({
+const EditPageImpianti = function <T extends FieldValues>({
   children,
   setValueForm,
   onItemFromApi,
@@ -272,7 +281,15 @@ const EditPageImpianti = function <T>({
               {children(item, errors, register, renderError)}
 
               <div className="flex w-full gap-4 sm:col-span-6">
-                <AutocompleteAdvanced item={item} customer={customer} setValue={setValue} showCheckbox showCopyButton />
+                <AutocompleteAdvanced
+                  item={item}
+                  customer={customer}
+                  setValue={setValue}
+                  saveAddress
+                  showCheckbox
+                  showCopyButton
+                  indirizzo={item.indirizzo}
+                />
               </div>
 
               <div className="flex gap-4 sm:col-span-3">
@@ -301,13 +318,13 @@ const EditPageImpianti = function <T>({
         </div>
         <div className="pt-5">
           <div className="flex justify-end">
-            <button
+            {/* <button
               type="button"
               className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
               onClick={() => reset()}
             >
               Svuota campi
-            </button>
+            </button> */}
             <button
               type="submit"
               className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-primary-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"

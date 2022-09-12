@@ -26,6 +26,7 @@ const AutocompleteInput = ({ latLng, disabled, placeholder, onChangeLatLng, onCh
         .then((results) => getLatLng(results[0]))
         .then(({ lat, lng }) => {
           onChangeLatLng && onChangeLatLng({ lat, lng });
+          onChangeAddress && onChangeAddress(selectedPlace?.label);
         })
         .catch((error) => {
           console.error(error);
@@ -33,18 +34,18 @@ const AutocompleteInput = ({ latLng, disabled, placeholder, onChangeLatLng, onCh
     }
   }, [selectedPlace]);
 
-  useEffect(() => {
-    if (latLng && mapRef.current.getSessionToken()) {
-      geocodeByLatLng(latLng)
-        .then((results) => {
-          onChangeAddress && onChangeAddress(results[0]?.formatted_address);
-          setDefaultAddress(results[0]?.formatted_address);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-  }, [latLng, mapRef]);
+  // useEffect(() => {
+  //   if (latLng && mapRef.current.getSessionToken()) {
+  //     geocodeByLatLng(latLng)
+  //       .then((results) => {
+  //         onChangeAddress && onChangeAddress(results[0]?.formatted_address);
+  //         setDefaultAddress(results[0]?.formatted_address);
+  //       })
+  //       .catch((error) => {
+  //         console.error(error);
+  //       });
+  //   }
+  // }, [latLng, mapRef]);
 
   return (
     <div className="relative w-full">

@@ -1,13 +1,14 @@
 import { CheckIcon, ClipboardCopyIcon } from "@heroicons/react/outline";
 import React, { useCallback, useEffect, useState } from "react";
 import { LatLng } from "react-google-places-autocomplete/build/GooglePlacesAutocomplete.types";
-import { Path, UseFormSetValue } from "react-hook-form";
+import { FieldValues, Path, UseFormSetValue } from "react-hook-form";
 import { Customer } from "../../../models/Customer";
 import AutocompleteInput from "../../core/AutocompleteInput";
 import CheckboxInput from "../../core/Checkbox";
 
-interface AutocompleteAdvancedProps<T> {
-  customer: Customer | null;
+interface AutocompleteAdvancedProps<T extends FieldValues> {
+  customer?: Customer | null;
+  indirizzo?: string;
   item?: any;
   showCheckbox?: boolean;
   showCopyButton?: boolean;
@@ -15,16 +16,17 @@ interface AutocompleteAdvancedProps<T> {
   setValue: UseFormSetValue<T>;
 }
 
-const AutocompleteAdvanced = function <T>({
+const AutocompleteAdvanced = function <T extends FieldValues>({
   customer,
   item,
   showCheckbox,
+  indirizzo,
   showCopyButton,
   saveAddress,
   setValue,
 }: AutocompleteAdvancedProps<T>) {
   const [latLng, setLanLng] = useState<LatLng | null>(null);
-  const [address, setAddress] = useState<string>("");
+  const [address, setAddress] = useState<string>(indirizzo || "");
 
   const [defaultCoords, setDefaultCoords] = useState<boolean>(false);
   const [copyAddressClipBoardActive, setCopyAddressClipBoardActive] = useState<boolean>(false);
@@ -34,7 +36,6 @@ const AutocompleteAdvanced = function <T>({
   }, []);
 
   const onChangeAddress = useCallback((address: string) => {
-    console.log("address", address);
     setAddress(address);
   }, []);
 
@@ -44,7 +45,7 @@ const AutocompleteAdvanced = function <T>({
     if (defaultCoords) {
       navigator.clipboard.writeText(customer?.indirizzo || "");
     } else {
-      navigator.clipboard.writeText(address);
+      navigator.clipboard.writeText(indirizzo ?? "");
     }
 
     setTimeout(() => {
@@ -62,8 +63,10 @@ const AutocompleteAdvanced = function <T>({
   useEffect(() => {
     if (customer && defaultCoords) {
       setLanLng({ lat: customer.latitudine, lng: customer.longitudine });
+      setAddress(customer.indirizzo);
     } else if (!defaultCoords) {
       matchCoords(latLng, item) ? setLanLng(null) : setLanLng({ lat: item?.latitudine, lng: item?.longitudine });
+      setAddress(indirizzo ?? "");
     }
   }, [customer, defaultCoords]);
 
@@ -88,7 +91,7 @@ const AutocompleteAdvanced = function <T>({
             <input
               type={"text"}
               className={["my-auto h-[38px] w-full rounded-md border border-gray-300", !defaultCoords ? "hidden" : ""].join(" ")}
-              value={customer?.indirizzo}
+              value={address}
               disabled
             />
           ) : (
@@ -98,6 +101,7 @@ const AutocompleteAdvanced = function <T>({
                 onChangeLatLng={(value) => onChangeLatLng(value)}
                 onChangeAddress={(value) => onChangeAddress(value)}
                 disabled={defaultCoords}
+                placeholder={indirizzo}
               />
             </div>
           )}

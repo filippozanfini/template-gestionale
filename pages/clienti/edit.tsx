@@ -26,11 +26,12 @@ const defaultValues: Customer = {
   latitudine: 0,
   longitudine: 0,
   privacyAccettata: false,
-  ruolo: "3",
+  ruolo: "",
 };
 
 const EditClienti: NextPageWithLayout = () => {
   const [type, setType] = useState<"Cliente" | "Collaboratore" | string>("");
+  const [api, setApi] = useState<any>();
 
   const [password, setPassword] = useState("");
   const [passwordRepeat, setPasswordRepeat] = useState("");
@@ -88,8 +89,10 @@ const EditClienti: NextPageWithLayout = () => {
   useEffect(() => {
     if (pathname.includes("clienti")) {
       setType("Cliente");
+      setApi(mpApi.customers);
     } else if (pathname.includes("collaboratori")) {
       setType("Collaboratore");
+      setApi(mpApi.collaborators);
     }
 
     setPassword("");
@@ -110,10 +113,10 @@ const EditClienti: NextPageWithLayout = () => {
     }
   }, []);
 
-  return (
+  return api ? (
     <EditPage<Customer>
-      defaultValues={defaultValues}
-      mpApiAction={mpApi.customers}
+      defaultValues={{ ...defaultValues, ruolo: type === "Cliente" ? "2" : "3" }}
+      mpApiAction={api}
       slugName={
         type
           .toLowerCase()
@@ -257,7 +260,13 @@ const EditClienti: NextPageWithLayout = () => {
               />
 
               <div className="flex h-full flex-col items-start justify-evenly sm:col-span-3">
-                <AutocompleteAdvanced<Customer> setValue={setValueForm} customer={null} saveAddress />
+                <AutocompleteAdvanced<Customer>
+                  setValue={setValueForm}
+                  customer={item}
+                  saveAddress
+                  showCopyButton
+                  indirizzo={item.indirizzo}
+                />
               </div>
 
               {item.id !== 0 && (
@@ -289,7 +298,7 @@ const EditClienti: NextPageWithLayout = () => {
             <Dialog
               isOpen={openConfirmResetPassword}
               onClose={() => setOpenConfirmResetPassword(false)}
-              title="Conferma il rispristino della password?"
+              title="Conferma il ripristino della password?"
             >
               <div className="mt-4 flex gap-4">
                 <Button title="Annulla" aria="" onClick={() => setOpenConfirmResetPassword(false)} />
@@ -304,7 +313,7 @@ const EditClienti: NextPageWithLayout = () => {
         );
       }}
     </EditPage>
-  );
+  ) : null;
 };
 EditClienti.getLayout = function getLayout(page: ReactElement) {
   return <SidebarLayout title="Clienti">{page}</SidebarLayout>;
