@@ -43,7 +43,7 @@ const itemsHeadTable: HeadCell[] = [
 ];
 
 const listOrderStatus = Object.values(eOrderStatus).filter((value) => {
-  return value !== "NONE";
+  return value !== "NONE" && value !== "NON ACCETTATO" && value !== "SCADUTO" && value !== "ACCETTATO";
 });
 
 const TableOrders = ({ items, onDeleteAction, onEditAction }: TableListProps) => {

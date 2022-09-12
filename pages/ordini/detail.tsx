@@ -36,7 +36,7 @@ const DetailPage: NextPageWithLayout = () => {
   }, [query, item]);
 
   const listOrderStatus = Object.values(eOrderStatus).filter((value) => {
-    return value !== "NONE";
+    return value !== "NONE" && value !== "NON ACCETTATO" && value !== "SCADUTO" && value !== "ACCETTATO";
   });
 
   const nomeAcquisto = item?.servizio ? item.servizio.nome : item?.pacchetto ? item?.pacchetto.nome : "";
