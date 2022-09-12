@@ -1,6 +1,9 @@
 import { CheckCircleIcon, PencilIcon, TrashIcon } from "@heroicons/react/solid";
 import React from "react";
+import { Installation } from "../../models/Installation";
+import { Package } from "../../models/Package";
 import { Quote, eQuoteStatus, IQuote } from "../../models/Quote";
+import { Service } from "../../models/Service";
 import { OrderStatusMapper } from "../../utils/OrderStatusMapper";
 import ActionEditDelete from "../shared/ActionEditDelete";
 import { Table } from "../shared/Table/Table";
@@ -37,20 +40,14 @@ const itemsHeadTable: HeadCell[] = [
   },
 ];
 
-const TableQuotes = ({
-  items,
-  onSelectedQuote,
-  selectedQuote,
-  onDeleteAction,
-  onEditAction,
-}: TableListProps & { selectedQuote: Quote | null }) => {
+const TableQuotes = ({ items, onSelectedItem, selectedItem, onDeleteAction, onEditAction }: TableListProps) => {
   return (
     <TableList items={items} itemsHead={itemsHeadTable} onDeleteAction={onDeleteAction}>
       {(listItems, openModalTrashItem) => {
         return listItems?.map((item: Quote, index: number) => (
           <Table.Row
             key={item.id}
-            className={["", selectedQuote?.id === item.id ? "bg-green-200 hover:bg-green-200" : "hover:bg-slate-50"].join(" ")}
+            className={["", selectedItem?.id === item.id ? "bg-green-200 hover:bg-green-200" : "hover:bg-slate-50"].join(" ")}
           >
             <Table.Cell title="ID">
               <p className="text-sm font-semibold text-gray-900">{item.id}</p>
@@ -76,9 +73,9 @@ const TableQuotes = ({
             </Table.Cell>
 
             <Table.Cell align="right">
-              {onSelectedQuote ? (
-                <button className="h-6 w-6 rounded-full border border-gray-300 " type="button" onClick={() => onSelectedQuote(item)}>
-                  {selectedQuote?.id === item.id ? <CheckCircleIcon className="h-full w-full text-green-600" /> : null}
+              {onSelectedItem ? (
+                <button className="h-6 w-6 rounded-full border border-gray-300 " type="button" onClick={() => onSelectedItem(item)}>
+                  {selectedItem?.id === item.id ? <CheckCircleIcon className="h-full w-full text-green-600" /> : null}
                 </button>
               ) : (
                 <ActionEditDelete onDeleteAction={() => openModalTrashItem(item)} onEditAction={() => onEditAction && onEditAction(item)} />

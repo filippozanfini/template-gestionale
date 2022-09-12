@@ -1,3 +1,4 @@
+import { CheckCircleIcon } from "@heroicons/react/solid";
 import React from "react";
 import { Package } from "../../models/Package";
 import IconBadge from "../core/IconBadge";
@@ -36,12 +37,15 @@ const itemsHeadTable: HeadCell[] = [
   },
 ];
 
-const TablePackages = ({ items, onDeleteAction, onEditAction }: TableListProps) => {
+const TablePackages = ({ items, selectedItem, onSelectedItem, onDeleteAction, onEditAction }: TableListProps) => {
   return (
     <TableList items={items} itemsHead={itemsHeadTable} onDeleteAction={onDeleteAction}>
       {(listItems, openModalTrashItem) => {
         return listItems?.map((item: Package, index: number) => (
-          <Table.Row key={item.id} className="hover:bg-slate-50">
+          <Table.Row
+            key={item.id}
+            className={["", selectedItem?.id === item.id ? "bg-green-200 hover:bg-green-200" : "hover:bg-slate-50"].join(" ")}
+          >
             <Table.Cell title="ID">
               <p className="text-sm font-semibold text-gray-900">{item.id}</p>
             </Table.Cell>
@@ -64,7 +68,13 @@ const TablePackages = ({ items, onDeleteAction, onEditAction }: TableListProps) 
             </Table.Cell>
 
             <Table.Cell align="right">
-              <ActionEditDelete onDeleteAction={() => openModalTrashItem(item)} onEditAction={() => onEditAction && onEditAction(item)} />
+              {onSelectedItem ? (
+                <button className="h-6 w-6 rounded-full border border-gray-300 " type="button" onClick={() => onSelectedItem(item)}>
+                  {selectedItem?.id === item.id ? <CheckCircleIcon className="h-full w-full text-green-600" /> : null}
+                </button>
+              ) : (
+                <ActionEditDelete onDeleteAction={() => openModalTrashItem(item)} onEditAction={() => onEditAction && onEditAction(item)} />
+              )}
             </Table.Cell>
           </Table.Row>
         ));

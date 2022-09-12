@@ -10,10 +10,11 @@ import { HeadCell } from "./shared/Table/utils/interfaces/interface";
 export interface TableListProps {
   itemsHead?: HeadCell[];
   items?: any;
+  selectedItem?: any | null;
   children?: (listItems: any, openModalTrashItem: (item: any) => void) => JSX.Element | React.ReactNode;
   onEditAction?: (item: any) => void;
   onDeleteAction?: (item: any) => void;
-  onSelectedQuote?: (item: any) => void;
+  onSelectedItem?: (item: any) => void;
 }
 
 /**

@@ -1,5 +1,5 @@
 import { RadioGroup, Tab } from "@headlessui/react";
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useMemo, useState } from "react";
 import { Path, SubmitHandler, useForm } from "react-hook-form";
 import SidebarLayout from "../../layouts/SidebarLayout";
 import { mpApi } from "../../lib/mpApi";
@@ -11,6 +11,12 @@ import { Quote } from "../../models/Quote";
 import Overlay from "../../components/shared/Overlay";
 import TableQuotes from "../../components/features/TableQuotes";
 import { useAlert } from "../../components/notifications";
+import TableServices from "../../components/features/TableServices";
+import TablePackages from "../../components/features/TablePackages";
+import TableInstallations from "../../components/features/TableInstallations";
+import { Service } from "../../models/Service";
+import { Package } from "../../models/Package";
+import { Installation } from "../../models/Installation";
 
 interface INewOrderQuote {
   idUtente: number;
@@ -32,8 +38,8 @@ interface INewOrderMaintenance {
   idImpianto: number;
 }
 
-type KeyApi = {
-  [key: number]: any;
+type KeyType = {
+  [key: number | string]: any;
 };
 
 const paymentMethodsItems = [
@@ -51,27 +57,42 @@ const paymentMethodsItems = [
   },
 ];
 
+const TabHeader = ["Preventivo", "Servizio", "Pacchetto", "Intervento"];
+
+const Table: KeyType = {
+  preventivo: TableQuotes,
+  servizio: TableServices,
+  pacchetto: TablePackages,
+  intervento: TableInstallations,
+};
+
+const apiActionPost: KeyType = {
+  0: mpApi.orders.actions.newOrderQuote,
+  1: mpApi.orders.actions.newOrderService,
+  2: mpApi.orders.actions.newOrderPackage,
+  3: mpApi.orders.actions.newOrderMaintenance,
+};
+
+const apiActionGet: KeyType = {
+  0: mpApi.quotes.actions.currentQuotesPerUser,
+  1: mpApi.services.routes.list,
+  2: mpApi.packages.routes.list,
+  3: mpApi.installations.routes.list,
+};
+
 const NewOrdine = () => {
-  const [item, setItem] = useState<any>();
+  const [items, setItems] = useState<any>();
+  const [selectedItem, setSelectedItem] = useState<Quote | Service | Package | Installation | null>(null);
   const [tabIndex, setTabIndex] = useState(0);
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [listCustomers, setListCustomers] = useState<Customer[]>([]);
   const [filter, setFilter] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"contanti" | "bonifico">("contanti");
-  const [quotes, setQuotes] = useState<Quote[] | null>(null);
-  const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
 
   const { push } = useRouter();
   const alert = useAlert();
-
-  const apiAction: KeyApi = {
-    0: mpApi.orders.actions.newOrderQuote,
-    1: mpApi.orders.actions.newOrderService,
-    2: mpApi.orders.actions.newOrderPackage,
-    3: mpApi.orders.actions.newOrderMaintenance,
-  };
 
   const {
     register,
@@ -89,7 +110,7 @@ const NewOrdine = () => {
 
     setIsLoading(true);
 
-    apiAction[tabIndex](formdata, paymentMethod)
+    apiActionPost[tabIndex](formdata, paymentMethod)
       .then((response: any) => {
         alert({
           id: new Date().toISOString(),
@@ -121,13 +142,15 @@ const NewOrdine = () => {
       });
   };
 
-  const onSelectedQuote = (quote: Quote) => {
-    setSelectedQuote(quote);
+  const onSelectedItem = (item: Quote) => {
+    setSelectedItem(item);
   };
 
   const onValuePaymentMethodChange = (value: "contanti" | "bonifico") => {
     setPaymentMethod(value);
   };
+
+  const TableComponent = useMemo(() => Table[TabHeader[tabIndex as number].toLowerCase()], [tabIndex]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -153,22 +176,30 @@ const NewOrdine = () => {
   useEffect(() => {
     if (customer) {
       setValue("idUtente", customer.id);
+
+      console.log("customer", customer);
+      console.log("tabIndex", tabIndex);
       (async () => {
         setIsLoading(true);
-        const res: any = await mpApi.quotes.actions.currentQuotesPerUser(customer?.id);
 
-        const resQuotes = res.content;
-        setQuotes(resQuotes);
+        let res: any = "";
+        if (tabIndex === 0) {
+          res = await apiActionGet[tabIndex](customer.id);
+        } else {
+          res = await apiActionGet[tabIndex](1, 25);
+        }
+        const resItems = res.content;
+        setItems(resItems);
         setIsLoading(false);
       })();
     }
-  }, [customer]);
+  }, [customer, tabIndex]);
 
   useEffect(() => {
-    if (selectedQuote) {
-      setValue("idItem", selectedQuote.id);
+    if (selectedItem) {
+      setValue("idItem", selectedItem.id);
     }
-  }, [selectedQuote]);
+  }, [selectedItem]);
 
   return (
     <div>
@@ -176,42 +207,18 @@ const NewOrdine = () => {
       <div className="mt-10">
         <Tab.Group selectedIndex={tabIndex} onChange={(index: number) => setTabIndex(index)}>
           <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
-            <Tab
-              className={({ selected }) =>
-                `w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-primary-700 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-900/20 focus:outline-none ${
-                  selected ? "bg-white shadow" : "text-gray-50 hover:bg-white/[0.12] hover:text-white"
-                }`
-              }
-            >
-              Preventivo
-            </Tab>
-            <Tab
-              className={({ selected }) =>
-                `w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-primary-700 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-900/20 focus:outline-none ${
-                  selected ? "bg-white shadow" : "text-gray-50 hover:bg-white/[0.12] hover:text-white"
-                }`
-              }
-            >
-              Servizio
-            </Tab>
-            <Tab
-              className={({ selected }) =>
-                `w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-primary-700 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-900/20 focus:outline-none ${
-                  selected ? "bg-white shadow" : "text-gray-50 hover:bg-white/[0.12] hover:text-white"
-                }`
-              }
-            >
-              Pacchetto
-            </Tab>
-            <Tab
-              className={({ selected }) =>
-                `w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-primary-700 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-900/20 focus:outline-none ${
-                  selected ? "bg-white shadow" : "text-gray-50 hover:bg-white/[0.12] hover:text-white"
-                }`
-              }
-            >
-              Intervento
-            </Tab>
+            {TabHeader.map((tab: string, index: number) => (
+              <Tab
+                key={index}
+                className={({ selected }) =>
+                  `w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-primary-700 ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-900/20 focus:outline-none ${
+                    selected ? "bg-white shadow" : "text-gray-50 hover:bg-white/[0.12] hover:text-white"
+                  }`
+                }
+              >
+                {tab}
+              </Tab>
+            ))}
           </Tab.List>
         </Tab.Group>
 
@@ -267,15 +274,23 @@ const NewOrdine = () => {
             </RadioGroup>
 
             <div className="space-y-3 ">
-              {quotes &&
-                (quotes.length > 0 ? (
+              {items &&
+                (items.length > 0 ? (
                   <>
-                    <span className="font-medium">Preventivi IN CORSO per l'utente selezionato</span>
+                    <span className="font-medium">
+                      <strong>
+                        {TabHeader[tabIndex]
+                          .substring(0, TabHeader[tabIndex].length - 1)
+                          .concat("i")
+                          .replace(/ii/, "i")}{" "}
+                      </strong>
+                      validi per l'utente
+                    </span>
 
-                    <TableQuotes
-                      items={quotes}
-                      onSelectedQuote={(quote: Quote) => onSelectedQuote(quote)}
-                      selectedQuote={selectedQuote ? selectedQuote : null}
+                    <TableComponent
+                      items={items}
+                      onSelectedItem={(item: any) => onSelectedItem(item)}
+                      selectedItem={selectedItem ? selectedItem : null}
                     />
                   </>
                 ) : (
