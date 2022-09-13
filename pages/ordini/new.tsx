@@ -327,16 +327,14 @@ const NewOrdine = () => {
                         {"validi per l'utente"}
                       </span>
 
-                      {!isLoading ? (
-                        <TableComponent
-                          items={items}
-                          onSelectedItem={(item: any) => onSelectedItem(item)}
-                          selectedItem={selectedItem ? { ...selectedItem, id: selectedItem.idItem } : null}
-                        />
-                      ) : null}
+                      <TableComponent
+                        items={items}
+                        onSelectedItem={(item: any) => onSelectedItem(item)}
+                        selectedItem={selectedItem ? { ...selectedItem, id: selectedItem.idItem } : null}
+                      />
                     </>
                   ) : (
-                    <span className="font-medium">{"Nessun preventivo in corso per l'utente selezionato"}</span>
+                    <span className="font-medium">{`Nessun ${TabHeader[tabIndex]} trovato.`}</span>
                   ))}
               </div>
             ) : (
