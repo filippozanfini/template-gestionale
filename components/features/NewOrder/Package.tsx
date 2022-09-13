@@ -46,8 +46,8 @@ const Package = ({ items, onValueIdImpiantoAndPacchetto }: PackageProps) => {
     <div className="flex flex-wrap gap-4">
       {items.map((item: any) => {
         return (
-          <RadioGroup value={selectedPackage} onChange={setSelectedPackage}>
-            <div key={item.impianto.id} className="rounded-md p-2 ">
+          <RadioGroup key={item.impianto.id} value={selectedPackage} onChange={setSelectedPackage}>
+            <div className="rounded-md p-2 ">
               <RadioGroup.Label>
                 <h2 className="text-xl font-semibold">{mapCategories(categories, item.impianto.categoriaImpianto)}</h2>
                 <span className="text-sm text-gray-600">
