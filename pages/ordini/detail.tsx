@@ -11,6 +11,7 @@ import { NextPageWithLayout } from "../_app";
 
 const DetailPage: NextPageWithLayout = () => {
   const [item, setItem] = useState<Order | null>();
+  const [isChanged, setIsChanged] = useState<boolean>(false);
   const { push, query } = useRouter();
 
   const loadItem = async (ItemId: number) => {
@@ -27,13 +28,6 @@ const DetailPage: NextPageWithLayout = () => {
         });
     }
   };
-
-  useEffect(() => {
-    if (query.id) {
-      const ItemId: number = Number(query.id);
-      loadItem(ItemId);
-    }
-  }, [query, item]);
 
   const listOrderStatus = Object.values(eOrderStatus).filter((value) => {
     return value !== "NONE" && value !== "NON ACCETTATO" && value !== "SCADUTO" && value !== "ACCETTATO";
@@ -53,6 +47,7 @@ const DetailPage: NextPageWithLayout = () => {
     const newOrder: Order = { ...order, stato: newOrderStatus };
     mpApi.orders.actions.save(order, newOrderStatus);
     setItem(newOrder);
+    setIsChanged(true);
   };
 
   const backgroundCss = useMemo(() => {
@@ -64,6 +59,19 @@ const DetailPage: NextPageWithLayout = () => {
       ? "bg-green-500"
       : "bg-red-500";
   }, [item?.stato]);
+
+  useEffect(() => {
+    if (query.id || isChanged) {
+      const ItemId: number = Number(query.id);
+      loadItem(ItemId);
+    }
+  }, [query, isChanged]);
+
+  useEffect(() => {
+    if (isChanged) {
+      setIsChanged(false);
+    }
+  }, [isChanged]);
 
   return (
     <>
