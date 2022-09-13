@@ -324,7 +324,7 @@ const NewOrdine = () => {
                             .concat("i")
                             .replace(/ii/, "i")}{" "}
                         </strong>
-                        validi per l'utente
+                        {"validi per l'utente"}
                       </span>
 
                       <TableComponent
@@ -334,7 +334,7 @@ const NewOrdine = () => {
                       />
                     </>
                   ) : (
-                    <span className="font-medium">Nessun preventivo in corso per l'utente selezionato</span>
+                    <span className="font-medium">{"Nessun preventivo in corso per l'utente selezionato"}</span>
                   ))}
               </div>
             ) : (
