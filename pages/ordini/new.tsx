@@ -15,8 +15,9 @@ import TableServices from "../../components/features/TableServices";
 import TablePackages from "../../components/features/TablePackages";
 import TableInstallations from "../../components/features/TableInstallations";
 import { Service } from "../../models/Service";
-import { Package } from "../../models/Package";
 import { Installation } from "../../models/Installation";
+import Package from "../../components/features/NewOrder/Package";
+import { Package as IPackage } from "../../models/Package";
 
 interface INewOrderQuote {
   idUtente: number;
@@ -75,14 +76,14 @@ const apiActionPost: KeyType = {
 
 const apiActionGet: KeyType = {
   0: mpApi.quotes.actions.currentQuotesPerUser,
-  1: mpApi.services.routes.list,
-  2: mpApi.packages.routes.list,
-  3: mpApi.installations.routes.list,
+  1: mpApi.services.actions.itemsFilteredByIdUser,
+  2: mpApi.packages.actions.itemsFilteredByIdUser,
+  3: mpApi.installations.actions.itemsFilteredByIdUser,
 };
 
 const NewOrdine = () => {
   const [items, setItems] = useState<any>();
-  const [selectedItem, setSelectedItem] = useState<Quote | Service | Package | Installation | null>(null);
+  const [selectedItem, setSelectedItem] = useState<{ item?: any; idUtente?: string; idItem?: string; idImpianto?: string } | null>(null);
   const [tabIndex, setTabIndex] = useState(0);
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [listCustomers, setListCustomers] = useState<Customer[]>([]);
@@ -100,17 +101,24 @@ const NewOrdine = () => {
     setValue,
     reset,
     setError,
+    clearErrors,
     formState: { errors },
   } = useForm<INewOrderQuote | INewOrderMaintenance | INewOrderService | INewOrderPackage>();
 
   const onSubmit: SubmitHandler<any> = async (formdata: any, e: any) => {
     e.preventDefault();
 
-    console.log("formdata", formdata);
+    const newFormData = Object.keys(formdata)
+      .filter((key: any) => formdata[key] !== undefined)
+      .reduce((obj: any, key: any) => {
+        obj[key] = formdata[key];
+        return obj;
+      }, {});
 
+    console.log("formdata", newFormData);
     setIsLoading(true);
 
-    apiActionPost[tabIndex](formdata, paymentMethod)
+    apiActionPost[tabIndex](newFormData, paymentMethod)
       .then((response: any) => {
         alert({
           id: new Date().toISOString(),
@@ -142,8 +150,8 @@ const NewOrdine = () => {
       });
   };
 
-  const onSelectedItem = (item: Quote) => {
-    setSelectedItem(item);
+  const onSelectedItem = (item: any) => {
+    setSelectedItem({ item, idItem: item.id });
   };
 
   const onValuePaymentMethodChange = (value: "contanti" | "bonifico") => {
@@ -151,6 +159,12 @@ const NewOrdine = () => {
   };
 
   const TableComponent = useMemo(() => Table[TabHeader[tabIndex as number].toLowerCase()], [tabIndex]);
+
+  const onValueIdImpiantoAndPacchetto = (idImpianto: string, idItem: string) => {
+    setSelectedItem({ idImpianto, idItem });
+    setValue("idImpianto", Number(idImpianto));
+    setValue("idItem", Number(idItem));
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -174,32 +188,48 @@ const NewOrdine = () => {
   }, [filter]);
 
   useEffect(() => {
+    setItems(null);
     if (customer) {
       setValue("idUtente", customer.id);
 
-      console.log("customer", customer);
-      console.log("tabIndex", tabIndex);
       (async () => {
         setIsLoading(true);
-
         let res: any = "";
-        if (tabIndex === 0) {
-          res = await apiActionGet[tabIndex](customer.id);
-        } else {
-          res = await apiActionGet[tabIndex](1, 25);
-        }
-        const resItems = res.content;
-        setItems(resItems);
-        setIsLoading(false);
+
+        apiActionGet[tabIndex](customer.id)
+          .then((response: any) => {
+            res = response.content;
+            setItems(res);
+            setIsLoading(false);
+          })
+          .catch((reason: any) => {
+            alert({
+              id: new Date().toISOString(),
+              type: "error",
+              title: "Caricamento Risorsa",
+              message: reason.message,
+              read: false,
+              isAlert: true,
+            });
+            setIsLoading(false);
+          });
       })();
     }
   }, [customer, tabIndex]);
 
   useEffect(() => {
     if (selectedItem) {
-      setValue("idItem", selectedItem.id);
+      if (tabIndex === 3) {
+        selectedItem.item?.categoriaImpianto && setValue("idImpianto", Number(selectedItem.item?.categoriaImpianto));
+      } else {
+        setValue("idItem", selectedItem.idItem as any);
+      }
     }
   }, [selectedItem]);
+
+  useEffect(() => {
+    console.log("items", items);
+  }, [items]);
 
   return (
     <div>
@@ -222,10 +252,19 @@ const NewOrdine = () => {
           </Tab.List>
         </Tab.Group>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 divide-y divide-gray-200 py-4 ">
+        <form
+          onSubmit={(e) => {
+            clearErrors();
+            handleSubmit(onSubmit)(e);
+          }}
+          className="space-y-8 divide-y divide-gray-200 py-4 "
+        >
           <div className="flex flex-col gap-8 py-4">
             <div>
-              <span className="block text-sm font-medium text-gray-700">Cerca Utente</span>
+              <div className="flex items-center gap-2">
+                <span className="block text-sm font-medium text-gray-700">Cerca Utente</span>
+                {!customer && <span className="text-xs text-red-600">*cerca un utente prima di poter visualizzare risultati</span>}
+              </div>
               <Combobox
                 listItems={listCustomers}
                 onFilterChange={(filters: any) => setFilter(filters)}
@@ -273,49 +312,60 @@ const NewOrdine = () => {
               </div>
             </RadioGroup>
 
-            <div className="space-y-3 ">
-              {items &&
-                (items.length > 0 ? (
-                  <>
-                    <span className="font-medium">
-                      <strong>
-                        {TabHeader[tabIndex]
-                          .substring(0, TabHeader[tabIndex].length - 1)
-                          .concat("i")
-                          .replace(/ii/, "i")}{" "}
-                      </strong>
-                      validi per l'utente
-                    </span>
+            {tabIndex !== 2 ? (
+              <div className="space-y-3 ">
+                {items &&
+                  (items.length > 0 ? (
+                    <>
+                      <span className="font-medium">
+                        <strong>
+                          {TabHeader[tabIndex]
+                            .substring(0, TabHeader[tabIndex].length - 1)
+                            .concat("i")
+                            .replace(/ii/, "i")}{" "}
+                        </strong>
+                        validi per l'utente
+                      </span>
 
-                    <TableComponent
-                      items={items}
-                      onSelectedItem={(item: any) => onSelectedItem(item)}
-                      selectedItem={selectedItem ? selectedItem : null}
-                    />
-                  </>
-                ) : (
-                  <span className="font-medium">Nessun preventivo in corso per l'utente selezionato</span>
-                ))}
-            </div>
+                      <TableComponent
+                        items={items}
+                        onSelectedItem={(item: any) => onSelectedItem(item)}
+                        selectedItem={selectedItem ? { ...selectedItem, id: selectedItem.idItem } : null}
+                      />
+                    </>
+                  ) : (
+                    <span className="font-medium">Nessun preventivo in corso per l'utente selezionato</span>
+                  ))}
+              </div>
+            ) : (
+              customer && (
+                <Package
+                  items={items}
+                  onValueIdImpiantoAndPacchetto={({ idImpianto, idItem }) => onValueIdImpiantoAndPacchetto(idImpianto, idItem)}
+                />
+              )
+            )}
           </div>
 
-          <div className="pt-5">
-            <div className="flex justify-end">
-              {/* <button
+          {customer && selectedItem && (
+            <div className="pt-5">
+              <div className="flex justify-end">
+                {/* <button
                 type="button"
                 className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                 onClick={() => reset()}
               >
                 Svuota campi
               </button> */}
-              <button
-                type="submit"
-                className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-primary-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-              >
-                Salva
-              </button>
+                <button
+                  type="submit"
+                  className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-primary-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                >
+                  Salva
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </form>
       </div>
 

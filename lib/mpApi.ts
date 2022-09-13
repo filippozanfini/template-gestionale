@@ -73,6 +73,17 @@ export const mpApi = {
         }
         return fetchJson(`/servizi/${id}`);
       },
+      items: async (page: number = 1, limit: number = 10) => {
+        return fetchJson(`/servizi?page=${page}&limit=${limit}`);
+      },
+
+      itemsFilteredByIdUser: async (idUser: number) => {
+        if (idUser < 1) {
+          return null;
+        }
+        return fetchJson(`/servizi/utente/${idUser}`);
+      },
+
       save: async (item: any) => {
         return fetchJson(`/servizi/${item.id > 0 ? item.id : ""}`, {
           method: item.id > 0 ? "PUT" : "POST",
@@ -122,6 +133,10 @@ export const mpApi = {
         }
         return fetchJson(`/pacchetti/${id}`);
       },
+      items: async (page: number = 1, limit: number = 10) => {
+        return fetchJson(`/pacchetti?page=${page}&limit=${limit}`);
+      },
+
       save: async (item: any) => {
         return fetchJson(`/pacchetti/${item.id > 0 ? item.id : ""}`, {
           method: item.id > 0 ? "PUT" : "POST",
@@ -172,12 +187,22 @@ export const mpApi = {
         }
         return fetchJson(`/pacchetti/${id}`);
       },
+      items: async (page: number = 1, limit: number = 10) => {
+        return fetchJson(`/pacchetti?page=${page}&limit=${limit}`);
+      },
 
       itemFV: async (id: number) => {
         if (id < 1) {
           return null;
         }
         return fetchJson(`/pacchetti/${id}`);
+      },
+
+      itemsFilteredByIdUser: async (idUser: number) => {
+        if (idUser < 1) {
+          return null;
+        }
+        return fetchJson(`/pacchetti/utente/filtrati/${idUser}`);
       },
 
       save: async (item: any) => {
@@ -232,6 +257,9 @@ export const mpApi = {
 
       item: async (id: string) => {
         return fetchJson(`/users/${id}`);
+      },
+      items: async (page: number = 1, limit: number = 10, query: string = "") => {
+        return fetchJson(`/users?page=${page}&limit=${limit}&query=${query}&ruolo=cliente&orderBy=ID`);
       },
 
       delete: async (id: number) => {
@@ -309,6 +337,9 @@ export const mpApi = {
         }
         return fetchJson(`/preventivi/${id}`);
       },
+      items: async (page: number = 1, limit: number = 10, query: string = "") => {
+        return fetchJson(`/preventivi?page=${page}&limit=${limit}&query=${query}`);
+      },
 
       currentQuotesPerUser: async (idUser: number) => {
         return fetchJson(`/preventivi/utente/validi/${idUser}`);
@@ -366,6 +397,16 @@ export const mpApi = {
         }
         return fetchJson(`/impianti/${id}`);
       },
+      items: async (page: number = 1, limit: number = 10, query: string = "") => {
+        return fetchJson(`/impianti?page=${page}&limit=${limit}&query=${query}`);
+      },
+      itemsFilteredByIdUser: async (idUser: number) => {
+        if (idUser < 1) {
+          return null;
+        }
+        return fetchJson(`/impianti/utente/${idUser}`);
+      },
+
       save: async (item: any) => {
         return fetchJson(`/impianti/${item.id > 0 ? item.id : ""}`, {
           method: item.id > 0 ? "PUT" : "POST",
@@ -445,6 +486,10 @@ export const mpApi = {
             };
           }
         }),
+
+      items: async (page: number = 1, limit: number = 10, query: string = "") => {
+        return fetchJson(`/impianti/tipologia?page=${page}&limit=${limit}&query=${query}`);
+      },
     },
   },
 
@@ -477,6 +522,9 @@ export const mpApi = {
 
       item: async (id: string) => {
         return fetchJson(`/users/${id}`);
+      },
+      items: async (page: number = 1, limit: number = 10, query: string = "") => {
+        return fetchJson(`/users/?page=${page}&limit=${limit}&query=${query}&ruolo=gestore&orderBy=ID`);
       },
 
       save: async (item: any) => {
@@ -528,6 +576,9 @@ export const mpApi = {
           return null;
         }
         return fetchJson(`/ordini/${id}`);
+      },
+      items: async (page: number = 1, limit: number = 10, query: string = "", status: string = "", orderBy: string = "") => {
+        return fetchJson(`/ordini?page=${page}&limit=${limit}&query=${query}&orderBy=${orderBy}&stato=${status}`);
       },
 
       save: async (item: any, status: string) => {
