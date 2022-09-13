@@ -69,7 +69,7 @@ const TableQuotes = ({ items, onSelectedItem, selectedItem, onDeleteAction, onEd
             </Table.Cell>
 
             <Table.Cell align="center">
-              <p className="text-xs text-gray-900 ">{item.dataScadenza.toString()}</p>
+              <p className="text-xs text-gray-900 ">{item.dataScadenza?.toString()}</p>
             </Table.Cell>
 
             <Table.Cell align="right">

@@ -46,20 +46,20 @@ const Package = ({ items, onValueIdImpiantoAndPacchetto }: PackageProps) => {
     <div className="flex flex-wrap gap-4">
       {items.map((item: any) => {
         return (
-          <RadioGroup key={item.impianto.id} value={selectedPackage} onChange={setSelectedPackage}>
-            <div className="rounded-md p-2 ">
+          <RadioGroup key={item?.impianto?.id} value={selectedPackage} onChange={setSelectedPackage}>
+            <div className="rounded-md p-2">
               <RadioGroup.Label>
-                <h2 className="text-xl font-semibold">{mapCategories(categories, item.impianto.categoriaImpianto)}</h2>
+                <h2 className="text-xl font-semibold">{mapCategories(categories, item?.impianto?.categoriaImpianto)}</h2>
                 <span className="text-sm text-gray-600">
-                  Data Installazione: <strong> {item.impianto.dataInstallazione} </strong>
+                  Data Installazione: <strong> {item?.impianto?.dataInstallazione} </strong>
                 </span>
               </RadioGroup.Label>
               <div className="my-4 grid grid-cols-2 gap-4">
-                {item.listaPacchetti.map((p: any, index: number) => {
+                {item?.listaPacchetti?.map((p: any, index: number) => {
                   return (
                     <RadioGroup.Option
-                      key={item.impianto.id + p.id}
-                      value={item.impianto.id + "-" + p.id}
+                      key={item?.impianto?.id + p.id}
+                      value={item?.impianto?.id + "-" + p.id}
                       className="col-span-1 cursor-pointer"
                     >
                       {({ checked }) => (

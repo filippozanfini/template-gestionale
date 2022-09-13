@@ -76,7 +76,7 @@ const apiActionPost: KeyType = {
 
 const apiActionGet: KeyType = {
   0: mpApi.quotes.actions.currentQuotesPerUser,
-  1: mpApi.services.actions.itemsFilteredByIdUser,
+  1: mpApi.services.actions.items,
   2: mpApi.packages.actions.itemsFilteredByIdUser,
   3: mpApi.installations.actions.itemsFilteredByIdUser,
 };
@@ -196,7 +196,7 @@ const NewOrdine = () => {
         setIsLoading(true);
         let res: any = "";
 
-        apiActionGet[tabIndex](customer.id)
+        apiActionGet[tabIndex](tabIndex !== 1 ? customer.id : "")
           .then((response: any) => {
             res = response.content;
             setItems(res);
@@ -220,7 +220,7 @@ const NewOrdine = () => {
   useEffect(() => {
     if (selectedItem) {
       if (tabIndex === 3) {
-        selectedItem.item?.categoriaImpianto && setValue("idImpianto", Number(selectedItem.item?.categoriaImpianto));
+        selectedItem.item?.id && setValue("idImpianto", Number(selectedItem.item?.id));
       } else {
         setValue("idItem", selectedItem.idItem as any);
       }
@@ -327,11 +327,13 @@ const NewOrdine = () => {
                         {"validi per l'utente"}
                       </span>
 
-                      <TableComponent
-                        items={items}
-                        onSelectedItem={(item: any) => onSelectedItem(item)}
-                        selectedItem={selectedItem ? { ...selectedItem, id: selectedItem.idItem } : null}
-                      />
+                      {!isLoading ? (
+                        <TableComponent
+                          items={items}
+                          onSelectedItem={(item: any) => onSelectedItem(item)}
+                          selectedItem={selectedItem ? { ...selectedItem, id: selectedItem.idItem } : null}
+                        />
+                      ) : null}
                     </>
                   ) : (
                     <span className="font-medium">{"Nessun preventivo in corso per l'utente selezionato"}</span>
