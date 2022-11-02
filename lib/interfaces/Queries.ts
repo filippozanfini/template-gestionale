@@ -7,7 +7,8 @@ export interface PageLimitQuery extends PageLimit {
   query: string;
 }
 
-export interface PageLimitQueryStatusOrder extends PageLimitQuery {
+export interface PageLimitQueryStatusOrderCollab extends PageLimitQuery {
   status: string;
   orderBy: string;
+  collaborator: string;
 }

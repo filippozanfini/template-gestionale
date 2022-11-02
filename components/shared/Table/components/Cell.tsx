@@ -6,7 +6,6 @@ export interface CellProps {
   variant?: CellVariant;
   align?: CellAlignment;
   position?: "absolute" | "relative" | "static" | "sticky" | "fixed";
-  clickable?: boolean;
 }
 
 /**
@@ -16,7 +15,7 @@ export interface CellProps {
  */
 export type CellComponent = FC<CellProps & ThHTMLAttributes<HTMLTableCellElement> & TdHTMLAttributes<HTMLTableCellElement>>;
 
-const Cell: CellComponent = ({ children, variant, align = "left", clickable, position = "relative", ...props }) => {
+const Cell: CellComponent = ({ children, variant, align = "left", position = "relative", ...props }) => {
   const HtmlTag = variant === "header" ? "th" : "td";
 
   const alignCss = useMemo(() => {
@@ -31,7 +30,10 @@ const Cell: CellComponent = ({ children, variant, align = "left", clickable, pos
 
   return useMemo(
     () => (
-      <HtmlTag className={["p-3.5 font-semibold first:pl-8 last:pr-8", position, clickable ? "cursor-pointer" : ""].join(" ")} {...props}>
+      <HtmlTag
+        className={["p-3.5 font-semibold first:pl-8 last:pr-8", position, props.onClick ? "cursor-pointer" : ""].join(" ")}
+        {...props}
+      >
         <div className={["w-fit", alignCss].join(" ")}>{children}</div>
       </HtmlTag>
     ),

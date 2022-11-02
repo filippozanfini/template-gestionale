@@ -60,7 +60,7 @@ const Pagination = ({
             <ChevronLeftIcon className="h-6 w-6" />
           </button>
         }
-        previousLinkClassName={`h-10 w-10 flex justify-center  border-gray-300 items-center hover:bg-gray-100 hover:rounded-l-md `}
+        previousLinkClassName={`h-10 w-10 flex justify-center  border-gray-200 items-center hover:bg-gray-100 hover:rounded-l-md `}
         nextLabel={
           <button
             disabled={currentPage === totalPage}
@@ -74,7 +74,7 @@ const Pagination = ({
         breakLinkClassName={"h-10 w-5 flex justify-center items-center rounded-full"}
         pageCount={totalPage}
         containerClassName="flex"
-        className={["flex rounded-md border border-gray-300 bg-white text-center text-base font-semibold text-slate-600 shadow-lg"].join(
+        className={["flex rounded-md border border-gray-200 bg-white text-center text-base font-semibold text-slate-600 shadow-sm"].join(
           " "
         )}
         onPageChange={({ selected }) => onPageChange(selected)}
@@ -82,7 +82,7 @@ const Pagination = ({
         marginPagesDisplayed={1}
         activeClassName={`bg-gray-800 hover:bg-gray-800 cursor-pointer text-white hover:bg-primary-700`}
         pageClassName={
-          "w-10 h-10 flex justify-center border-x hover:bg-gray-100 cursor-pointer border-gray-300 items-center hover text-center text-base font-semibold  "
+          "w-10 h-10 flex justify-center border-x hover:bg-gray-100 cursor-pointer border-gray-200 items-center hover text-center text-base font-semibold  "
         }
         pageLinkClassName="w-full h-full flex items-center justify-center"
       />

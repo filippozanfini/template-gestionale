@@ -16,7 +16,7 @@ const Password: ForwardRefRenderFunction<HTMLInputElement, InputProps> = ({ name
     "rounded-md shadow-sm block w-full sm:text-sm" +
     (hasError
       ? "pr-10 border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 "
-      : "focus:ring-primary-500 focus:border-primary-500 border-gray-300");
+      : "focus:ring-primary-500 focus:border-primary-500 border-gray-200");
 
   return (
     <div className={otherProps.className || "mt-6 w-full"}>

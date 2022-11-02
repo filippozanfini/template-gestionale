@@ -33,7 +33,7 @@ const Input: ForwardRefRenderFunction<HTMLTextAreaElement, InputProps> = ({ name
             "min-h-[38px] rounded-md shadow-sm" +
             (hasError
               ? "block w-full border-red-300 pr-10 text-red-900 placeholder-red-300 focus:border-red-500 focus:outline-none focus:ring-red-500 sm:text-sm"
-              : "block w-full border-gray-300 focus:border-primary-500 focus:ring-primary-500 sm:text-sm")
+              : "block w-full border-gray-200 focus:border-primary-500 focus:ring-primary-500 sm:text-sm")
           }
         />
 

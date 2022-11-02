@@ -28,8 +28,8 @@ const Combobox: FC<ComboboxProps> = ({
   return (
     <div className="z-50 w-full">
       <ComboboxUI value={selected} onChange={onSelectedChange}>
-        <div className={["relative mt-1 ", focused ? "z-10" : ""].join(" ")}>
-          <div className="relative block w-full overflow-hidden rounded-md border border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
+        <div className={["relative mt-1 bg-white", focused ? "z-20" : "z-10"].join(" ")}>
+          <div className="relative block w-full overflow-hidden rounded-lg border border-gray-200 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
             <ComboboxUI.Input
               className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
               displayValue={() => selectedName}

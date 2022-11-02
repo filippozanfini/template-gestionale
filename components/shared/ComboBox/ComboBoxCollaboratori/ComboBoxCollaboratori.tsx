@@ -46,7 +46,9 @@ const ComboBoxCollaboratori = ({ defaultValue, label = "Assegna Collaboratore", 
   useEffect(() => {
     if (selectedItem) {
       if (defaultValue?.id != selectedItem?.id) {
-        onSelectedChange(selectedItem);
+        setTimeout(() => {
+          onSelectedChange(selectedItem);
+        }, 500);
       }
     }
   }, [selectedItem]);

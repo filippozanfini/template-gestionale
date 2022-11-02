@@ -90,7 +90,7 @@ const AutocompleteAdvanced = function <T extends FieldValues>({
           {defaultCoords ? (
             <input
               type={"text"}
-              className={["my-auto h-[38px] w-full rounded-md border border-gray-300", !defaultCoords ? "hidden" : ""].join(" ")}
+              className={["my-auto h-[38px] w-full rounded-md border border-gray-200", !defaultCoords ? "hidden" : ""].join(" ")}
               value={address}
               disabled
             />

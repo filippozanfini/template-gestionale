@@ -31,7 +31,7 @@ const ComboBoxInputElement: ForwardRefRenderFunction<HTMLSelectElement, ComboBox
           role="input"
           name={name}
           ref={ref}
-          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+          className="block w-full rounded-md border-gray-200 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
         >
           {elements &&
             elements.map((item: ComboBoxElement) => (

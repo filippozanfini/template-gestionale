@@ -24,6 +24,13 @@ import Overlay from "../../shared/Overlay";
 import AutocompleteInput from "../../core/AutocompleteInput";
 import { LatLng } from "react-google-places-autocomplete/build/GooglePlacesAutocomplete.types";
 import AutocompleteAdvanced from "../../shared/AutocompleteAdvanced/AutocompleteAdvanced";
+import { EditorProps } from "react-draft-wysiwyg";
+import dynamic from "next/dynamic";
+import { EditorState } from "draft-js";
+import draftToHtml from "draftjs-to-html";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+
+const Editor = dynamic<EditorProps>(() => import("react-draft-wysiwyg").then((mod) => mod.Editor), { ssr: false });
 
 interface EditPageImpiantiProps<T extends FieldValues> {
   defaultValues: T;
@@ -54,13 +61,17 @@ const EditPageImpianti = function <T extends FieldValues>({
   mpApiAction,
   slugNameImpianti,
 }: EditPageImpiantiProps<T>) {
-  const { push, query } = useRouter();
+  const { push, query, pathname } = useRouter();
   const [item, setItem] = useState<T | any>(defaultValues);
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [listCustomers, setListCustomers] = useState<Customer[]>([]);
 
   const [date, setDate] = useState<string>("");
   const [autoComputation, setAutoComputation] = useState(true);
+
+  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+  const [editorContent, setEditorContent] = useState<any>(null);
+  const [draftToHtmlContent, setDraftToHtmlContent] = useState("");
 
   /* FILTER */
   const [filter, setFilter] = useState<string>("");
@@ -159,6 +170,15 @@ const EditPageImpianti = function <T extends FieldValues>({
       });
   };
 
+  const handleEditorContentChange = (content: any) => {
+    const contentWithHtml = draftToHtml(content);
+    setDraftToHtmlContent(contentWithHtml);
+  };
+
+  const handleEditorStateChange = (state: EditorState) => {
+    setEditorState(state);
+  };
+
   useEffect(() => {
     if (query.id) {
       const ItemId: number = Number(query.id);
@@ -202,6 +222,24 @@ const EditPageImpianti = function <T extends FieldValues>({
       setValueForm(setValue);
     }
   }, [setValue]);
+
+  useEffect(() => {
+    if (setValue) {
+      setValue("note" as Path<T>, draftToHtmlContent as any);
+    }
+  }, [draftToHtmlContent, setValue]);
+
+  useEffect(() => {
+    if (pathname.includes("new")) {
+      setCustomer(null);
+      setEditorContent(null);
+      setDraftToHtmlContent("");
+    }
+  }, [pathname]);
+
+  if (typeof window === "undefined") {
+    return null;
+  }
 
   return (
     <>
@@ -313,6 +351,20 @@ const EditPageImpianti = function <T extends FieldValues>({
                   className="mt-5 flex items-center whitespace-nowrap"
                 />
               </div>
+
+              <div className="gap-4 space-y-1 sm:col-span-6">
+                <h2 className="block text-sm font-medium text-gray-700">Note</h2>
+                <Editor
+                  editorState={editorState}
+                  toolbarClassName="w-full rounded-xl shadow"
+                  wrapperClassName="w-full col-span-6 rounded-md"
+                  editorClassName="w-full border border-gray-100 rounded-md shadow-md bg-white min-h-[280px] px-5 py-1"
+                  onEditorStateChange={(state) => handleEditorStateChange(state)}
+                  onContentStateChange={(content) => handleEditorContentChange(content)}
+                  spellCheck
+                  contentState={editorContent}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -320,7 +372,7 @@ const EditPageImpianti = function <T extends FieldValues>({
           <div className="flex justify-end">
             {/* <button
               type="button"
-              className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+              className="rounded-md border border-gray-200 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
               onClick={() => reset()}
             >
               Svuota campi

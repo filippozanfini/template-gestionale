@@ -10,7 +10,7 @@ import { User } from "../models/User";
 import { CategoryMapper } from "../utils/CategoryMapper";
 import Cookies from "./cookies";
 import fetchJson from "./fetchJson";
-import { PageLimitQuery, PageLimitQueryStatusOrder } from "./interfaces/Queries";
+import { PageLimitQuery, PageLimitQueryStatusOrderCollab } from "./interfaces/Queries";
 
 export const mpApi = {
   user: {
@@ -546,8 +546,8 @@ export const mpApi = {
 
   orders: {
     routes: {
-      list: (page: number = 1, limit: number, query: string, status: string, orderBy: string) =>
-        `/ordini?page=${page}&limit=${limit}&query=${query}&orderBy=${orderBy}&stato=${status}`,
+      list: (page: number = 1, limit: number, query: string, status: string, orderBy: string, collaborator: string) =>
+        `/ordini?page=${page}&limit=${limit}&query=${query}&orderBy=${orderBy}&stato=${status}&collaborator=${collaborator}`,
       item: (id: number) => (id < 1 ? `` : `/ordini/${id}`),
     },
     actions: {
@@ -577,8 +577,17 @@ export const mpApi = {
         }
         return fetchJson(`/ordini/${id}`);
       },
-      items: async (page: number = 1, limit: number = 10, query: string = "", status: string = "", orderBy: string = "") => {
-        return fetchJson(`/ordini?page=${page}&limit=${limit}&query=${query}&orderBy=${orderBy}&stato=${status}`);
+      items: async (
+        page: number = 1,
+        limit: number = 10,
+        query: string = "",
+        status: string = "",
+        orderBy: string = "",
+        collaborator: string = ""
+      ) => {
+        return fetchJson(
+          `/ordini?page=${page}&limit=${limit}&query=${query}&orderBy=${orderBy}&stato=${status}&collaborator=${collaborator}`
+        );
       },
 
       save: async (item: any, status: string) => {
@@ -628,7 +637,7 @@ export const mpApi = {
       },
 
       assignCollabAtOrder: async (id: number, idCollab: number) => {
-        return fetchJson(`/ordini/collaboratore/${idCollab}/?idOrdine=${id}`, {
+        return fetchJson(`/ordini/collaborator/${idCollab}/?idOrdine=${id}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
         });
@@ -710,7 +719,10 @@ export const useCollaborators = ({ page, limit, query }: PageLimitQuery) => {
   return { data, error };
 };
 
-export const useOrders = ({ page, limit, query, status, orderBy }: PageLimitQueryStatusOrder) => {
-  const { data, error } = useSWR(mpApi.orders.routes.list(page, limit, query, status, orderBy), mpApi.orders.actions.listFetcher);
+export const useOrders = ({ page, limit, query, status, orderBy, collaborator }: PageLimitQueryStatusOrderCollab) => {
+  const { data, error } = useSWR(
+    mpApi.orders.routes.list(page, limit, query, status, orderBy, collaborator),
+    mpApi.orders.actions.listFetcher
+  );
   return { data, error };
 };

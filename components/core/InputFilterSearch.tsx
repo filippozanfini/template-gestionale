@@ -14,7 +14,7 @@ const InputFilterSearch = ({ onChange, value, className, disabled, icon, placeho
   return (
     <div className="relative flex w-80 items-center justify-between gap-2 rounded-md bg-white  text-sm peer-focus:border-primary-600">
       <input
-        className="peer w-full rounded-md border border-gray-300 bg-transparent py-1.5 pl-3 pr-9 outline-none focus:border-primary-600"
+        className="peer w-full rounded-md border border-gray-200 bg-transparent py-1.5 pl-3 pr-9 outline-none focus:border-primary-600"
         placeholder={placeholder}
         value={value}
         onChange={(e: any) => onChange(e)}

@@ -78,7 +78,7 @@ const TableQuotes = ({ items, onSelectedItem, selectedItem, onDeleteAction, onEd
 
               <Table.Cell align="right">
                 {onSelectedItem ? (
-                  <button className="h-6 w-6 rounded-full border border-gray-300 " type="button" onClick={() => onSelectedItem(item)}>
+                  <button className="h-6 w-6 rounded-full border border-gray-200 " type="button" onClick={() => onSelectedItem(item)}>
                     {selectedItem?.id === item.id ? <CheckCircleIcon className="h-full w-full text-green-600" /> : null}
                   </button>
                 ) : isAccepted ? (

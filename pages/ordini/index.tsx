@@ -2,9 +2,11 @@ import { ReactElement, useState } from "react";
 import InputFilterSearch from "../../components/core/InputFilterSearch";
 import IndexTableTemplate from "../../components/features/IndexTableTemplate/IndexTableTemplate";
 import TableOrders from "../../components/features/TableOrders";
+import ComboBoxCollaboratori from "../../components/shared/ComboBox/ComboBoxCollaboratori/ComboBoxCollaboratori";
 import ListBox from "../../components/shared/ListBox/ListBox";
 import SidebarLayout from "../../layouts/SidebarLayout";
 import { mpApi, useOrders } from "../../lib/mpApi";
+import { Customer } from "../../models/Customer";
 import { eOrderStatus, Order } from "../../models/Order";
 import { NextPageWithLayout } from "../_app";
 
@@ -18,6 +20,8 @@ const IndiceOrdini: NextPageWithLayout = () => {
   const [listOrderBy, setListOrderBy] = useState<any>(Order.getOrderBy());
   const [orderByValue, setOrderByValue] = useState<string>("Vuoto");
   const [orderBySelectedKey, setOrderBySelectedKey] = useState<string>("");
+
+  const [collaborator, setCollaborator] = useState<Customer | null>(null);
 
   const handleFilterOrderStatus = (value: string) => {
     const index = Object.values(listFilterStatus).indexOf(value);
@@ -41,6 +45,11 @@ const IndiceOrdini: NextPageWithLayout = () => {
     }
   };
 
+  const onSelectedCollab = (value: any) => {
+    console.log(value);
+    setCollaborator(value);
+  };
+
   return (
     <IndexTableTemplate
       title="Ordini"
@@ -49,10 +58,14 @@ const IndiceOrdini: NextPageWithLayout = () => {
       mpApiAction={mpApi.orders}
       Table={TableOrders}
       isFilterableByUser
-      queryParams={{ status: filterStatusSelectedKey, orderBy: orderBySelectedKey }}
+      queryParams={{ status: filterStatusSelectedKey, orderBy: orderBySelectedKey, collaborator: collaborator?.id }}
     >
-      <div className="flex gap-16">
-        <div className="flex items-center gap-4">
+      <div className="mt-5 flex w-full gap-4">
+        <div className="w-full">
+          <ComboBoxCollaboratori onSelectedChange={(value) => onSelectedCollab(value)} label="Filtra per Collaboratore" />
+        </div>
+
+        <div className="flex flex-col">
           <span className="text-sm text-gray-700">Filtra per stato:</span>
           <div className="z-50 w-48">
             <ListBox
@@ -64,7 +77,7 @@ const IndiceOrdini: NextPageWithLayout = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col">
           <span className="text-sm text-gray-700">Ordina per:</span>
           <div className="z-50 w-48">
             <ListBox
