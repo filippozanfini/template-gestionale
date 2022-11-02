@@ -29,6 +29,7 @@ export interface IOrder {
   idImpianto?: number;
   paypalDetails?: any;
   listaStati?: any[];
+  collaboratore?: ICustomer;
 }
 
 export class Order implements IOrder {
@@ -46,6 +47,7 @@ export class Order implements IOrder {
   idImpianto: number;
   paypalDetails: any;
   listaStati: any[];
+  collaboratore: ICustomer;
 
   constructor(data: IOrder) {
     this.id = data.id ?? 0;
@@ -62,6 +64,7 @@ export class Order implements IOrder {
     this.idImpianto = data.idImpianto ?? 0;
     this.paypalDetails = data.paypalDetails ?? null;
     this.listaStati = data.listaStati ?? [];
+    this.collaboratore = data.collaboratore ?? new Customer({});
   }
 
   static factory(data: Order): IOrder {
@@ -78,6 +81,7 @@ export class Order implements IOrder {
       idImpianto: data.idImpianto,
       paypalDetails: data.paypalDetails,
       listaStati: data.listaStati,
+      collaboratore: Customer.factory(new Customer(data.collaboratore)),
     };
   }
 

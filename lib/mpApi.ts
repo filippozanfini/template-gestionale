@@ -626,6 +626,13 @@ export const mpApi = {
           body: JSON.stringify(item),
         });
       },
+
+      assignCollabAtOrder: async (id: number, idCollab: number) => {
+        return fetchJson(`/ordini/collaboratore/${idCollab}/?idOrdine=${id}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+      },
     },
   },
 

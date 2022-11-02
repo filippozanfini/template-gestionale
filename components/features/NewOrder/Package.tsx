@@ -6,6 +6,7 @@ import { ICustomer } from "../../../models/Customer";
 
 interface PackageProps {
   items: any;
+  packageItem: any;
   onValueIdImpiantoAndPacchetto: ({ idImpianto, idItem }: { idImpianto: string; idItem: string }) => void;
 }
 
@@ -14,10 +15,10 @@ const mapCategories = (categories: any, id: any) => {
   return category ? category.nome : "";
 };
 
-const Package = ({ items, onValueIdImpiantoAndPacchetto }: PackageProps) => {
+const Package = ({ items, packageItem, onValueIdImpiantoAndPacchetto }: PackageProps) => {
   const [categories, setCategories] = useState<any>([]);
 
-  const [selectedPackage, setSelectedPackage] = useState<any>(null);
+  const [selectedPackage, setSelectedPackage] = useState<any>(packageItem);
 
   useEffect(() => {
     mpApi.categories.actions
@@ -29,10 +30,6 @@ const Package = ({ items, onValueIdImpiantoAndPacchetto }: PackageProps) => {
         console.log(err);
       });
   }, []);
-
-  useEffect(() => {
-    console.log("items", items);
-  }, [items]);
 
   useEffect(() => {
     if (selectedPackage) {
@@ -61,12 +58,13 @@ const Package = ({ items, onValueIdImpiantoAndPacchetto }: PackageProps) => {
                       key={item?.impianto?.id + p.id}
                       value={item?.impianto?.id + "-" + p.id}
                       className="col-span-1 cursor-pointer"
+                      defaultChecked={selectedPackage?.includes(item?.impianto?.id + "-" + p.id)}
                     >
                       {({ checked }) => (
                         <div
                           className={[
-                            "flex h-full flex-col justify-between gap-4 rounded-md border-4 bg-white p-4 shadow-md transition-all duration-300 hover:-translate-y-1  hover:shadow-lg",
-                            checked ? " border-primary-400 opacity-100" : "border-transparent opacity-80 ",
+                            "flex h-full flex-col justify-between gap-4 rounded-md border-4 bg-white p-4 shadow-md transition-all duration-300  hover:shadow-lg",
+                            checked ? " border-primary-400 opacity-100" : "border-transparent opacity-80 hover:border-primary-400/40",
                           ].join(" ")}
                         >
                           <div className="space-y-4">

@@ -18,6 +18,7 @@ import { Service } from "../../models/Service";
 import { Installation } from "../../models/Installation";
 import Package from "../../components/features/NewOrder/Package";
 import { Package as IPackage } from "../../models/Package";
+import ComboBoxCollaboratori from "../../components/shared/ComboBox/ComboBoxCollaboratori/ComboBoxCollaboratori";
 
 interface INewOrderQuote {
   idUtente: number;
@@ -90,7 +91,13 @@ const NewOrdine = () => {
   const [filter, setFilter] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"contanti" | "bonifico">("contanti");
 
+  const [collaborator, setCollaborator] = useState<Customer | null>(null);
+
   const [isLoading, setIsLoading] = useState(false);
+
+  const [tabIndexUnlockSaveButton, setTabIndexUnlockSaveButton] = useState<null | number>(null);
+
+  const TableComponent = useMemo(() => Table[TabHeader[tabIndex as number].toLowerCase()], [tabIndex]);
 
   const { push } = useRouter();
   const alert = useAlert();
@@ -115,21 +122,48 @@ const NewOrdine = () => {
         return obj;
       }, {});
 
-    console.log("formdata", newFormData);
     setIsLoading(true);
 
     apiActionPost[tabIndex](newFormData, paymentMethod)
       .then((response: any) => {
-        alert({
-          id: new Date().toISOString(),
-          type: "success",
-          title: "Salvataggio Risorsa",
-          message: response.message,
-          read: false,
-          isAlert: true,
-        });
-        setIsLoading(false);
-        push("/ordini/detail/?id=" + response.data.id);
+        if (collaborator?.id) {
+          assignCollaboratorAtOrder(response.data.id)
+            .then((res: any) => {
+              alert({
+                id: new Date().toISOString(),
+                type: "success",
+                title: "Salvataggio Risorsa",
+                message: res.message,
+                read: false,
+                isAlert: true,
+              });
+
+              setIsLoading(false);
+              push("/ordini/detail/?id=" + response.data.id);
+            })
+            .catch((error: any) => {
+              alert({
+                id: new Date().toISOString(),
+                type: "error",
+                title: "Salvataggio Risorsa",
+                message: error.message,
+                read: false,
+                isAlert: true,
+              });
+              setIsLoading(false);
+            });
+        } else {
+          alert({
+            id: new Date().toISOString(),
+            type: "success",
+            title: "Salvataggio Risorsa",
+            message: response.message,
+            read: false,
+            isAlert: true,
+          });
+          setIsLoading(false);
+          push("/ordini/detail/?id=" + response.data.id);
+        }
       })
       .catch((reason: any) => {
         alert({
@@ -141,7 +175,7 @@ const NewOrdine = () => {
           isAlert: true,
         });
         setIsLoading(false);
-        Object.keys(reason.data.errors).forEach((field: string) => {
+        Object.keys(reason?.data?.errors)?.forEach((field: string) => {
           setError(field as Path<INewOrderMaintenance> | Path<INewOrderPackage> | Path<INewOrderQuote> | Path<INewOrderService>, {
             type: "custom",
             message: reason.data.errors[field],
@@ -158,12 +192,22 @@ const NewOrdine = () => {
     setPaymentMethod(value);
   };
 
-  const TableComponent = useMemo(() => Table[TabHeader[tabIndex as number].toLowerCase()], [tabIndex]);
-
   const onValueIdImpiantoAndPacchetto = (idImpianto: string, idItem: string) => {
     setSelectedItem({ idImpianto, idItem });
     setValue("idImpianto", Number(idImpianto));
     setValue("idItem", Number(idItem));
+  };
+
+  const onSelectedCollabs = (value: any) => {
+    setCollaborator(value);
+  };
+
+  const assignCollaboratorAtOrder = async (idOrder: number) => {
+    if (collaborator) {
+      mpApi.orders.actions.assignCollabAtOrder(idOrder, collaborator.id).then((response: any) => {
+        console.log(response);
+      });
+    }
   };
 
   useEffect(() => {
@@ -227,9 +271,20 @@ const NewOrdine = () => {
     }
   }, [selectedItem]);
 
+  // check unlock save button
   useEffect(() => {
-    console.log("items", items);
-  }, [items]);
+    if (selectedItem && customer) {
+      setTabIndexUnlockSaveButton(tabIndex);
+    } else {
+      setTabIndexUnlockSaveButton(null);
+    }
+  }, [selectedItem]);
+
+  useEffect(() => {
+    if (collaborator) {
+      console.log(collaborator);
+    }
+  }, [collaborator]);
 
   return (
     <div>
@@ -260,57 +315,67 @@ const NewOrdine = () => {
           className="space-y-8 divide-y divide-gray-200 py-4 "
         >
           <div className="flex flex-col gap-8 py-4">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="block text-sm font-medium text-gray-700">Cerca Utente</span>
-                {!customer && <span className="text-xs text-red-600">*cerca un utente prima di poter visualizzare risultati</span>}
-              </div>
-              <Combobox
-                listItems={listCustomers}
-                onFilterChange={(filters: any) => setFilter(filters)}
-                onSelectedChange={(value: any) => setCustomer(value)}
-                selectedName={customer ? customer?.nome + " " + customer?.cognome + ", " + customer?.indirizzo : filter}
-                loading={isLoading}
-                selected={customer}
-              >
-                {(item: Customer, selected, active) => (
-                  <div className="flex items-center gap-4">
-                    <span className={`block w-1/4 truncate ${selected ? "font-medium" : "font-normal"}`}>
-                      {item.nome + " " + item.cognome}
-                    </span>
-                    <span className="w-1/3">{item.indirizzo}</span>
-                    {selected ? (
-                      <span className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? "text-white" : "text-primary-600"}`}>
-                        <CheckIcon className="h-5 w-5" aria-hidden="true" />
+            <div className="flex flex-col gap-4 xl:flex-row">
+              <div className="w-full">
+                <div className="flex items-center gap-2">
+                  <span className="block text-sm font-medium text-gray-700">Cerca Utente</span>
+                  {!customer && <span className="text-xs text-red-600">*cerca un utente prima di poter visualizzare risultati</span>}
+                </div>
+                <Combobox
+                  listItems={listCustomers}
+                  onFilterChange={(filters: any) => setFilter(filters)}
+                  onSelectedChange={(value: any) => setCustomer(value)}
+                  selectedName={customer ? customer?.nome + " " + customer?.cognome + ", " + customer?.indirizzo : filter}
+                  loading={isLoading}
+                  selected={customer}
+                  placeholder="Nome Cognome, Indirizzo"
+                >
+                  {(item: Customer, selected, active) => (
+                    <div className="flex items-center gap-4">
+                      <span className={`block w-1/4 truncate ${selected ? "font-medium" : "font-normal"}`}>
+                        {item.nome + " " + item.cognome}
                       </span>
-                    ) : null}
-                  </div>
-                )}
-              </Combobox>
-            </div>
-
-            <RadioGroup value={paymentMethod} onChange={onValuePaymentMethodChange} className="space-y-3">
-              <RadioGroup.Label>Pagamento</RadioGroup.Label>
-              <div className="flex gap-2">
-                {paymentMethodsItems.map((item) => (
-                  <RadioGroup.Option value={item.value} key={item.name}>
-                    {({ checked }) => (
-                      <button
-                        type="button"
-                        title={item.description}
-                        aria-label={item.description}
-                        className={[
-                          "flex items-center gap-2 rounded-md border border-gray-200 bg-white px-4 py-2 font-medium shadow",
-                          checked ? "text-primary-600 shadow-inner" : "text-gray-500 shadow",
-                        ].join(" ")}
-                      >
-                        <item.icon className="h-6 w-6 " /> {item.name}
-                      </button>
-                    )}
-                  </RadioGroup.Option>
-                ))}
+                      <span className="w-1/3">{item.indirizzo}</span>
+                      {selected ? (
+                        <span className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? "text-white" : "text-primary-600"}`}>
+                          <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                        </span>
+                      ) : null}
+                    </div>
+                  )}
+                </Combobox>
               </div>
-            </RadioGroup>
+
+              {customer ? (
+                <div className="w-full">
+                  <ComboBoxCollaboratori onSelectedChange={(value) => onSelectedCollabs(value)} />{" "}
+                </div>
+              ) : null}
+            </div>
+            {customer ? (
+              <RadioGroup value={paymentMethod} onChange={onValuePaymentMethodChange} className="space-y-3">
+                <RadioGroup.Label>Pagamento</RadioGroup.Label>
+                <div className="flex gap-2">
+                  {paymentMethodsItems.map((item) => (
+                    <RadioGroup.Option value={item.value} key={item.name}>
+                      {({ checked }) => (
+                        <button
+                          type="button"
+                          title={item.description}
+                          aria-label={item.description}
+                          className={[
+                            "flex items-center gap-2 rounded-md border border-gray-200 bg-white px-4 py-2 font-medium shadow",
+                            checked ? "text-primary-600 shadow-inner" : "text-gray-500 shadow",
+                          ].join(" ")}
+                        >
+                          <item.icon className="h-6 w-6 " /> {item.name}
+                        </button>
+                      )}
+                    </RadioGroup.Option>
+                  ))}
+                </div>
+              </RadioGroup>
+            ) : null}
 
             {tabIndex !== 2 ? (
               <div className="space-y-3 ">
@@ -341,13 +406,16 @@ const NewOrdine = () => {
               customer && (
                 <Package
                   items={items}
+                  packageItem={
+                    selectedItem?.idImpianto && selectedItem?.idItem ? [selectedItem?.idImpianto, selectedItem?.idItem].join("-") : null
+                  }
                   onValueIdImpiantoAndPacchetto={({ idImpianto, idItem }) => onValueIdImpiantoAndPacchetto(idImpianto, idItem)}
                 />
               )
             )}
           </div>
 
-          {customer && selectedItem && (
+          {tabIndex === tabIndexUnlockSaveButton ? (
             <div className="pt-5">
               <div className="flex justify-end">
                 {/* <button
@@ -365,7 +433,7 @@ const NewOrdine = () => {
                 </button>
               </div>
             </div>
-          )}
+          ) : null}
         </form>
       </div>
 

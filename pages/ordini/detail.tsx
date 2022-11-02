@@ -1,9 +1,13 @@
 import moment from "moment";
 import { useRouter } from "next/router";
 import React, { useState, useEffect, FC, ReactElement, useMemo } from "react";
+import { useAlert } from "../../components/notifications";
+import ComboBoxCollaboratori from "../../components/shared/ComboBox/ComboBoxCollaboratori/ComboBoxCollaboratori";
 import ListBox from "../../components/shared/ListBox/ListBox";
+import Overlay from "../../components/shared/Overlay";
 import SidebarLayout from "../../layouts/SidebarLayout";
 import { mpApi } from "../../lib/mpApi";
+import { Customer } from "../../models/Customer";
 import { eOrderStatus, IOrder, Order } from "../../models/Order";
 import { InverterOrderStatusMapper, OrderStatusMapper } from "../../utils/OrderStatusMapper";
 import EditClienti from "../clienti/edit";
@@ -12,7 +16,13 @@ import { NextPageWithLayout } from "../_app";
 const DetailPage: NextPageWithLayout = () => {
   const [item, setItem] = useState<Order | null>();
   const [isChanged, setIsChanged] = useState<boolean>(false);
+
+  const [collaborator, setCollaborator] = useState<Customer | null>(null);
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const { push, query } = useRouter();
+  const alert = useAlert();
 
   const loadItem = async (ItemId: number) => {
     if (ItemId === 0) {
@@ -22,6 +32,7 @@ const DetailPage: NextPageWithLayout = () => {
         .item(ItemId)
         .then((data: any) => {
           setItem(data);
+          setCollaborator(data.collaboratore);
         })
         .catch((data: any) => {
           setItem(null);
@@ -60,6 +71,40 @@ const DetailPage: NextPageWithLayout = () => {
       : "bg-red-500";
   }, [item?.stato]);
 
+  const onSelectedCollabs = (value: any) => {
+    setCollaborator(value);
+  };
+
+  const assignCollaboratorAtOrder = async (idOrder: number) => {
+    if (collaborator) {
+      setIsLoading(true);
+      mpApi.orders.actions
+        .assignCollabAtOrder(idOrder, collaborator.id)
+        .then((response: any) => {
+          alert({
+            id: new Date().toISOString(),
+            type: "success",
+            title: "Salvataggio Risorsa",
+            message: response.message,
+            read: false,
+            isAlert: true,
+          });
+          setIsLoading(false);
+        })
+        .catch((error: any) => {
+          alert({
+            id: new Date().toISOString(),
+            type: "error",
+            title: "Salvataggio Risorsa",
+            message: error.message,
+            read: false,
+            isAlert: true,
+          });
+          setIsLoading(false);
+        });
+    }
+  };
+
   useEffect(() => {
     if (query.id || isChanged) {
       const ItemId: number = Number(query.id);
@@ -72,6 +117,12 @@ const DetailPage: NextPageWithLayout = () => {
       setIsChanged(false);
     }
   }, [isChanged]);
+
+  useEffect(() => {
+    if (collaborator?.id && item?.id && item.collaboratore.id !== collaborator.id) {
+      assignCollaboratorAtOrder(item.id);
+    }
+  }, [collaborator]);
 
   return (
     <>
@@ -102,7 +153,13 @@ const DetailPage: NextPageWithLayout = () => {
               </div>
             </div>
           </div>
+
           <div className="mt-5 h-[1px] w-full bg-gray-200" />
+
+          <div className="w-full">
+            <ComboBoxCollaboratori onSelectedChange={(value) => onSelectedCollabs(value)} defaultValue={collaborator} />
+          </div>
+
           <div className="mt-7 flex items-center justify-between">
             {idAcquisto && (
               <p className="text-gray-400">
@@ -166,6 +223,8 @@ const DetailPage: NextPageWithLayout = () => {
             <p className="text-right text-3xl font-bold">Totale</p>
             <p className="text-right text-2xl font-bold text-gray-400">{item.importo} €</p>
           </div>
+
+          <Overlay loading={isLoading} text={"Aggiornamento dati"} />
         </div>
       )}
     </>
