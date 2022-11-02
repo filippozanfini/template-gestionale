@@ -94,6 +94,7 @@ const NewOrdine = () => {
   const [collaborator, setCollaborator] = useState<Customer | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [messageLoading, setMessageLoading] = useState("");
 
   const [tabIndexUnlockSaveButton, setTabIndexUnlockSaveButton] = useState<null | number>(null);
 
@@ -123,6 +124,7 @@ const NewOrdine = () => {
       }, {});
 
     setIsLoading(true);
+    setMessageLoading("Salvataggio in corso...");
 
     apiActionPost[tabIndex](newFormData, paymentMethod)
       .then((response: any) => {
@@ -139,6 +141,8 @@ const NewOrdine = () => {
               });
 
               setIsLoading(false);
+              setMessageLoading("");
+
               push("/ordini/detail/?id=" + response.data.id);
             })
             .catch((error: any) => {
@@ -151,6 +155,7 @@ const NewOrdine = () => {
                 isAlert: true,
               });
               setIsLoading(false);
+              setMessageLoading("");
             });
         } else {
           alert({
@@ -162,6 +167,7 @@ const NewOrdine = () => {
             isAlert: true,
           });
           setIsLoading(false);
+          setMessageLoading("");
           push("/ordini/detail/?id=" + response.data.id);
         }
       })
@@ -204,9 +210,9 @@ const NewOrdine = () => {
 
   const assignCollaboratorAtOrder = async (idOrder: number) => {
     if (collaborator) {
-      mpApi.orders.actions.assignCollabAtOrder(idOrder, collaborator.id).then((response: any) => {
-        console.log(response);
-      });
+      const res = await mpApi.orders.actions.assignCollabAtOrder(idOrder, collaborator.id);
+
+      return res;
     }
   };
 
@@ -279,12 +285,6 @@ const NewOrdine = () => {
       setTabIndexUnlockSaveButton(null);
     }
   }, [selectedItem]);
-
-  useEffect(() => {
-    if (collaborator) {
-      console.log(collaborator);
-    }
-  }, [collaborator]);
 
   return (
     <div>
@@ -437,7 +437,7 @@ const NewOrdine = () => {
         </form>
       </div>
 
-      <Overlay loading={isLoading} />
+      <Overlay loading={isLoading} text={messageLoading} />
     </div>
   );
 };

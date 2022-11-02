@@ -5,6 +5,7 @@ import { useAlert } from "../../components/notifications";
 import ComboBoxCollaboratori from "../../components/shared/ComboBox/ComboBoxCollaboratori/ComboBoxCollaboratori";
 import ListBox from "../../components/shared/ListBox/ListBox";
 import Overlay from "../../components/shared/Overlay";
+import { Table } from "../../components/shared/Table/Table";
 import SidebarLayout from "../../layouts/SidebarLayout";
 import { mpApi } from "../../lib/mpApi";
 import { Customer } from "../../models/Customer";
@@ -119,10 +120,14 @@ const DetailPage: NextPageWithLayout = () => {
   }, [isChanged]);
 
   useEffect(() => {
-    if (collaborator?.id && item?.id && item.collaboratore.id !== collaborator.id) {
+    if (collaborator?.id && item?.id && item?.collaboratore?.id !== collaborator?.id) {
       assignCollaboratorAtOrder(item.id);
     }
   }, [collaborator]);
+
+  useEffect(() => {
+    console.log("item", item);
+  }, [item]);
 
   return (
     <>
@@ -154,71 +159,81 @@ const DetailPage: NextPageWithLayout = () => {
             </div>
           </div>
 
-          <div className="mt-5 h-[1px] w-full bg-gray-200" />
+          <div className=" space-y-10">
+            <div className="mt-5 w-full">
+              <ComboBoxCollaboratori
+                onSelectedChange={(value) => onSelectedCollabs(value)}
+                defaultValue={collaborator}
+                label="Cambia Collaboratore Assegnato"
+              />
+            </div>
 
-          <div className="w-full">
-            <ComboBoxCollaboratori onSelectedChange={(value) => onSelectedCollabs(value)} defaultValue={collaborator} />
-          </div>
+            <div>
+              <p className="mb-2 text-lg font-semibold text-black">Servizio:</p>
 
-          <div className="mt-7 flex items-center justify-between">
-            {idAcquisto && (
-              <p className="text-gray-400">
-                ID: <span className="font-semibold text-black">{idAcquisto}</span>
-              </p>
-            )}
-            <p className="text-gray-400">
-              Nome:{" "}
-              <span className="font-semibold text-black">
-                {nomeAcquisto ? nomeAcquisto : item.intervento ? `Intervento` : `Preventivo n. ${item.preventivo.id}`}
-              </span>
-            </p>
-            {costoAcquisto && (
-              <p className="text-gray-400">
-                Costo: <span className="font-semibold text-black">{costoAcquisto} €</span>
-              </p>
-            )}
-          </div>
-          <div className="mt-7 h-[1px] w-full bg-gray-200" />
-          <div className="mt-4 flex justify-between gap-4">
-            {item.paypalDetails && (
-              <div className="h-[260px] w-1/2 flex-col justify-center rounded-xl bg-gray-50 p-10">
-                <p className="text-bold text-xl font-bold">Dati pagamento</p>
-                <div className="mt-5 flex flex-col gap-4">
-                  <p className="text-gray-400">
-                    ID Transazione: <span className="font-semibold text-black">{item.paypalDetails.orderID}</span>
-                  </p>
-                  <p className="text-gray-400">
-                    Nome acquirente:{" "}
-                    <span className="font-semibold text-black">
-                      {item.paypalDetails.payer.name + " " + item.paypalDetails.payer.surname}
-                    </span>
-                  </p>
-                  <p className="text-gray-400">
-                    Email acquirente: <span className="font-semibold text-black">{item.paypalDetails.payer.email}</span>
-                  </p>
+              <Table>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.Cell>ID</Table.Cell>
+                    <Table.Cell>Nome</Table.Cell>
+                    <Table.Cell>Costo</Table.Cell>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  <Table.Row>
+                    <Table.Cell>{idAcquisto}</Table.Cell>
+                    <Table.Cell>
+                      {nomeAcquisto ? nomeAcquisto : item.intervento ? `Intervento` : `Preventivo n. ${item.preventivo.id}`}
+                    </Table.Cell>
+                    <Table.Cell>{costoAcquisto} €</Table.Cell>
+                  </Table.Row>
+                </Table.Body>
+              </Table>
+            </div>
+
+            <div className="flex justify-between gap-4">
+              {item.paypalDetails && (
+                <div className="h-[260px] w-1/2 flex-col justify-center rounded-xl bg-gray-50 p-10">
+                  <p className="text-bold text-xl font-bold">Dati pagamento</p>
+                  <div className="mt-5 flex flex-col gap-4">
+                    <p className="text-gray-400">
+                      ID Transazione: <span className="font-semibold text-black">{item.paypalDetails.orderID}</span>
+                    </p>
+                    <p className="text-gray-400">
+                      Nome acquirente:{" "}
+                      <span className="font-semibold text-black">
+                        {item.paypalDetails.payer.name + " " + item.paypalDetails.payer.surname}
+                      </span>
+                    </p>
+                    <p className="text-gray-400">
+                      Email acquirente: <span className="font-semibold text-black">{item.paypalDetails.payer.email}</span>
+                    </p>
+                  </div>
                 </div>
-              </div>
-            )}
-            <div className="max-h-[400px] w-1/2 flex-col justify-center rounded-xl bg-gray-50 p-10">
-              <p className="text-bold text-right text-xl font-bold">Storico stato</p>
-              <div className="mt-5 flex max-h-[290px] flex-col gap-4 overflow-y-auto">
-                {item.listaStati.reverse().map((l: any) => {
-                  return (
-                    <div key={l.id} className="flex w-full items-center justify-end gap-3">
-                      <p className="text-prim-400 text-right">
-                        Stato: <span className="font-semibold text-blue-400">{OrderStatusMapper[l.nome]}</span>
-                      </p>
-                      <div className="h-[15px] w-[1px] bg-gray-400" />
-                      <p className="text-right text-gray-400">
-                        Data: <span className="font-semibold text-black">{l.dataStato}</span>
-                      </p>
-                    </div>
-                  );
-                })}
+              )}
+              <div className="max-h-[400px] w-1/2 flex-col justify-center rounded-xl bg-gray-50 p-10">
+                <p className="text-bold text-right text-xl font-bold">Storico stato</p>
+                <div className="mt-5 flex max-h-[290px] flex-col gap-4 overflow-y-auto">
+                  {item.listaStati.reverse().map((l: any) => {
+                    return (
+                      <div key={l.id} className="flex w-full items-center justify-end gap-3">
+                        <p className="text-prim-400 text-right">
+                          Stato: <span className="font-semibold text-blue-400">{OrderStatusMapper[l.nome]}</span>
+                        </p>
+                        <div className="h-[15px] w-[1px] bg-gray-400" />
+                        <p className="text-right text-gray-400">
+                          Data: <span className="font-semibold text-black">{l.dataStato}</span>
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
+
           <div className="mt-7 h-[1px] w-full bg-gray-200" />
+
           <div className="mt-4 flex flex-col gap-2">
             <p className="text-right text-3xl font-bold">Totale</p>
             <p className="text-right text-2xl font-bold text-gray-400">{item.importo} €</p>

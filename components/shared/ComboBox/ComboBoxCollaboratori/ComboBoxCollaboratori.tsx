@@ -6,10 +6,11 @@ import Combobox from "../Combobox";
 
 interface ComboBoxCollaboratoriProps {
   defaultValue?: Customer | null;
+  label?: string;
   onSelectedChange: (value: any) => void;
 }
 
-const ComboBoxCollaboratori = ({ defaultValue, onSelectedChange }: ComboBoxCollaboratoriProps) => {
+const ComboBoxCollaboratori = ({ defaultValue, label = "Assegna Collaboratore", onSelectedChange }: ComboBoxCollaboratoriProps) => {
   const [listItem, setListItem] = useState<Customer[]>([]);
   const [selectedItem, setSelectedItem] = useState<Customer | null | undefined>(null);
 
@@ -53,7 +54,7 @@ const ComboBoxCollaboratori = ({ defaultValue, onSelectedChange }: ComboBoxColla
   return (
     <div>
       <div className="flex items-center gap-2">
-        <span className="block text-sm font-medium text-gray-700">Assegna Collaboratore</span>
+        <span className="block text-sm font-medium text-gray-700">{label}</span>
       </div>
 
       <Combobox
