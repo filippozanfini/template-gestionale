@@ -470,7 +470,6 @@ export const mpApi = {
           if (data && data.content) {
             return {
               content: data.content.map((item: Category) => {
-                console.log("ITEM", item);
                 return new Category(item);
               }),
               totalItems: data.totalElements,
@@ -546,8 +545,8 @@ export const mpApi = {
 
   orders: {
     routes: {
-      list: (page: number = 1, limit: number, query: string, status: string, orderBy: string, collaborator: string) =>
-        `/ordini?page=${page}&limit=${limit}&query=${query}&orderBy=${orderBy}&stato=${status}&collaborator=${collaborator}`,
+      list: (page: number = 1, limit: number, query: string, status: string, orderBy: string, idCollab: string) =>
+        `/ordini?page=${page}&limit=${limit}&query=${query}&orderBy=${orderBy}&stato=${status}&idCollab=${idCollab}`,
       item: (id: number) => (id < 1 ? `` : `/ordini/${id}`),
     },
     actions: {
@@ -583,11 +582,9 @@ export const mpApi = {
         query: string = "",
         status: string = "",
         orderBy: string = "",
-        collaborator: string = ""
+        idCollab: string = ""
       ) => {
-        return fetchJson(
-          `/ordini?page=${page}&limit=${limit}&query=${query}&orderBy=${orderBy}&stato=${status}&collaborator=${collaborator}`
-        );
+        return fetchJson(`/ordini?page=${page}&limit=${limit}&query=${query}&orderBy=${orderBy}&stato=${status}&idCollab=${idCollab}`);
       },
 
       save: async (item: any, status: string) => {
@@ -637,7 +634,7 @@ export const mpApi = {
       },
 
       assignCollabAtOrder: async (id: number, idCollab: number) => {
-        return fetchJson(`/ordini/collaborator/${idCollab}/?idOrdine=${id}`, {
+        return fetchJson(`/ordini/collaboratore/${idCollab}/?idOrdine=${id}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
         });
@@ -706,7 +703,6 @@ export const useService = (id: number) => {
 
 export const useCustomers = ({ page, limit, query }: PageLimitQuery) => {
   const { data, error } = useSWR(mpApi.customers.routes.list(page, limit, query), mpApi.customers.actions.listFetcher);
-  console.log("DATA", data);
   return { data, error };
 };
 
@@ -735,10 +731,7 @@ export const useCollaborators = ({ page, limit, query }: PageLimitQuery) => {
   return { data, error };
 };
 
-export const useOrders = ({ page, limit, query, status, orderBy, collaborator }: PageLimitQueryStatusOrderCollab) => {
-  const { data, error } = useSWR(
-    mpApi.orders.routes.list(page, limit, query, status, orderBy, collaborator),
-    mpApi.orders.actions.listFetcher
-  );
+export const useOrders = ({ page, limit, query, status, orderBy, idCollab }: PageLimitQueryStatusOrderCollab) => {
+  const { data, error } = useSWR(mpApi.orders.routes.list(page, limit, query, status, orderBy, idCollab), mpApi.orders.actions.listFetcher);
   return { data, error };
 };
