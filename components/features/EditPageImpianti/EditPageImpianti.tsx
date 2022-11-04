@@ -26,7 +26,7 @@ import { LatLng } from "react-google-places-autocomplete/build/GooglePlacesAutoc
 import AutocompleteAdvanced from "../../shared/AutocompleteAdvanced/AutocompleteAdvanced";
 import { EditorProps } from "react-draft-wysiwyg";
 import dynamic from "next/dynamic";
-import { EditorState } from "draft-js";
+import { ContentState, convertFromHTML, convertToRaw, EditorState } from "draft-js";
 import draftToHtml from "draftjs-to-html";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
@@ -73,6 +73,11 @@ const EditPageImpianti = function <T extends FieldValues>({
   const [editorContent, setEditorContent] = useState<any>(null);
   const [draftToHtmlContent, setDraftToHtmlContent] = useState("");
 
+  const [address, setAddress] = useState<string>("");
+  const [lat, setLat] = useState<number | null>(null);
+  const [lng, setLng] = useState<number | null>(null);
+  const [defaultCoords, setDefaultCoords] = useState<boolean>(false);
+
   /* FILTER */
   const [filter, setFilter] = useState<string>("");
 
@@ -103,6 +108,14 @@ const EditPageImpianti = function <T extends FieldValues>({
           setCustomer(new Customer(data.utente));
           setDate(data.dataInstallazione.split("/").reverse().join("-"));
 
+          if (data.note) {
+            const contentBlocks = convertFromHTML(data.note);
+            const contentState = ContentState.createFromBlockArray(contentBlocks as any);
+            const raw = convertToRaw(contentState);
+            setEditorContent(raw);
+            console.log("raw", raw);
+          }
+
           reset(data);
         })
         .catch((data: any) => {
@@ -119,6 +132,9 @@ const EditPageImpianti = function <T extends FieldValues>({
 
     const newFormData: any = {
       ...formdata,
+      indirizzo: defaultCoords ? customer?.indirizzo : formdata?.indirizzo,
+      latitudine: defaultCoords ? customer?.latitudine : formdata?.latitudine,
+      longitudine: defaultCoords ? customer?.longitudine : formdata?.longitudine,
       dataInstallazione: formdata.dataInstallazione.split("-").reverse().join("/"),
       idUtente: customer?.id || 0,
       dirittoFisso: autoComputation ? -1 : formdata.dirittoFisso,
@@ -237,6 +253,18 @@ const EditPageImpianti = function <T extends FieldValues>({
     }
   }, [pathname]);
 
+  useEffect(() => {
+    if (defaultCoords) {
+      setAddress(customer?.indirizzo || "");
+      setLat(customer?.latitudine || null);
+      setLng(customer?.longitudine || null);
+    } else {
+      setAddress(item?.indirizzo || "");
+      setLat(item?.latitudine || null);
+      setLng(item?.longitudine || null);
+    }
+  }, [item, customer, defaultCoords]);
+
   if (typeof window === "undefined") {
     return null;
   }
@@ -319,7 +347,7 @@ const EditPageImpianti = function <T extends FieldValues>({
               {children(item, errors, register, renderError)}
 
               <div className="flex w-full gap-4 sm:col-span-6">
-                <AutocompleteAdvanced
+                {/* <AutocompleteAdvanced
                   item={item}
                   customer={customer}
                   setValue={setValue}
@@ -327,6 +355,55 @@ const EditPageImpianti = function <T extends FieldValues>({
                   showCheckbox
                   showCopyButton
                   indirizzo={item.indirizzo}
+                /> */}
+
+                <FormInput
+                  className="w-full"
+                  {...register("indirizzo" as Path<T>)}
+                  errorMessage={renderError(errors["indirizzo" as Path<T>])}
+                  autoComplete="indirizzo"
+                  aria="Inserisci l'indirizzo"
+                  label="Indirizzo"
+                  value={address}
+                  disabled={defaultCoords}
+                  onChange={(e: any) => {
+                    setAddress(e.target.value);
+                  }}
+                />
+
+                <FormInput
+                  className="w-fit"
+                  {...register("latitudine" as Path<T>)}
+                  errorMessage={renderError(errors["latitudine" as Path<T>])}
+                  autoComplete="latitudine"
+                  aria="Inserisci la Latitudine"
+                  label="Latitudine"
+                  value={lat?.toString() || ""}
+                  disabled={defaultCoords}
+                  onChange={(e: any) => {
+                    setLat(e.target.value);
+                  }}
+                />
+                <FormInput
+                  className="w-fit"
+                  {...register("longitudine" as Path<T>)}
+                  errorMessage={renderError(errors["longitudine" as Path<T>])}
+                  autoComplete="longitudine"
+                  aria="Inserisci la Longitudine"
+                  label="Longitudine"
+                  value={lng?.toString() || ""}
+                  disabled={defaultCoords}
+                  onChange={(e: any) => {
+                    setLng(e.target.value);
+                  }}
+                />
+                <CheckboxInput
+                  aria="Coordinate dell'utente"
+                  label="Usa coordinate utente"
+                  name="calcolo-automatico"
+                  defaultChecked={defaultCoords}
+                  onChange={(e) => setDefaultCoords(e.target.checked)}
+                  className="mt-8 flex whitespace-nowrap"
                 />
               </div>
 

@@ -58,8 +58,6 @@ const EditPreventivi: NextPageWithLayout = () => {
 
   const [setValueForm, setValueFormState] = useState<UseFormSetValue<Quote>>(() => {});
 
-  const [showEditor, setShowEditor] = useState(false);
-
   /* FILTER */
   const [filter, setFilter] = useState<string>("");
 
@@ -104,16 +102,12 @@ const EditPreventivi: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (itemFromApi.descrizione) {
-      setShowEditor(false);
-
       const contentBlocks = convertFromHTML(itemFromApi.descrizione);
       const contentState = ContentState.createFromBlockArray(contentBlocks as any);
       const raw = convertToRaw(contentState);
       setEditorContent(raw);
 
       setDescriptionForInnerHtml(itemFromApi.descrizione);
-    } else {
-      setShowEditor(true);
     }
   }, [itemFromApi]);
 
