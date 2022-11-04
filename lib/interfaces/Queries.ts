@@ -10,5 +10,5 @@ export interface PageLimitQuery extends PageLimit {
 export interface PageLimitQueryStatusOrderCollab extends PageLimitQuery {
   status: string;
   orderBy: string;
-  collaborator: string;
+  idCollab: string;
 }

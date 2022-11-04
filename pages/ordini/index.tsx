@@ -26,7 +26,6 @@ const IndiceOrdini: NextPageWithLayout = () => {
   const handleFilterOrderStatus = (value: string) => {
     const index = Object.values(listFilterStatus).indexOf(value);
     setFilterStatusValue(value);
-    console.log(Object.keys(listFilterStatus)[index]);
 
     if (Object.keys(listFilterStatus)[index] === "vuoto") {
       setFilterStatusSelectedKey("");
@@ -46,7 +45,6 @@ const IndiceOrdini: NextPageWithLayout = () => {
   };
 
   const onSelectedCollab = (value: any) => {
-    console.log(value);
     setCollaborator(value);
   };
 
@@ -58,7 +56,7 @@ const IndiceOrdini: NextPageWithLayout = () => {
       mpApiAction={mpApi.orders}
       Table={TableOrders}
       isFilterableByUser
-      queryParams={{ status: filterStatusSelectedKey, orderBy: orderBySelectedKey, collaborator: collaborator?.id }}
+      queryParams={{ status: filterStatusSelectedKey, orderBy: orderBySelectedKey, idCollab: collaborator?.id ?? "" }}
     >
       <div className="mt-5 flex w-full gap-4">
         <div className="w-full">

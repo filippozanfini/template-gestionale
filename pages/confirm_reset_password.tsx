@@ -31,7 +31,6 @@ const ConfermaRecuperaPassword = () => {
       mpApi.resetPassword.actions
         .resetPassword(token, password)
         .then((res: any) => {
-          console.log("res", res);
           setLoading(false);
           setIsSent(true);
           setMessage(res.message);

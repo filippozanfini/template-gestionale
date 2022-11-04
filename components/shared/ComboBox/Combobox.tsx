@@ -1,6 +1,6 @@
 import React, { FC, Fragment, LegacyRef, useEffect, useState } from "react";
 import { Combobox as ComboboxUI, Transition } from "@headlessui/react";
-import { CheckIcon, SelectorIcon } from "@heroicons/react/outline";
+import { CheckIcon, SelectorIcon, XCircleIcon } from "@heroicons/react/outline";
 
 interface ComboboxProps {
   selected?: any;
@@ -29,7 +29,7 @@ const Combobox: FC<ComboboxProps> = ({
     <div className="z-50 w-full">
       <ComboboxUI value={selected} onChange={onSelectedChange}>
         <div className={["relative mt-1 bg-white", focused ? "z-20" : "z-10"].join(" ")}>
-          <div className="relative block w-full overflow-hidden rounded-lg border border-gray-200 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
+          <div className="relative flex w-full gap-1 overflow-hidden rounded-lg border border-gray-200 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm">
             <ComboboxUI.Input
               className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
               displayValue={() => selectedName}
@@ -39,7 +39,7 @@ const Combobox: FC<ComboboxProps> = ({
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
             />
-            <ComboboxUI.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
+            <ComboboxUI.Button className="flex items-center pr-2">
               <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
             </ComboboxUI.Button>
           </div>

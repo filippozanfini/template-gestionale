@@ -40,18 +40,22 @@ const ComboBoxCollaboratori = ({ defaultValue, label = "Assegna Collaboratore", 
   }, [filter]);
 
   useEffect(() => {
-    setSelectedItem(defaultValue);
+    // setSelectedItem(defaultValue);
   }, [defaultValue]);
 
   useEffect(() => {
-    if (selectedItem) {
-      if (defaultValue?.id != selectedItem?.id) {
-        setTimeout(() => {
-          onSelectedChange(selectedItem);
-        }, 500);
-      }
-    }
+    onSelectedChange(selectedItem);
   }, [selectedItem]);
+
+  const chooseSelectedName = () => {
+    if (defaultValue) {
+      return defaultValue?.nome + " " + defaultValue?.cognome + ", " + defaultValue?.indirizzo;
+    } else if (selectedItem) {
+      return selectedItem?.nome + " " + selectedItem?.cognome + ", " + selectedItem?.indirizzo;
+    } else {
+      return filter;
+    }
+  };
 
   return (
     <div>
@@ -63,7 +67,7 @@ const ComboBoxCollaboratori = ({ defaultValue, label = "Assegna Collaboratore", 
         listItems={listItem}
         onFilterChange={(filters: any) => setFilter(filters)}
         onSelectedChange={(value: any) => setSelectedItem(value)}
-        selectedName={selectedItem ? selectedItem?.nome + " " + selectedItem?.cognome + ", " + selectedItem?.indirizzo : filter}
+        selectedName={chooseSelectedName()}
         loading={isLoading}
         selected={selectedItem}
         placeholder="Nome Cognome, Indirizzo"
