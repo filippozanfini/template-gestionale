@@ -57,7 +57,7 @@ const ListCard = (props: any) => {
 
 const Home: NextPageWithLayout = () => {
   const { push } = useRouter();
-  const orders = useOrders({ page: 1, limit: 4, status: "", orderBy: "", query: "" });
+  const orders = useOrders({ page: 1, limit: 4, status: "", orderBy: "", query: "", collaborator: "" });
   const quotes = useQuotes({ page: 1, limit: 4, query: "" });
   const services = useServices();
   const installations = useInstallations({ page: 1, limit: 1, query: "" });

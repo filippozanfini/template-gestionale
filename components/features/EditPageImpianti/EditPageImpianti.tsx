@@ -19,11 +19,7 @@ import FormInput from "../../FormInput";
 import { useAlert } from "../../notifications";
 import Combobox from "../../shared/ComboBox/Combobox";
 import { mpApi as api } from "../../../lib/mpApi";
-import Loader from "../../core/Loader";
 import Overlay from "../../shared/Overlay";
-import AutocompleteInput from "../../core/AutocompleteInput";
-import { LatLng } from "react-google-places-autocomplete/build/GooglePlacesAutocomplete.types";
-import AutocompleteAdvanced from "../../shared/AutocompleteAdvanced/AutocompleteAdvanced";
 import { EditorProps } from "react-draft-wysiwyg";
 import dynamic from "next/dynamic";
 import { ContentState, convertFromHTML, convertToRaw, EditorState } from "draft-js";
@@ -113,7 +109,6 @@ const EditPageImpianti = function <T extends FieldValues>({
             const contentState = ContentState.createFromBlockArray(contentBlocks as any);
             const raw = convertToRaw(contentState);
             setEditorContent(raw);
-            console.log("raw", raw);
           }
 
           reset(data);

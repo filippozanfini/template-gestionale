@@ -19,6 +19,7 @@ import {
   UserGroupIcon,
   CollectionIcon,
   PlusIcon,
+  CogIcon,
 } from "@heroicons/react/outline";
 import { Menu, Transition } from "@headlessui/react";
 import NavigationMenu, { MenuItem } from "../components/NavigationMenu";
@@ -217,6 +218,15 @@ function SidebarLayout({ title, children }: any) {
               }}
             />
           </div>
+
+          <button
+            className="align-content-center flex cursor-pointer items-center px-4 py-4 hover:bg-white/10"
+            onClick={() => router.push("/impostazioni")}
+          >
+            <CogIcon className={["", sidebar ? "mr-2 h-5 w-5" : "mx-auto h-6 w-6"].join(" ")} />
+            {sidebar ? "Impostazioni" : ""}
+          </button>
+
           <div className="bottom-0 right-0 left-0 h-8 w-full grow-0 bg-black/40 py-2 text-center">
             <button className="mx-auto h-5 w-5" onClick={() => setSidebar(!sidebar)}>
               <ChevronDoubleLeftIcon className={`${!sidebar ? "rotate-180 transform" : ""} transition duration-500 ease-in-out`} />

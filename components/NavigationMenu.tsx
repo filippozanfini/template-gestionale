@@ -71,7 +71,7 @@ const NavigationMenu: FC<NavigationMenuProps> = ({
   }, [menu, selected]);
 
   const clicked = (item: InternalMenuItem) => {
-    console.log("HERE");
+    // console.log("HERE");
     if (item.id === current || item.isOpened) {
       //toggled
       setSezioni(processMenu(menu, ""));

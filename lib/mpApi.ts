@@ -671,6 +671,22 @@ export const mpApi = {
       },
     },
   },
+
+  settings: {
+    routes: {},
+    actions: {
+      coordinates: async () => {
+        return fetchJson(`/coordinate`);
+      },
+      saveCoordinates: async (item: any) => {
+        return fetchJson(`/coordinate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(item),
+        });
+      },
+    },
+  },
 };
 
 export const useUser = () => {
