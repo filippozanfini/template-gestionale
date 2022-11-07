@@ -45,7 +45,7 @@ const FormCoordinateBancarie = () => {
           id: new Date().toISOString(),
           type: "error",
           title: "Richiesta Dati",
-          message: "Errore nel caricamento della risorsa",
+          message: "Dati non trovati" + (data?.error || data?.message || ""),
           read: false,
           isAlert: true,
         });

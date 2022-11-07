@@ -1,4 +1,3 @@
-import moment from "moment";
 import { useRouter } from "next/router";
 import React, { useState, useEffect, FC, ReactElement, useMemo } from "react";
 import { useAlert } from "../../components/notifications";
@@ -11,13 +10,10 @@ import { mpApi } from "../../lib/mpApi";
 import { Customer } from "../../models/Customer";
 import { eOrderStatus, IOrder, Order } from "../../models/Order";
 import { InverterOrderStatusMapper, OrderStatusMapper } from "../../utils/OrderStatusMapper";
-import EditClienti from "../clienti/edit";
 import { NextPageWithLayout } from "../_app";
 
 const DetailPage: NextPageWithLayout = () => {
   const [item, setItem] = useState<Order | null>();
-  const [isChanged, setIsChanged] = useState<boolean>(false);
-
   const [collaborator, setCollaborator] = useState<Customer | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -55,13 +51,6 @@ const DetailPage: NextPageWithLayout = () => {
     : "";
   const idAcquisto = item?.servizio ? item.servizio.id : item?.pacchetto ? item.pacchetto.id : "";
 
-  const handleOrderStatus = (order: Order, newOrderStatus: string) => {
-    const newOrder: Order = { ...order, stato: newOrderStatus };
-    mpApi.orders.actions.save(order, newOrderStatus);
-    setItem(newOrder);
-    setIsChanged(true);
-  };
-
   const backgroundCss = useMemo(() => {
     return item?.stato === "inCorso"
       ? "bg-gray-600"
@@ -71,6 +60,38 @@ const DetailPage: NextPageWithLayout = () => {
       ? "bg-green-500"
       : "bg-red-500";
   }, [item?.stato]);
+
+  const handleOrderStatus = async (order: Order, newOrderStatus: string) => {
+    setIsLoading(true);
+    await mpApi.orders.actions
+      .save(order, newOrderStatus)
+      .then((response: any) => {
+        alert({
+          id: new Date().toISOString(),
+          type: "success",
+          title: "Salvataggio Risorsa",
+          message: response.message,
+          read: false,
+          isAlert: true,
+        });
+        if (response.data.id) {
+          loadItem(response.data.id || order.id);
+        }
+        setIsLoading(false);
+      })
+      .catch((error: any) => {
+        alert({
+          id: new Date().toISOString(),
+          type: "error",
+          title: "Salvataggio Risorsa",
+          message: error?.message ?? "Errore nell'aggiornamento dello stato dell'ordine, riprovare più tardi",
+          read: false,
+          isAlert: true,
+        });
+        loadItem(order.id);
+        setIsLoading(false);
+      });
+  };
 
   const onSelectedCollabs = (value: any) => {
     setCollaborator(value);
@@ -107,23 +128,21 @@ const DetailPage: NextPageWithLayout = () => {
   };
 
   useEffect(() => {
-    if (query.id || isChanged) {
+    if (query.id) {
       const ItemId: number = Number(query.id);
       loadItem(ItemId);
     }
-  }, [query, isChanged]);
-
-  useEffect(() => {
-    if (isChanged) {
-      setIsChanged(false);
-    }
-  }, [isChanged]);
+  }, [query]);
 
   useEffect(() => {
     if (collaborator?.id && item?.id && item?.collaboratore?.id !== collaborator?.id) {
       assignCollaboratorAtOrder(item.id);
     }
   }, [collaborator]);
+
+  useEffect(() => {
+    console.log("item", item);
+  }, [item]);
 
   return (
     <>
@@ -210,7 +229,7 @@ const DetailPage: NextPageWithLayout = () => {
               <div className="max-h-[400px] w-1/2 flex-col justify-center rounded-xl bg-gray-50 p-10">
                 <p className="text-bold text-right text-xl font-bold">Storico stato</p>
                 <div className="mt-5 flex max-h-[290px] flex-col gap-4 overflow-y-auto">
-                  {item.listaStati.reverse().map((l: any) => {
+                  {item.listaStati.map((l: any) => {
                     return (
                       <div key={l.id} className="flex w-full items-center justify-end gap-3">
                         <p className="text-prim-400 text-right">
