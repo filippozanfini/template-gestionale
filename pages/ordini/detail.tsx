@@ -140,10 +140,6 @@ const DetailPage: NextPageWithLayout = () => {
     }
   }, [collaborator]);
 
-  useEffect(() => {
-    console.log("item", item);
-  }, [item]);
-
   return (
     <>
       {item && (
