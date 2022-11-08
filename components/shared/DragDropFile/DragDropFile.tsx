@@ -84,7 +84,7 @@ const DragDropFile = ({ label, validTaypes, emptyFile, onFileChange, onError }: 
         id="label-file-upload"
         htmlFor="input-file-upload"
         className={[
-          "flex h-full cursor-pointer items-center justify-center rounded-md border-2 border-dashed border-primary-400",
+          "flex h-full cursor-pointer items-center justify-center rounded-md border-2 border-dashed border-primary-400 hover:bg-primary-200/60",
           dragActive ? "bg-primary-200" : " bg-primary-100",
         ].join(" ")}
       >

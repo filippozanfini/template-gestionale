@@ -47,12 +47,10 @@ const ImportClienti: NextPageWithLayout = () => {
           setRes(response);
           setLoadingUplaod(false);
           setEmptyFile(true);
-
-          // console.log(response);
         })
         .catch((err) => {
           setLoadingUplaod(false);
-          console.error(err);
+          handleError(err.message);
         });
     }
   };
