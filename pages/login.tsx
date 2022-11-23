@@ -1,58 +1,77 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import { useState } from 'react';
-import  logo  from "../app/logo.png";
-import Button from '../components/Button';
-import Input from "../components/Input";
-import FormPasswordInput from '../components/Password';
-import fetchJson, { FetchError } from '../lib/fetchJson';
-import { mpApi } from '../lib/mpApi';
-import useUser from '../lib/useUser';
-import { User } from '../types/User'
+import type { NextPage } from "next";
+import Head from "next/head";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import logo from "../app/logo.png";
+import Button from "../components/core/Button";
+import Input from "../components/FormInput";
+import { useAlert } from "../components/notifications";
+import FormPasswordInput from "../components/Password";
+import fetchJson, { FetchError } from "../lib/fetchJson";
+import { mpApi } from "../lib/mpApi";
+import useUser from "../lib/useUser";
+import { User } from "../models/User";
 
 const Login: NextPage = () => {
-
   const { mutateUser } = useUser({
-    redirectTo: '/',
+    redirectTo: "/",
     redirectIfFound: true,
   });
 
-  const [errorMsg, setErrorMsg] = useState('');
+  const alert = useAlert();
 
-  const handleSubmit = async (event:any) => {
-    event.preventDefault()
+  const handleSubmit = async (event: any) => {
+    event.preventDefault();
 
-          try {
-            mutateUser( (await mpApi.user.login(event.currentTarget.username.value, event.currentTarget.password.value)) as User )
-          } catch (error) {
-            if (error instanceof FetchError) {
-              setErrorMsg(error.data.message)
-            } else {
-              console.error('An unexpected error happened:', error)
-            }
-          }
+    try {
+      mutateUser((await mpApi.user.actions.login(event.currentTarget.email.value, event.currentTarget.password.value)) as User);
+    } catch (error) {
+      if (error instanceof FetchError) {
+        alert({
+          id: "err-" + Math.random() * 1000000,
+          type: "error",
+          title: "Errore nel login",
+          message: error.data.message,
+          isAlert: true,
+          read: false,
+        });
+      } else {
+        const err = error as Error;
+        alert({
+          id: "err-" + Math.random() * 1000000,
+          type: "error",
+          title: err.name,
+          message: err.message,
+          isAlert: true,
+          read: false,
+        });
+      }
+    }
   };
 
-      return (
-        <form className="h-full bg-gradient-to-tl from-green-400 to-indigo-900 w-full py-16 px-4" onSubmit={handleSubmit} >
-            <div className="flex flex-col items-center justify-center">
+  return (
+    <form className="h-screen w-full bg-gradient-to-tl from-green-400 to-primary-900 py-16 px-4" onSubmit={handleSubmit}>
+      <div className="flex flex-col items-center justify-center">
+        <div className="mt-16 w-full rounded bg-white  p-10 shadow md:w-1/2 lg:w-1/3">
+          <Image src={logo} />
+          <p tabIndex={0} role="heading" aria-label="Area riservata" className="my-4 text-2xl font-extrabold leading-6 text-gray-800">
+            Area riservata
+          </p>
+          <Input type="text" name="email" aria="inserisci l'email" label="Email" />
+          <FormPasswordInput name="password" aria="inserisci la password" label="Password" className="mt-6  w-full" />
 
-                <div className="bg-white shadow rounded lg:w-1/3  md:w-1/2 w-full p-10 mt-16">
-                    <Image src={logo} />
-                    <p tabIndex={0} role="heading" aria-label="Area riservata" className="text-2xl font-extrabold leading-6 text-gray-800 mb-4">
-                        Area riservata
-                    </p>
-
-                    <Input type="text" name="username" aria="inserisci la username" label="Username"                            />
-                    <FormPasswordInput name="password" aria="inserisci la password" label='Password' className="mt-6  w-full" />
-
-                    <div className="mt-8">
-                        <Button className='py-4 w-full' title='Login' aria='Premi per effettuare il login' type='submit'/>
-                    </div>
-                </div>
-            </div>
-        </form>
-      );
-    };
-export default Login
+          <div className="mt-4">
+            <Link href="/recupera_password">
+              <a className="text-sm font-medium text-primary-600 hover:text-primary-400">Password dimenticata?</a>
+            </Link>
+          </div>
+          <div className="mt-8">
+            <Button className="w-full py-4" title="Login" aria="Premi per effettuare il login" type="submit" />
+          </div>
+        </div>
+      </div>
+    </form>
+  );
+};
+export default Login;
