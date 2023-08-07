@@ -9,10 +9,10 @@ import Router from "next/router";
 import { Provider } from "react-redux";
 import { persistor, store } from "../redux/store";
 import { PersistGate } from "redux-persist/integration/react";
-import NotificationsCenter from "../components/notifications/NotificationsCenter";
 import NotificationsContainer from "../components/notifications/NotificationContainer";
 import { useAlert } from "../components/notifications";
 import NextNProgress from "nextjs-progressbar";
+import Cookies from "../lib/cookies";
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -32,10 +32,12 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
         fetcher: fetchJson,
         onError: (err) => {
           if (err.data.code == 403) {
+            Cookies.del('token');
             Router.push("/login");
             return;
           }
           if (err.data.code == 401) {
+            Cookies.del('token');
             Router.push("/login");
             return;
           }
